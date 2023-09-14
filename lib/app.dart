@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:planted/blocs/app_bloc.dart/app_bloc.dart';
+import 'package:planted/blocs/app_bloc.dart/app_event.dart';
 import 'package:planted/constants/colors.dart';
 import 'package:planted/navigation_bar_view.dart';
 
@@ -26,7 +29,10 @@ class App extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: const NavigationBarView(),
+      home: BlocProvider(
+        create: (_) => AppBloc()..add(const AppEventInitialize()),
+        child: const NavigationBarView(),
+      ),
     );
   }
 }
