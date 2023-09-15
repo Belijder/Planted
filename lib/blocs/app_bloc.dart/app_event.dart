@@ -72,3 +72,27 @@ class AppEventResentVerificationMail implements AppEvent {
 class AppEventReloadUserInfo implements AppEvent {
   const AppEventReloadUserInfo();
 }
+
+@immutable
+class AppEventAddNewAnnouncement implements AppEvent {
+  final String name;
+  final String latinName;
+  final String imagePath;
+  final int seedCount;
+  final String city;
+  final String description;
+
+  const AppEventAddNewAnnouncement({
+    required this.name,
+    required this.latinName,
+    required this.imagePath,
+    required this.seedCount,
+    required this.city,
+    required this.description,
+  });
+}
+
+@immutable
+class AppEventAnnouncemmentFieldsCleaned implements AppEvent {
+  const AppEventAnnouncemmentFieldsCleaned();
+}

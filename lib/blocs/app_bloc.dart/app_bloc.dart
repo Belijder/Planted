@@ -1,9 +1,16 @@
+import 'dart:io';
+
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:planted/auth_error.dart';
 import 'package:planted/blocs/app_bloc.dart/app_event.dart';
 import 'package:planted/blocs/app_bloc.dart/app_state.dart';
 import 'package:planted/constants/strings.dart';
+import 'package:planted/database_error.dart';
+import 'package:planted/helpers/compress_image.dart';
+import 'package:uuid/uuid.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class AppBloc extends Bloc<AppEvent, AppState> {
   AppBloc()
@@ -247,6 +254,93 @@ class AppBloc extends Bloc<AppEvent, AppState> {
             authError: AuthError.from(e),
           ));
         }
+      },
+    );
+    on<AppEventAddNewAnnouncement>(
+      (event, emit) async {
+        final user = FirebaseAuth.instance.currentUser;
+
+        if (user == null) {
+          emit(
+            const AppStateLoggedOut(
+              isLoading: false,
+              authError: AuthErrorNoCurrentUser(),
+            ),
+          );
+          return;
+        }
+
+        emit(AppStateLoggedIn(isLoading: true, user: user));
+
+        final announcementId = const Uuid().v4();
+
+        final timeStamp = DateTime.timestamp();
+
+        final file = File(event.imagePath);
+
+        final docData = {
+          'docID': announcementId,
+          'name': event.name,
+          'latinName': event.latinName,
+          'seedCount': event.seedCount,
+          'city': event.city,
+          'description': event.description,
+          'timeStamp': timeStamp,
+          'giverID': user.uid
+        };
+
+        try {
+          final compressedFile = await compressImage(file.path, 30);
+          final File fileToPut;
+
+          if (compressedFile != null) {
+            fileToPut = File(compressedFile.path);
+          } else {
+            fileToPut = file;
+          }
+
+          await FirebaseStorage.instance
+              .ref('images')
+              .child(announcementId)
+              .putFile(fileToPut);
+
+          final db = FirebaseFirestore.instance;
+          await db.collection('announcements').doc(announcementId).set(docData);
+
+          emit(
+            AppStateLoggedIn(
+              isLoading: false,
+              user: user,
+              shouldClean: true,
+              snackbarMessage: 'Ogłoszenie zostało dodane!',
+            ),
+          );
+        } on FirebaseException catch (e) {
+          emit(
+            AppStateLoggedIn(
+              isLoading: false,
+              user: user,
+              databaseError: DatabaseError.from(e),
+            ),
+          );
+        }
+      },
+    );
+
+    on<AppEventAnnouncemmentFieldsCleaned>(
+      (event, emit) {
+        final user = FirebaseAuth.instance.currentUser;
+
+        if (user == null) {
+          emit(
+            const AppStateLoggedOut(
+              isLoading: false,
+              authError: AuthErrorNoCurrentUser(),
+            ),
+          );
+          return;
+        }
+        emit(AppStateLoggedIn(isLoading: false, user: user));
       },
     );
   }

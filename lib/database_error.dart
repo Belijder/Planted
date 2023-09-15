@@ -66,8 +66,7 @@ class DatabaseErrorPermissionDenied extends DatabaseError {
 class DatabaseErrorAborted extends DatabaseError {
   const DatabaseErrorAborted()
       : super(
-          dialogTitle: 'Odmowa pozwolenia',
-          dialogText:
-              'Wygląda na to że nie masz pozwolenia na wykonanie tej operacji.',
+          dialogTitle: 'Operacja przerwana',
+          dialogText: 'Oparacja została przerwana. Spróbuj ponownie za chwilę.',
         );
 }

@@ -8,6 +8,7 @@ import 'package:planted/blocs/app_bloc.dart/app_bloc.dart';
 import 'package:planted/blocs/app_bloc.dart/app_state.dart';
 import 'package:planted/screens/add_announcement/add_announcement_view.dart';
 import 'package:planted/utilities/dialogs/show_auth_dialog.dart';
+import 'package:planted/utilities/dialogs/show_database_error_dialog.dart';
 import 'package:planted/utilities/loading/loading_screen.dart';
 
 class AddAnnouncementScreen extends HookWidget {
@@ -31,10 +32,22 @@ class AddAnnouncementScreen extends HookWidget {
           );
         }
 
+        final databaseError = appState.databaseError;
+        if (databaseError != null) {
+          showDatabaseErrorDialog(
+            context: context,
+            databaseError: databaseError,
+          );
+        }
+
         final message = appState.snackbarMessage;
         if (message != null) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              duration: const Duration(seconds: 2), content: Text(message)));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              duration: const Duration(seconds: 2),
+              content: Text(message),
+            ),
+          );
         }
       },
       builder: (context, appState) {

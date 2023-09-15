@@ -1,18 +1,20 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart' show immutable;
 import 'package:planted/auth_error.dart';
+import 'package:planted/database_error.dart';
 
 @immutable
 abstract class AppState {
   final bool isLoading;
   final AuthError? authError;
   final String? snackbarMessage;
+  final DatabaseError? databaseError;
 
-  const AppState({
-    required this.isLoading,
-    this.authError,
-    this.snackbarMessage,
-  });
+  const AppState(
+      {required this.isLoading,
+      this.authError,
+      this.snackbarMessage,
+      this.databaseError});
 }
 
 @immutable
@@ -39,10 +41,14 @@ class AppStateLoggedOut extends AppState {
 @immutable
 class AppStateLoggedIn extends AppState {
   final User user;
+  final bool shouldClean;
 
   const AppStateLoggedIn({
+    this.shouldClean = false,
     required super.isLoading,
     super.authError,
+    super.databaseError,
+    super.snackbarMessage,
     required this.user,
   });
 
@@ -51,7 +57,8 @@ class AppStateLoggedIn extends AppState {
     final otherClass = other;
     if (otherClass is AppStateLoggedIn) {
       return isLoading == otherClass.isLoading &&
-          user.uid == otherClass.user.uid;
+          user.uid == otherClass.user.uid &&
+          shouldClean == otherClass.shouldClean;
     } else {
       return false;
     }
@@ -62,7 +69,7 @@ class AppStateLoggedIn extends AppState {
 
   @override
   String toString() {
-    return 'AppStateLoggedIn, (isLoading: $isLoading, authError: $authError, userUID: ${user.uid})';
+    return 'AppStateLoggedIn, (isLoading: $isLoading, authError: $shouldClean, userUID: ${user.uid})';
   }
 }
 
