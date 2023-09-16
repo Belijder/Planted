@@ -20,7 +20,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
           ),
         ) {
     on<AppEventInitialize>(
-      (event, emit) {
+      (event, emit) async {
         final user = FirebaseAuth.instance.currentUser;
 
         if (user == null) {
@@ -36,6 +36,21 @@ class AppBloc extends Bloc<AppEvent, AppState> {
           emit(
             const AppStateIsInConfirmationEmailView(
               isLoading: false,
+            ),
+          );
+          return;
+        }
+
+        final QuerySnapshot query = await FirebaseFirestore.instance
+            .collection('profiles')
+            .where('userID', isEqualTo: user.uid)
+            .get();
+
+        if (query.docs.isEmpty) {
+          emit(
+            AppStateIsInCompleteProfileView(
+              isLoading: false,
+              user: user,
             ),
           );
           return;
@@ -165,10 +180,28 @@ class AppBloc extends Bloc<AppEvent, AppState> {
           }
 
           if (user.emailVerified == true) {
-            emit(AppStateLoggedIn(
-              isLoading: false,
-              user: user,
-            ));
+            if (user.displayName != null) {
+              final userProfileData = {
+                'displayName': user.displayName!,
+                'userID': user.uid,
+                'photoURL': user.photoURL
+              };
+
+              await FirebaseFirestore.instance
+                  .collection('profiles')
+                  .doc(user.uid)
+                  .set(userProfileData);
+
+              emit(AppStateLoggedIn(
+                isLoading: false,
+                user: user,
+              ));
+            } else {
+              emit(AppStateIsInCompleteProfileView(
+                isLoading: false,
+                user: user,
+              ));
+            }
           } else {
             emit(
               const AppStateIsInConfirmationEmailView(
@@ -181,6 +214,63 @@ class AppBloc extends Bloc<AppEvent, AppState> {
           emit(AppStateIsInConfirmationEmailView(
             isLoading: false,
             authError: AuthError.from(e),
+          ));
+        }
+      },
+    );
+
+    on<AppEventCompletingUserProfile>(
+      (event, emit) async {
+        emit(const AppStateIsInConfirmationEmailView(isLoading: true));
+
+        final user = FirebaseAuth.instance.currentUser;
+
+        if (user == null) {
+          emit(const AppStateLoggedOut(isLoading: false));
+          return;
+        }
+
+        try {
+          final String imageURL;
+
+          if (event.imagePath != null) {
+            final file = File(event.imagePath!);
+            final compressedFile = await compressImage(file.path, 10);
+            final File fileToPut;
+
+            if (compressedFile != null) {
+              fileToPut = File(compressedFile.path);
+            } else {
+              fileToPut = file;
+            }
+
+            final task = await FirebaseStorage.instance
+                .ref('profileImages')
+                .child(user.uid)
+                .putFile(fileToPut);
+
+            imageURL = await task.ref.getDownloadURL();
+          } else {
+            imageURL = '';
+          }
+
+          final userProfileData = {
+            'displayName': event.displayName,
+            'userID': user.uid,
+            'photoURL': imageURL,
+          };
+
+          await FirebaseFirestore.instance
+              .collection('profiles')
+              .doc(user.uid)
+              .set(userProfileData);
+
+          emit(AppStateLoggedIn(isLoading: false, user: user));
+        } on FirebaseException catch (e) {
+          emit(AppStateIsInCompleteProfileView(
+            isLoading: false,
+            user: user,
+            databaseError: DatabaseError.from(e),
           ));
         }
       },

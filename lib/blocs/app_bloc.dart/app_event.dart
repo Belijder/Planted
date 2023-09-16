@@ -21,6 +21,11 @@ class AppEventGoToLoginView implements AppEvent {
 }
 
 @immutable
+class AppEventGoToCompleteProfileView implements AppEvent {
+  const AppEventGoToCompleteProfileView();
+}
+
+@immutable
 class AppEventSendResetPassword implements AppEvent {
   final String email;
 
@@ -66,6 +71,17 @@ class AppEventDeleteAccount implements AppEvent {
 @immutable
 class AppEventResentVerificationMail implements AppEvent {
   const AppEventResentVerificationMail();
+}
+
+@immutable
+class AppEventCompletingUserProfile implements AppEvent {
+  final String displayName;
+  final String? imagePath;
+
+  const AppEventCompletingUserProfile({
+    required this.displayName,
+    required this.imagePath,
+  });
 }
 
 @immutable

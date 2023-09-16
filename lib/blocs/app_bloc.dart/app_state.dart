@@ -90,6 +90,19 @@ class AppStateIsInConfirmationEmailView extends AppState {
   });
 }
 
+@immutable
+class AppStateIsInCompleteProfileView extends AppState {
+  final User user;
+
+  const AppStateIsInCompleteProfileView({
+    required super.isLoading,
+    super.authError,
+    super.snackbarMessage,
+    super.databaseError,
+    required this.user,
+  });
+}
+
 extension GetUser on AppState {
   User? get user {
     final cls = this;
