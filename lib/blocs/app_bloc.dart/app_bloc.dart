@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -184,7 +183,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
               final userProfileData = {
                 'displayName': user.displayName!,
                 'userID': user.uid,
-                'photoURL': user.photoURL
+                'photoURL': user.photoURL ?? ''
               };
 
               await FirebaseFirestore.instance
@@ -368,17 +367,6 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
         final file = File(event.imagePath);
 
-        final docData = {
-          'docID': announcementId,
-          'name': event.name,
-          'latinName': event.latinName,
-          'seedCount': event.seedCount,
-          'city': event.city,
-          'description': event.description,
-          'timeStamp': timeStamp,
-          'giverID': user.uid
-        };
-
         try {
           final compressedFile = await compressImage(file.path, 30);
           final File fileToPut;
@@ -389,12 +377,35 @@ class AppBloc extends Bloc<AppEvent, AppState> {
             fileToPut = file;
           }
 
-          await FirebaseStorage.instance
+          final task = await FirebaseStorage.instance
               .ref('images')
               .child(announcementId)
               .putFile(fileToPut);
 
+          final imageURL = await task.ref.getDownloadURL();
+
           final db = FirebaseFirestore.instance;
+
+          final currentUserInfo = await db
+              .collection('profiles')
+              .doc(user.uid)
+              .get()
+              .then((snapshot) => snapshot.data());
+
+          final docData = {
+            'docID': announcementId,
+            'name': event.name,
+            'latinName': event.latinName,
+            'seedCount': event.seedCount,
+            'city': event.city,
+            'description': event.description,
+            'timeStamp': timeStamp,
+            'giverID': user.uid,
+            'imageURL': imageURL,
+            'giverDisplayName': currentUserInfo!['displayName'] ?? 'Unknown',
+            'giverPhotoURL': currentUserInfo['photoURL'] ?? ''
+          };
+
           await db.collection('announcements').doc(announcementId).set(docData);
 
           emit(

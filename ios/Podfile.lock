@@ -702,6 +702,9 @@ PODS:
     - Mantle
     - SDWebImage
     - SDWebImageWebPCoder
+  - FMDB (2.7.5):
+    - FMDB/standard (= 2.7.5)
+  - FMDB/standard (2.7.5)
   - GoogleUtilities/AppDelegateSwizzler (7.11.4):
     - GoogleUtilities/Environment
     - GoogleUtilities/Logger
@@ -812,6 +815,9 @@ PODS:
   - SDWebImageWebPCoder (0.13.0):
     - libwebp (~> 1.0)
     - SDWebImage/Core (~> 5.17)
+  - sqflite (0.0.3):
+    - Flutter
+    - FMDB (>= 2.7.5)
   - url_launcher_ios (0.0.1):
     - Flutter
 
@@ -824,6 +830,7 @@ DEPENDENCIES:
   - flutter_image_compress_common (from `.symlinks/plugins/flutter_image_compress_common/ios`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
+  - sqflite (from `.symlinks/plugins/sqflite/ios`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
 
 SPEC REPOS:
@@ -839,6 +846,7 @@ SPEC REPOS:
     - FirebaseCoreInternal
     - FirebaseFirestore
     - FirebaseStorage
+    - FMDB
     - GoogleUtilities
     - "gRPC-C++"
     - gRPC-Core
@@ -868,6 +876,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/image_picker_ios/ios"
   path_provider_foundation:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
+  sqflite:
+    :path: ".symlinks/plugins/sqflite/ios"
   url_launcher_ios:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
 
@@ -889,6 +899,7 @@ SPEC CHECKSUMS:
   FirebaseStorage: 1d7ca8c8953fc61ccacaa7c612696b5402968a0d
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   flutter_image_compress_common: ec1d45c362c9d30a3f6a0426c297f47c52007e3e
+  FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   GoogleUtilities: c63691989bf362ba0505507da00eeb326192e83e
   "gRPC-C++": 0968bace703459fd3e5dcb0b2bed4c573dbff046
   gRPC-Core: 17108291d84332196d3c8466b48f016fc17d816d
@@ -902,6 +913,7 @@ SPEC CHECKSUMS:
   PromisesObjC: c50d2056b5253dadbd6c2bea79b0674bd5a52fa4
   SDWebImage: ebdbcebc7933a45226d9313bd0118bc052ad458b
   SDWebImageWebPCoder: af09429398d99d524cae2fe00f6f0f6e491ed102
+  sqflite: 31f7eba61e3074736dff8807a9b41581e4f7f15a
   url_launcher_ios: 08a3dfac5fb39e8759aeb0abbd5d9480f30fc8b4
 
 PODFILE CHECKSUM: 70d9d25280d0dd177a5f637cdb0f0b0b12c6a189

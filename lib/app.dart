@@ -29,8 +29,11 @@ class App extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: BlocProvider(
-        create: (_) => AppBloc()..add(const AppEventInitialize()),
+      home: MultiBlocProvider(
+        providers: [
+          BlocProvider<AppBloc>(
+              create: (_) => AppBloc()..add(const AppEventInitialize())),
+        ],
         child: const NavigationBarView(),
       ),
     );
