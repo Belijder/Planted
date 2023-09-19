@@ -4,6 +4,7 @@ import 'package:planted/constants/colors.dart';
 import 'package:planted/constants/images.dart';
 import 'package:planted/extensions/time_stamp_extensions.dart';
 import 'package:planted/models/announcement.dart';
+import 'package:planted/styles/box_decoration_styles.dart';
 
 class AnnouncementListTile extends StatelessWidget {
   const AnnouncementListTile({
@@ -18,17 +19,7 @@ class AnnouncementListTile extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Container(
-        decoration: BoxDecoration(
-          color: const Color.fromARGB(255, 251, 249, 238),
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: colorSepia.withAlpha(50),
-              blurRadius: 4,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
+        decoration: backgroundBoxDecoration,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -69,28 +60,33 @@ class AnnouncementListTile extends StatelessWidget {
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                      height: 130,
-                      width: 130,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: colorDarkMossGreen, // Border color
-                          width: 1.0, // Border width
+                  Hero(
+                    tag: announcement.imageURL,
+                    child: Container(
+                        height: 130,
+                        width: 130,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: colorDarkMossGreen, // Border color
+                            width: 1.0, // Border width
+                          ),
+                          borderRadius: BorderRadius.circular(20.0),
                         ),
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(19.0),
-                        child: CachedNetworkImage(
-                          imageUrl: announcement.imageURL,
-                          placeholder: (context, url) {
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          },
-                          fit: BoxFit.cover,
-                        ),
-                      )),
+                        child: Builder(builder: (context) {
+                          return ClipRRect(
+                            borderRadius: BorderRadius.circular(19.0),
+                            child: CachedNetworkImage(
+                              imageUrl: announcement.imageURL,
+                              placeholder: (context, url) {
+                                return const Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              },
+                              fit: BoxFit.cover,
+                            ),
+                          );
+                        })),
+                  ),
                   const SizedBox(width: 20),
                   Expanded(
                     child: SizedBox(

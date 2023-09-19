@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:planted/constants/colors.dart';
 import 'package:planted/models/announcement.dart';
+import 'package:planted/screens/browse/announcement_detail_screen.dart';
 import 'package:planted/screens/browse/announcement_list_tile.dart';
 
 class BrowseScreen extends HookWidget {
@@ -57,8 +58,19 @@ class BrowseScreen extends HookWidget {
               return ListView.builder(
                 itemCount: announcements.length,
                 itemBuilder: (context, index) {
-                  return AnnouncementListTile(
-                      announcement: announcements.elementAt(index));
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => AnnouncementDetailScreen(
+                            announcement: announcements.elementAt(index),
+                          ),
+                        ),
+                      );
+                    },
+                    child: AnnouncementListTile(
+                        announcement: announcements.elementAt(index)),
+                  );
                 },
               );
             }),
