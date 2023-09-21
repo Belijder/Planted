@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:planted/blocs/app_bloc.dart/app_bloc.dart';
 import 'package:planted/blocs/app_bloc.dart/app_event.dart';
+import 'package:planted/blocs/browseBloc/browse_screen_bloc.dart';
 import 'package:planted/constants/colors.dart';
 import 'package:planted/navigation_bar_view.dart';
 
@@ -32,7 +33,14 @@ class App extends StatelessWidget {
       home: MultiBlocProvider(
         providers: [
           BlocProvider<AppBloc>(
-              create: (_) => AppBloc()..add(const AppEventInitialize())),
+            create: (_) => AppBloc()
+              ..add(
+                const AppEventInitialize(),
+              ),
+          ),
+          BlocProvider<BrowseScreenBloc>(
+            create: (_) => BrowseScreenBloc(),
+          ),
         ],
         child: const NavigationBarView(),
       ),

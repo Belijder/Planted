@@ -1,14 +1,17 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:planted/blocs/browseBloc/browse_screen_bloc.dart';
+import 'package:planted/blocs/browseBloc/browse_screen_event.dart';
 import 'package:planted/constants/colors.dart';
 import 'package:planted/constants/images.dart';
 import 'package:planted/models/announcement.dart';
 import 'package:planted/styles/box_decoration_styles.dart';
 import 'package:planted/styles/buttons_styles.dart';
 
-class AnnouncementDetailScreen extends StatelessWidget {
+class AnnouncementDetailsView extends StatelessWidget {
   final Announcement announcement;
-  const AnnouncementDetailScreen({super.key, required this.announcement});
+  const AnnouncementDetailsView({super.key, required this.announcement});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +22,9 @@ class AnnouncementDetailScreen extends StatelessWidget {
           padding: const EdgeInsets.only(left: 0.0),
           child: IconButton(
             onPressed: () {
-              Navigator.of(context).pop();
+              context
+                  .read<BrowseScreenBloc>()
+                  .add(const GoToListViewBrowseScreenEvent());
             },
             icon: const Icon(Icons.arrow_back),
             style: IconButton.styleFrom(
@@ -37,7 +42,13 @@ class AnnouncementDetailScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(right: 12.0),
             child: IconButton.filled(
-              onPressed: () {},
+              onPressed: () {
+                context
+                    .read<BrowseScreenBloc>()
+                    .add(GoToConversationViewBrowseScreenEvent(
+                      announcement: announcement,
+                    ));
+              },
               style: IconButton.styleFrom(
                 backgroundColor: listTileBackground,
                 elevation: 4,
@@ -225,7 +236,13 @@ class AnnouncementDetailScreen extends StatelessWidget {
                 width: double.infinity,
                 child: ElevatedButton(
                   style: filledButtonStyle,
-                  onPressed: () {},
+                  onPressed: () {
+                    context
+                        .read<BrowseScreenBloc>()
+                        .add(GoToConversationViewBrowseScreenEvent(
+                          announcement: announcement,
+                        ));
+                  },
                   child: const Text('Wyślij wiadomość'),
                 ),
               ),

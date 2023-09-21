@@ -1,80 +1,81 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:planted/constants/colors.dart';
-import 'package:planted/models/announcement.dart';
-import 'package:planted/screens/browse/announcement_detail_screen.dart';
-import 'package:planted/screens/browse/announcement_list_tile.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:planted/blocs/browseBloc/browse_screen_bloc.dart';
+import 'package:planted/blocs/browseBloc/browse_screen_state.dart';
+import 'package:planted/screens/browse/announcement_details_view.dart';
+import 'package:planted/screens/browse/announcements_list_view.dart';
+import 'package:planted/screens/messages/conversation_view.dart';
+import 'package:planted/utilities/dialogs/show_database_error_dialog.dart';
+import 'package:planted/utilities/loading/loading_screen.dart';
 
-class BrowseScreen extends HookWidget {
+class BrowseScreen extends StatelessWidget {
   const BrowseScreen({
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    final announcementsStream = useMemoized(() {
-      return FirebaseFirestore.instance
-          .collection('announcements')
-          .orderBy('timeStamp', descending: true)
-          .snapshots();
-    }, []);
+    return BlocConsumer<BrowseScreenBloc, BrowseScreenState>(
+      listener: (context, browseScreenState) {
+        if (browseScreenState.isLoading) {
+          LoadingScreen.instance().show(context: context, text: 'Ładuję...');
+        } else {
+          LoadingScreen.instance().hide();
+        }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Row(
-          children: [
-            Text(
-              'Przeglądaj',
-              style: TextStyle(
-                  color: colorSepia,
-                  fontSize: 30.0,
-                  fontWeight: FontWeight.w800),
-            ),
-          ],
-        ),
-        backgroundColor: colorEggsheel,
-        automaticallyImplyLeading: false,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-            stream: announcementsStream,
-            builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                return const Center(
-                    child: Text(
-                  'Nie udało się pobrać ogłoszeń. Sprawdz połączenie z internetem i spróbuj ponownie za chwilę.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: colorSepia, fontSize: 10),
-                ));
-              }
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              }
+        final databaseError = browseScreenState.databaseError;
+        if (databaseError != null) {
+          showDatabaseErrorDialog(
+            context: context,
+            databaseError: databaseError,
+          );
+        }
+      },
+      builder: (context, browseScreenState) {
+        Widget child;
 
-              final announcements = snapshot.data!.docs
-                  .map((doc) => Announcement.fromSnapshot(doc));
-              return ListView.builder(
-                itemCount: announcements.length,
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => AnnouncementDetailScreen(
-                            announcement: announcements.elementAt(index),
-                          ),
-                        ),
-                      );
-                    },
-                    child: AnnouncementListTile(
-                        announcement: announcements.elementAt(index)),
-                  );
-                },
-              );
-            }),
-      ),
+        if (browseScreenState is InAnnouncementsListViewBrowseScreenState) {
+          child = const AnnouncementListView();
+        } else if (browseScreenState
+            is InAnnouncementDetailsBrowseScreenState) {
+          child = AnnouncementDetailsView(
+              announcement: browseScreenState.announcement);
+        } else if (browseScreenState is InConversationViewBrowseScreenState) {
+          child = ConversationView(
+            conversationID: browseScreenState.conversationID,
+            giverDisplayName: browseScreenState.announcement.giverDisplayName,
+            giverPhotoURL: browseScreenState.announcement.giverPhotoURL,
+            announcementID: browseScreenState.announcement.docID,
+            currentUserID: browseScreenState.user.uid,
+            announcement: browseScreenState.announcement,
+          );
+        } else {
+          child = const Center(child: CircularProgressIndicator());
+        }
+
+        return AnimatedSwitcher(
+          duration: const Duration(milliseconds: 200),
+          switchInCurve: Curves.easeInOut,
+          switchOutCurve: Curves.fastOutSlowIn,
+          transitionBuilder: (child, animation) {
+            final scaleAnimation = Tween<double>(
+              begin: 0.85,
+              end: 1.0,
+            ).animate(animation);
+            return FadeTransition(
+              opacity: animation,
+              child: ScaleTransition(
+                scale: scaleAnimation,
+                child: child,
+              ),
+            );
+          },
+          layoutBuilder: (currentChild, previousChildren) {
+            return currentChild ?? Container();
+          },
+          child: child,
+        );
+      },
     );
   }
 }

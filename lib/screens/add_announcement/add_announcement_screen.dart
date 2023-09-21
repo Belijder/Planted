@@ -52,19 +52,44 @@ class AddAnnouncementScreen extends HookWidget {
         }
       },
       builder: (context, appState) {
+        Widget child;
+
         if (appState is AppStateLoggedIn) {
-          return const AddAnnouncementView();
+          child = const AddAnnouncementView();
         } else if (appState is AppStateLoggedOut) {
-          return const LoginView();
+          child = const LoginView();
         } else if (appState is AppStateIsInRegistrationView) {
-          return const RegisterView();
+          child = const RegisterView();
         } else if (appState is AppStateIsInConfirmationEmailView) {
-          return const ConfrimEmailView();
+          child = const ConfrimEmailView();
         } else if (appState is AppStateIsInCompleteProfileView) {
-          return const CompleteProfileView();
+          child = const CompleteProfileView();
         } else {
-          return const Center(child: CircularProgressIndicator());
+          child = const Center(child: CircularProgressIndicator());
         }
+
+        return AnimatedSwitcher(
+          duration: const Duration(milliseconds: 200),
+          switchInCurve: Curves.easeInOut,
+          switchOutCurve: Curves.fastOutSlowIn,
+          transitionBuilder: (child, animation) {
+            final scaleAnimation = Tween<double>(
+              begin: 0.85,
+              end: 1.0,
+            ).animate(animation);
+            return FadeTransition(
+              opacity: animation,
+              child: ScaleTransition(
+                scale: scaleAnimation,
+                child: child,
+              ),
+            );
+          },
+          layoutBuilder: (currentChild, previousChildren) {
+            return currentChild ?? Container();
+          },
+          child: child,
+        );
       },
     );
   }

@@ -53,6 +53,16 @@ class DatabaseErrorUnknown extends DatabaseError {
 }
 
 @immutable
+class DatabaseErrorUserNotFound extends DatabaseError {
+  const DatabaseErrorUserNotFound()
+      : super(
+          dialogTitle: 'Brak zalogowanego użytkownika',
+          dialogText:
+              'Nie udało się odnaleść zalogowanego użytkownika. Aby móc wysyłać wiadomości musisz być zalogowany.',
+        );
+}
+
+@immutable
 class DatabaseErrorPermissionDenied extends DatabaseError {
   const DatabaseErrorPermissionDenied()
       : super(
