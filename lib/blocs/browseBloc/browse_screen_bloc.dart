@@ -141,6 +141,7 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
             user: user,
             announcement: event.announcement,
             conversationID: event.conversationID,
+            messageSended: true,
           ));
         } on FirebaseException catch (e) {
           emit(InConversationViewBrowseScreenState(
@@ -150,8 +151,6 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
             conversationID: event.conversationID,
             databaseError: DatabaseError.from(e),
           ));
-        } catch (error) {
-          print('🔵 $error');
         }
       },
     );

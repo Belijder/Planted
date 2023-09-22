@@ -19,6 +19,7 @@ class AnnouncementListView extends HookWidget {
     final announcementsStream = useMemoized(() {
       return FirebaseFirestore.instance
           .collection(announcemensPath)
+          .where('isActiv', isEqualTo: true)
           .orderBy('timeStamp', descending: true)
           .snapshots();
     }, [key]);
@@ -45,6 +46,7 @@ class AnnouncementListView extends HookWidget {
             stream: announcementsStream,
             builder: (context, snapshot) {
               if (snapshot.hasError) {
+                print('🔵 ${snapshot.error}');
                 return const Center(
                     child: Text(
                   'Nie udało się pobrać ogłoszeń. Sprawdz połączenie z internetem i spróbuj ponownie za chwilę.',

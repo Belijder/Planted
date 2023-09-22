@@ -14,6 +14,7 @@ class Announcement {
   final String imageURL;
   final String giverDisplayName;
   final String giverPhotoURL;
+  final bool isActiv;
 
   const Announcement({
     required this.city,
@@ -27,6 +28,7 @@ class Announcement {
     required this.imageURL,
     required this.giverDisplayName,
     required this.giverPhotoURL,
+    required this.isActiv,
   });
 
   factory Announcement.fromSnapshot(QueryDocumentSnapshot snapshot) {
@@ -43,6 +45,7 @@ class Announcement {
       imageURL: data['imageURL'],
       giverDisplayName: data['giverDisplayName'],
       giverPhotoURL: data['giverPhotoURL'],
+      isActiv: data['isActiv'],
     );
   }
 }

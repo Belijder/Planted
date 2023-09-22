@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:planted/blocs/browseBloc/browse_screen_bloc.dart';
+import 'package:planted/blocs/browseBloc/browse_screen_event.dart';
 import 'package:planted/blocs/browseBloc/browse_screen_state.dart';
 import 'package:planted/screens/browse/announcement_details_view.dart';
 import 'package:planted/screens/browse/announcements_list_view.dart';
@@ -43,11 +44,22 @@ class BrowseScreen extends StatelessWidget {
         } else if (browseScreenState is InConversationViewBrowseScreenState) {
           child = ConversationView(
             conversationID: browseScreenState.conversationID,
-            giverDisplayName: browseScreenState.announcement.giverDisplayName,
-            giverPhotoURL: browseScreenState.announcement.giverPhotoURL,
             announcementID: browseScreenState.announcement.docID,
             currentUserID: browseScreenState.user.uid,
             announcement: browseScreenState.announcement,
+            returnBlocEvent: ({required announcement}) {
+              context.read<BrowseScreenBloc>().add(
+                  GoToDetailViewBrowseScreenEvent(announcement: announcement));
+            },
+            sendMessageBlocEvent: (
+                {required announcement,
+                required conversationID,
+                required message}) {
+              context.read<BrowseScreenBloc>().add(SendMessageBrowseScreenEvent(
+                  announcement: announcement,
+                  conversationID: conversationID,
+                  message: message));
+            },
           );
         } else {
           child = const Center(child: CircularProgressIndicator());

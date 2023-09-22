@@ -403,7 +403,8 @@ class AppBloc extends Bloc<AppEvent, AppState> {
             'giverID': user.uid,
             'imageURL': imageURL,
             'giverDisplayName': currentUserInfo!['displayName'] ?? 'Unknown',
-            'giverPhotoURL': currentUserInfo['photoURL'] ?? ''
+            'giverPhotoURL': currentUserInfo['photoURL'] ?? '',
+            'isActiv': true,
           };
 
           await db.collection('announcements').doc(announcementId).set(docData);

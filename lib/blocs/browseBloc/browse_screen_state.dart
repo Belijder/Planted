@@ -36,6 +36,7 @@ class InConversationViewBrowseScreenState extends BrowseScreenState {
   final User user;
   final Announcement announcement;
   final String conversationID;
+  final bool messageSended;
 
   const InConversationViewBrowseScreenState({
     required super.isLoading,
@@ -43,5 +44,6 @@ class InConversationViewBrowseScreenState extends BrowseScreenState {
     required this.user,
     required this.announcement,
     required this.conversationID,
+    this.messageSended = false,
   });
 }
