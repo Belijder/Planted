@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:planted/blocs/browseBloc/browse_screen_event.dart';
-import 'package:planted/blocs/browseBloc/browse_screen_state.dart';
+import 'package:planted/blocs/browseScreenBloc/browse_screen_event.dart';
+import 'package:planted/blocs/browseScreenBloc/browse_screen_state.dart';
 import 'package:planted/constants/firebase_paths.dart';
 import 'package:planted/database_error.dart';
 import 'package:uuid/uuid.dart';

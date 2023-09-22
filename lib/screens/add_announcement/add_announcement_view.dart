@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:planted/blocs/addScreenBloc/add_screen_bloc.dart';
+import 'package:planted/blocs/addScreenBloc/add_screen_event.dart';
+import 'package:planted/blocs/addScreenBloc/add_screen_state.dart';
 import 'package:planted/blocs/app_bloc.dart/app_bloc.dart';
 import 'package:planted/blocs/app_bloc.dart/app_event.dart';
 import 'package:planted/blocs/app_bloc.dart/app_state.dart';
@@ -11,7 +14,9 @@ import 'package:planted/constants/colors.dart';
 import 'package:planted/helpers/create_input_decoration.dart';
 import 'package:planted/styles/buttons_styles.dart';
 import 'package:planted/styles/text_styles.dart';
+import 'package:planted/utilities/dialogs/show_database_error_dialog.dart';
 import 'package:planted/utilities/dialogs/show_information_dialog.dart';
+import 'package:planted/utilities/loading/loading_screen.dart';
 
 enum AddAnnouncementViewMenuAction { remove }
 
@@ -43,20 +48,42 @@ class AddAnnouncementView extends HookWidget {
         backgroundColor: colorEggsheel,
         automaticallyImplyLeading: false,
       ),
-      body: BlocListener<AppBloc, AppState>(
-        listener: (context, appState) {
-          if (appState is AppStateLoggedIn) {
-            if (appState.shouldClean) {
-              nameController.text = '';
-              latinNameController.text = '';
-              cityNameController.text = '';
-              descriptionController.text = '';
-              imagePath.value = null;
-              seedCount.value = 1;
-              context
-                  .read<AppBloc>()
-                  .add(const AppEventAnnouncemmentFieldsCleaned());
-            }
+      body: BlocListener<AddScreenBloc, AddScreenState>(
+        listener: (context, addScreenState) {
+          if (addScreenState.isLoading) {
+            LoadingScreen.instance().show(context: context, text: 'Ładuję...');
+          } else {
+            LoadingScreen.instance().hide();
+          }
+
+          final error = addScreenState.databaseError;
+          if (error != null) {
+            showDatabaseErrorDialog(
+              context: context,
+              databaseError: error,
+            );
+          }
+
+          final message = addScreenState.snackbarMessage;
+          if (message != null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                duration: const Duration(seconds: 2),
+                content: Text(message),
+              ),
+            );
+          }
+
+          if (addScreenState.shouldCleanFields) {
+            nameController.text = '';
+            latinNameController.text = '';
+            cityNameController.text = '';
+            descriptionController.text = '';
+            imagePath.value = null;
+            seedCount.value = 1;
+            context
+                .read<AddScreenBloc>()
+                .add(const FieldsWasClearedAddScreenEvent());
           }
         },
         child: Padding(
@@ -160,14 +187,25 @@ class AddAnnouncementView extends HookWidget {
                           return;
                         }
 
-                        context.read<AppBloc>().add(AppEventAddNewAnnouncement(
-                              name: nameController.text,
-                              latinName: latinNameController.text,
-                              imagePath: imagePath.value!,
-                              seedCount: seedCount.value,
-                              city: cityNameController.text,
-                              description: descriptionController.text,
-                            ));
+                        final user = context.read<AppBloc>().state.user;
+                        if (user == null) {
+                          context
+                              .read<AppBloc>()
+                              .add(const AppEventGoToLoginView());
+                          return;
+                        }
+
+                        context.read<AddScreenBloc>().add(
+                              AddNewAnnouncementAddScreenEvent(
+                                user: user,
+                                name: nameController.text,
+                                latinName: latinNameController.text,
+                                imagePath: imagePath.value!,
+                                seedCount: seedCount.value,
+                                city: cityNameController.text,
+                                description: descriptionController.text,
+                              ),
+                            );
                       },
                       child: const Text('Dodaj ogłoszenie'),
                     ),

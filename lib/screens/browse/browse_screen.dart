@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:planted/blocs/browseBloc/browse_screen_bloc.dart';
-import 'package:planted/blocs/browseBloc/browse_screen_event.dart';
-import 'package:planted/blocs/browseBloc/browse_screen_state.dart';
+import 'package:planted/blocs/browseScreenBloc/browse_screen_bloc.dart';
+import 'package:planted/blocs/browseScreenBloc/browse_screen_event.dart';
+import 'package:planted/blocs/browseScreenBloc/browse_screen_state.dart';
 import 'package:planted/screens/browse/announcement_details_view.dart';
 import 'package:planted/screens/browse/announcements_list_view.dart';
 import 'package:planted/screens/messages/conversation_view.dart';

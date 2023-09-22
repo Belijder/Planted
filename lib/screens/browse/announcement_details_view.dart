@@ -1,8 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:planted/blocs/browseBloc/browse_screen_bloc.dart';
-import 'package:planted/blocs/browseBloc/browse_screen_event.dart';
+import 'package:planted/blocs/browseScreenBloc/browse_screen_bloc.dart';
+import 'package:planted/blocs/browseScreenBloc/browse_screen_event.dart';
 import 'package:planted/constants/colors.dart';
 import 'package:planted/constants/images.dart';
 import 'package:planted/models/announcement.dart';
