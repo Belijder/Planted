@@ -9,6 +9,12 @@ class Conversation {
   final String giver;
   final String taker;
   final Timestamp timeStamp;
+  final String giverDisplayName;
+  final String takerDisplayName;
+  final String giverPhotoURL;
+  final String takerPhotoURL;
+  final Timestamp giverLastActivity;
+  final Timestamp takerLastActivity;
   final List<Message> messages;
 
   const Conversation({
@@ -17,7 +23,13 @@ class Conversation {
     required this.giver,
     required this.taker,
     required this.timeStamp,
+    required this.giverDisplayName,
+    required this.takerDisplayName,
+    required this.giverPhotoURL,
+    required this.takerPhotoURL,
     required this.messages,
+    required this.giverLastActivity,
+    required this.takerLastActivity,
   });
 
   factory Conversation.fromSnapshot(DocumentSnapshot snapshot) {
@@ -30,6 +42,12 @@ class Conversation {
       giver: data['giver'],
       taker: data['taker'],
       timeStamp: data['timeStamp'],
+      giverDisplayName: data['giverDisplayName'],
+      takerDisplayName: data['takerDisplayName'],
+      giverPhotoURL: data['giverPhotoURL'],
+      takerPhotoURL: data['takerPhotoURL'],
+      giverLastActivity: data['giverLastActivity'],
+      takerLastActivity: data['takerLastActivity'],
       messages: messageList.map((messageData) {
         return Message.fromMap(messageData);
       }).toList(),

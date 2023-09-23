@@ -5,6 +5,7 @@ import 'package:planted/blocs/browseScreenBloc/browse_screen_event.dart';
 import 'package:planted/blocs/browseScreenBloc/browse_screen_state.dart';
 import 'package:planted/constants/firebase_paths.dart';
 import 'package:planted/database_error.dart';
+import 'package:planted/models/user_profile.dart';
 import 'package:uuid/uuid.dart';
 
 class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
@@ -64,6 +65,10 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
           final String conversationID;
           final timeStamp = DateTime.timestamp();
 
+          final snapshot =
+              await db.collection(profilesPath).doc(user.uid).get();
+          final userProfile = UserProfile.fromSnapshot(snapshot);
+
           if (conversation.docs.isNotEmpty) {
             final conversationData = conversation.docs[0].data();
             conversationID = conversationData['conversationID'] as String;
@@ -77,6 +82,12 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
               'taker': user.uid,
               'timeStamp': timeStamp,
               'messages': [],
+              'giverDisplayName': event.announcement.giverDisplayName,
+              'takerDisplayName': userProfile.displayName,
+              'giverPhotoURL': event.announcement.giverPhotoURL,
+              'takerPhotoURL': userProfile.photoURL,
+              'giverLastActivity': event.announcement.timeStamp,
+              'takerLastActivity': timeStamp,
             });
           }
 
@@ -126,6 +137,8 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
               .collection(conversationsPath)
               .doc(event.conversationID)
               .update({
+            'timeStamp': timeStamp,
+            'takerLastActivity': timeStamp,
             'messages': FieldValue.arrayUnion([
               {
                 'id': messageID,

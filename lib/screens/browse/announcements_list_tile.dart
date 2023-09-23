@@ -28,24 +28,30 @@ class AnnouncementListTile extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        announcement.name,
-                        style: const TextStyle(
-                            color: colorSepia,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18),
-                      ),
-                      Text(
-                        announcement.latinName,
-                        style: const TextStyle(
-                            color: colorSepia,
-                            fontWeight: FontWeight.w300,
-                            fontSize: 10),
-                      ),
-                    ],
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          announcement.name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                              color: colorSepia,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18),
+                        ),
+                        Text(
+                          announcement.latinName,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                              color: colorSepia,
+                              fontWeight: FontWeight.w300,
+                              fontSize: 10),
+                        ),
+                      ],
+                    ),
                   ),
                   Text(
                     announcement.timeStamp.toFormattedDateString(),

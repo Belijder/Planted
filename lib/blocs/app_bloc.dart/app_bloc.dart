@@ -182,7 +182,8 @@ class AppBloc extends Bloc<AppEvent, AppState> {
               final userProfileData = {
                 'displayName': user.displayName!,
                 'userID': user.uid,
-                'photoURL': user.photoURL ?? ''
+                'photoURL': user.photoURL ?? '',
+                'blockedUsers': []
               };
 
               await FirebaseFirestore.instance
@@ -256,6 +257,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
             'displayName': event.displayName,
             'userID': user.uid,
             'photoURL': imageURL,
+            'blockedUsers': []
           };
 
           await FirebaseFirestore.instance
