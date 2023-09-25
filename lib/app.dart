@@ -4,6 +4,7 @@ import 'package:planted/blocs/addScreenBloc/add_screen_bloc.dart';
 import 'package:planted/blocs/app_bloc.dart/app_bloc.dart';
 import 'package:planted/blocs/app_bloc.dart/app_event.dart';
 import 'package:planted/blocs/browseScreenBloc/browse_screen_bloc.dart';
+import 'package:planted/blocs/messagesScreenBloc/messages_screen_bloc.dart';
 import 'package:planted/constants/colors.dart';
 import 'package:planted/navigation_bar_view.dart';
 
@@ -45,6 +46,9 @@ class App extends StatelessWidget {
           BlocProvider<AddScreenBloc>(
             create: (_) => AddScreenBloc(),
           ),
+          BlocProvider<MessagesScreenBloc>(
+            create: (_) => MessagesScreenBloc(),
+          )
         ],
         child: const NavigationBarView(),
       ),

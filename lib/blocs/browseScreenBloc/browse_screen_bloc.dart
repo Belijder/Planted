@@ -122,12 +122,6 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
           );
           return;
         }
-        emit(InConversationViewBrowseScreenState(
-          isLoading: true,
-          user: user,
-          announcement: event.announcement,
-          conversationID: event.conversationID,
-        ));
 
         final messageID = const Uuid().v4();
         final timeStamp = DateTime.timestamp();
@@ -142,7 +136,7 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
             'messages': FieldValue.arrayUnion([
               {
                 'id': messageID,
-                'message': event.message,
+                'message': event.message.trim(),
                 'timeStamp': timeStamp,
                 'sender': user.uid,
               },

@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:planted/blocs/browseScreenBloc/browse_screen_bloc.dart';
 import 'package:planted/blocs/browseScreenBloc/browse_screen_state.dart';
+import 'package:planted/blocs/messagesScreenBloc/messages_screen_bloc.dart';
+import 'package:planted/blocs/messagesScreenBloc/messages_screen_state.dart';
 import 'package:planted/constants/colors.dart';
 import 'package:planted/constants/firebase_paths.dart';
 import 'package:planted/models/announcement.dart';
@@ -82,16 +84,31 @@ class ConversationView extends HookWidget {
           ],
         ),
       ),
-      body: BlocListener<BrowseScreenBloc, BrowseScreenState>(
-        listener: (context, browseScreenState) {
-          if (browseScreenState is InConversationViewBrowseScreenState) {
-            if (browseScreenState.messageSended == true) {
-              messageController.clear();
-              scrollController
-                  .jumpTo(scrollController.position.minScrollExtent);
-            }
-          }
-        },
+      body: MultiBlocListener(
+        listeners: [
+          BlocListener<BrowseScreenBloc, BrowseScreenState>(
+            listener: (context, browseScreenState) {
+              if (browseScreenState is InConversationViewBrowseScreenState) {
+                if (browseScreenState.messageSended == true) {
+                  messageController.clear();
+                  scrollController
+                      .jumpTo(scrollController.position.minScrollExtent);
+                }
+              }
+            },
+          ),
+          BlocListener<MessagesScreenBloc, MessagesScreenState>(
+            listener: (context, messageScreenState) {
+              if (messageScreenState is InConversationMessagesScreenState) {
+                if (messageScreenState.messageSended == true) {
+                  messageController.clear();
+                  scrollController
+                      .jumpTo(scrollController.position.minScrollExtent);
+                }
+              }
+            },
+          ),
+        ],
         child: Column(
           children: <Widget>[
             Expanded(

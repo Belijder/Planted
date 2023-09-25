@@ -31,7 +31,7 @@ class Announcement {
     required this.isActiv,
   });
 
-  factory Announcement.fromSnapshot(QueryDocumentSnapshot snapshot) {
+  factory Announcement.fromSnapshot(DocumentSnapshot snapshot) {
     final data = snapshot.data() as Map<String, dynamic>;
     return Announcement(
       city: data['city'],
