@@ -9,3 +9,17 @@ extension TimestampFormatting on Timestamp {
     return DateFormat('dd MMM yyyy').format(dateTime);
   }
 }
+
+extension TimestampComparison on Timestamp {
+  bool isEarlierThan(Timestamp other) {
+    final thisDateTime = toDate();
+    final otherDateTime = other.toDate();
+    return thisDateTime.isBefore(otherDateTime);
+  }
+
+  bool isLaterThan(Timestamp other) {
+    final thisDateTime = toDate();
+    final otherDateTime = other.toDate();
+    return thisDateTime.isAfter(otherDateTime);
+  }
+}

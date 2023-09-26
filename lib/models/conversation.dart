@@ -6,6 +6,7 @@ import 'package:planted/models/message.dart';
 class Conversation {
   final String announcementID;
   final String conversationID;
+  final String announcementName;
   final String giver;
   final String taker;
   final Timestamp timeStamp;
@@ -20,6 +21,7 @@ class Conversation {
   const Conversation({
     required this.announcementID,
     required this.conversationID,
+    required this.announcementName,
     required this.giver,
     required this.taker,
     required this.timeStamp,
@@ -39,6 +41,7 @@ class Conversation {
     return Conversation(
       announcementID: data['announcementID'],
       conversationID: data['conversationID'],
+      announcementName: data['announcementName'],
       giver: data['giver'],
       taker: data['taker'],
       timeStamp: data['timeStamp'],

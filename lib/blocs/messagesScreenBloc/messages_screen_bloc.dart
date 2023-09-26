@@ -42,6 +42,8 @@ class MessagesScreenBloc
           return;
         }
 
+        final timeStamp = DateTime.timestamp();
+
         try {
           final announcement = await db
               .collection(announcemensPath)
@@ -54,6 +56,20 @@ class MessagesScreenBloc
               .doc(user.uid)
               .get()
               .then((snapshot) => UserProfile.fromSnapshot(snapshot));
+
+          final String userActivityField;
+          if (userProfile.userID == event.conversation.giver) {
+            userActivityField = 'giverLastActivity';
+          } else {
+            userActivityField = 'takerLastActivity';
+          }
+
+          await db
+              .collection(conversationsPath)
+              .doc(event.conversation.conversationID)
+              .update({
+            userActivityField: timeStamp,
+          });
 
           emit(InConversationMessagesScreenState(
             isLoading: false,
@@ -87,12 +103,19 @@ class MessagesScreenBloc
           final timeStamp = DateTime.timestamp();
 
           try {
+            final String userActivityField;
+            if (userProfile.userID == conversation.giver) {
+              userActivityField = 'giverLastActivity';
+            } else {
+              userActivityField = 'takerLastActivity';
+            }
+
             await db
                 .collection(conversationsPath)
                 .doc(event.conversationID)
                 .update({
               'timeStamp': timeStamp,
-              'takerLastActivity': timeStamp,
+              userActivityField: timeStamp,
               'messages': FieldValue.arrayUnion([
                 {
                   'id': messageID,

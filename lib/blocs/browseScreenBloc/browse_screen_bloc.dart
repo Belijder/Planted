@@ -78,6 +78,7 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
             await db.collection(conversationsPath).doc(conversationID).set({
               'conversationID': conversationID,
               'announcementID': event.announcement.docID,
+              'announcementName': event.announcement.name,
               'giver': event.announcement.giverID,
               'taker': user.uid,
               'timeStamp': timeStamp,

@@ -1,13 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:planted/blocs/messagesScreenBloc/messages_screen_bloc.dart';
-import 'package:planted/blocs/messagesScreenBloc/messages_screen_event.dart';
 import 'package:planted/constants/colors.dart';
 import 'package:planted/constants/firebase_paths.dart';
 import 'package:planted/models/conversation.dart';
+import 'package:planted/screens/messages/conversation_tile.dart';
 
 class MessagesListView extends HookWidget {
   const MessagesListView({super.key});
@@ -50,7 +48,6 @@ class MessagesListView extends HookWidget {
           stream: conversationStream,
           builder: (context, snapshot) {
             if (snapshot.hasError) {
-              print('🔵 Error: ${snapshot.error}');
               return const Center(
                   child: Text(
                 'Nie udało się pobrać wiadomości. Sprawdz połączenie z internetem i spróbuj ponownie za chwilę.',
@@ -81,17 +78,10 @@ class MessagesListView extends HookWidget {
                 itemCount: conversations.length,
                 itemBuilder: (context, index) {
                   final conversation = conversations.elementAt(index);
-                  return GestureDetector(
-                    onTap: () {
-                      context.read<MessagesScreenBloc>().add(
-                          GoToConversationMessagesScreenEvent(
-                              conversation: conversation));
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(conversation.conversationID),
-                    ),
-                  );
+                  final currentUserID = FirebaseAuth.instance.currentUser?.uid;
+
+                  return ConversationTile(
+                      conversation: conversation, currentUserID: currentUserID);
                 },
               );
             }
