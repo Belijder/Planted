@@ -15,12 +15,13 @@ class UserProfile {
     required this.blockedUsers,
   });
 
-  factory UserProfile.fromSnapshot(DocumentSnapshot snapshot) {
+  factory UserProfile.fromSnapshot(
+      DocumentSnapshot<Map<String, dynamic>> snapshot) {
     final data = snapshot.data() as Map<String, dynamic>;
     return UserProfile(
-      displayName: data['displayName'] ?? '',
+      displayName: data['displayName'],
       photoURL: data['photoURL'] ?? '',
-      userID: data['userID'] ?? '',
+      userID: data['userID'],
       blockedUsers: List<String>.from(data['blockedUsers'] ?? []),
     );
   }

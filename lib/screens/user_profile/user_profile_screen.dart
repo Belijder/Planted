@@ -6,7 +6,7 @@ import 'package:planted/auth_views/login_view.dart';
 import 'package:planted/auth_views/register_view.dart';
 import 'package:planted/blocs/app_bloc.dart/app_bloc.dart';
 import 'package:planted/blocs/app_bloc.dart/app_state.dart';
-import 'package:planted/screens/user_profile/user_profile_view.dart';
+import 'package:planted/screens/user_profile/user_profile_screen_bloc_consumer.dart';
 import 'package:planted/utilities/dialogs/show_auth_dialog.dart';
 import 'package:planted/utilities/loading/loading_screen.dart';
 
@@ -39,7 +39,7 @@ class UserProfileScreen extends StatelessWidget {
       },
       builder: (context, appState) {
         if (appState is AppStateLoggedIn) {
-          return const UserProfileView();
+          return UserProfileScreenBlocConsumer(userID: appState.user.uid);
         } else if (appState is AppStateLoggedOut) {
           return const LoginView();
         } else if (appState is AppStateIsInRegistrationView) {

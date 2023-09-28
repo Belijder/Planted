@@ -97,7 +97,7 @@ class AddAnnouncementView extends HookWidget {
                   TextField(
                     controller: nameController,
                     decoration: createInputDecoration(label: 'Nazwa'),
-                    style: formTextStyle,
+                    style: textStyle15BoldSepia,
                     onSubmitted: (_) => FocusScope.of(context).unfocus(),
                     onTapOutside: (_) => FocusScope.of(context).unfocus(),
                     textCapitalization: TextCapitalization.sentences,
@@ -107,7 +107,7 @@ class AddAnnouncementView extends HookWidget {
                   TextField(
                     controller: latinNameController,
                     decoration: createInputDecoration(label: 'Nazwa łacińska'),
-                    style: formTextStyle,
+                    style: textStyle15BoldSepia,
                     onSubmitted: (_) => FocusScope.of(context).unfocus(),
                     onTapOutside: (_) => FocusScope.of(context).unfocus(),
                     textCapitalization: TextCapitalization.sentences,
@@ -129,7 +129,7 @@ class AddAnnouncementView extends HookWidget {
                               controller: cityNameController,
                               decoration:
                                   createInputDecoration(label: 'Miasto'),
-                              style: formTextStyle,
+                              style: textStyle15BoldSepia,
                               onSubmitted: (_) =>
                                   FocusScope.of(context).unfocus(),
                               onTapOutside: (_) =>
@@ -148,7 +148,7 @@ class AddAnnouncementView extends HookWidget {
                     child: TextField(
                       controller: descriptionController,
                       decoration: createInputDecoration(label: 'Opis'),
-                      style: formTextStyle,
+                      style: textStyle15BoldSepia,
                       onSubmitted: (_) => FocusScope.of(context).unfocus(),
                       onTapOutside: (_) => FocusScope.of(context).unfocus(),
                       minLines: null,

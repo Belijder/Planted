@@ -55,18 +55,15 @@ class ConversationView extends HookWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: colorEggsheel,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 0.0),
-          child: IconButton(
-            onPressed: () {
-              returnBlocEvent(announcement: announcement);
-            },
-            icon: const Icon(Icons.arrow_back),
-            style: IconButton.styleFrom(
-              shadowColor: colorSepia.withAlpha(50),
-            ),
-            color: colorSepia,
+        leading: IconButton(
+          onPressed: () {
+            returnBlocEvent(announcement: announcement);
+          },
+          icon: const Icon(Icons.arrow_back),
+          style: IconButton.styleFrom(
+            shadowColor: colorSepia.withAlpha(50),
           ),
+          color: colorSepia,
         ),
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

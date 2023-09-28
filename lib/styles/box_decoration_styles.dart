@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:planted/constants/colors.dart';
 
 final backgroundBoxDecoration = BoxDecoration(
-  color: const Color.fromARGB(255, 251, 249, 238),
+  color: listTileBackground,
   borderRadius: BorderRadius.circular(20),
   boxShadow: [
     BoxShadow(

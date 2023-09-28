@@ -6,6 +6,7 @@ class Announcement {
   final String city;
   final String description;
   final String docID;
+  final int status;
   final String giverID;
   final String latinName;
   final String name;
@@ -14,12 +15,12 @@ class Announcement {
   final String imageURL;
   final String giverDisplayName;
   final String giverPhotoURL;
-  final bool isActiv;
 
   const Announcement({
     required this.city,
     required this.description,
     required this.docID,
+    required this.status,
     required this.giverID,
     required this.latinName,
     required this.name,
@@ -28,7 +29,6 @@ class Announcement {
     required this.imageURL,
     required this.giverDisplayName,
     required this.giverPhotoURL,
-    required this.isActiv,
   });
 
   factory Announcement.fromSnapshot(DocumentSnapshot snapshot) {
@@ -37,6 +37,7 @@ class Announcement {
       city: data['city'],
       description: data['description'] ?? "Brak dodatkowego opisu",
       docID: data['docID'],
+      status: data['status'],
       giverID: data['giverID'],
       latinName: data['latinName'],
       name: data['name'],
@@ -45,7 +46,6 @@ class Announcement {
       imageURL: data['imageURL'],
       giverDisplayName: data['giverDisplayName'],
       giverPhotoURL: data['giverPhotoURL'],
-      isActiv: data['isActiv'],
     );
   }
 }

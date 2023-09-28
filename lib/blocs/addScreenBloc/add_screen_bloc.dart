@@ -51,6 +51,7 @@ class AddScreenBloc extends Bloc<AddScreenEvent, AddScreenState> {
 
           final docData = {
             'docID': announcementId,
+            'status': 0,
             'name': event.name,
             'latinName': event.latinName,
             'seedCount': event.seedCount,
@@ -61,7 +62,6 @@ class AddScreenBloc extends Bloc<AddScreenEvent, AddScreenState> {
             'imageURL': imageURL,
             'giverDisplayName': currentUserInfo!['displayName'] ?? 'Unknown',
             'giverPhotoURL': currentUserInfo['photoURL'] ?? '',
-            'isActiv': true,
           };
 
           await db.collection('announcements').doc(announcementId).set(docData);

@@ -61,7 +61,7 @@ class RegisterView extends HookWidget {
                 TextFormField(
                   controller: emailController,
                   decoration: createInputDecoration(label: 'Email'),
-                  style: formTextStyle,
+                  style: textStyle15BoldSepia,
                   onFieldSubmitted: (_) => FocusScope.of(context).unfocus(),
                   onTapOutside: (_) => FocusScope.of(context).unfocus(),
                   keyboardType: TextInputType.emailAddress,
@@ -72,7 +72,7 @@ class RegisterView extends HookWidget {
                 TextFormField(
                   controller: passwordController,
                   decoration: createInputDecoration(label: 'Hasło'),
-                  style: formTextStyle,
+                  style: textStyle15BoldSepia,
                   onFieldSubmitted: (_) => FocusScope.of(context).unfocus(),
                   onTapOutside: (_) => FocusScope.of(context).unfocus(),
                   keyboardType: TextInputType.emailAddress,
@@ -85,7 +85,7 @@ class RegisterView extends HookWidget {
                 TextFormField(
                   controller: confirmPasswordController,
                   decoration: createInputDecoration(label: 'Potwierdź hasło'),
-                  style: formTextStyle,
+                  style: textStyle15BoldSepia,
                   onFieldSubmitted: (_) => FocusScope.of(context).unfocus(),
                   onTapOutside: (_) => FocusScope.of(context).unfocus(),
                   keyboardType: TextInputType.emailAddress,

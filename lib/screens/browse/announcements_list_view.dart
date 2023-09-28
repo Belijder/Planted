@@ -19,7 +19,7 @@ class AnnouncementListView extends HookWidget {
     final announcementsStream = useMemoized(() {
       return FirebaseFirestore.instance
           .collection(announcemensPath)
-          .where('isActiv', isEqualTo: true)
+          .where('status', isEqualTo: 1)
           .orderBy('timeStamp', descending: true)
           .snapshots();
     }, [key]);
@@ -59,6 +59,19 @@ class AnnouncementListView extends HookWidget {
 
               final announcements = snapshot.data!.docs
                   .map((doc) => Announcement.fromSnapshot(doc));
+
+              if (announcements.isEmpty) {
+                return Center(
+                  child: Text(
+                    'Nie ma żadnych dostępnych ogłoszeń. Sprawdź ponownie za jakiś czas.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: colorSepia.withAlpha(150),
+                      fontSize: 15,
+                    ),
+                  ),
+                );
+              }
               return ListView.builder(
                 itemCount: announcements.length,
                 itemBuilder: (context, index) {

@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:planted/constants/colors.dart';
-import 'package:planted/helpers/create_input_decoration.dart';
 import 'package:planted/styles/buttons_styles.dart';
-import 'package:planted/styles/text_styles.dart';
 
-Future<String?> showDialogWithTextField({
+Future<bool?> showConfirmationDialog({
   required BuildContext context,
   required String title,
   required String content,
 }) {
-  final emailController = TextEditingController();
-  return showDialog<String>(
+  return showDialog<bool>(
     context: context,
     builder: (context) {
       return AlertDialog(
@@ -28,25 +25,9 @@ Future<String?> showDialogWithTextField({
           title,
           textAlign: TextAlign.center,
         ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              content,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 20),
-            TextFormField(
-              controller: emailController,
-              decoration: createInputDecoration(label: 'Email'),
-              style: textStyle15BoldSepia,
-              onFieldSubmitted: (_) => FocusScope.of(context).unfocus(),
-              onTapOutside: (_) => FocusScope.of(context).unfocus(),
-              keyboardType: TextInputType.emailAddress,
-              autocorrect: false,
-              enableSuggestions: false,
-            ),
-          ],
+        content: Text(
+          content,
+          textAlign: TextAlign.center,
         ),
         actions: [
           SizedBox(
@@ -54,7 +35,7 @@ Future<String?> showDialogWithTextField({
             child: ElevatedButton(
               style: filledButtonStyle,
               onPressed: () {
-                Navigator.of(context).pop(emailController.text);
+                Navigator.of(context).pop(true);
               },
               child: const Text(
                 'Potwierdź',
@@ -63,10 +44,10 @@ Future<String?> showDialogWithTextField({
           ),
           SizedBox(
             width: double.infinity,
-            child: ElevatedButton(
+            child: TextButton(
               style: outlinedButtonStyle,
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(true);
               },
               child: const Text(
                 'Anuluj',

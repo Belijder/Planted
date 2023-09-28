@@ -6,7 +6,7 @@ final formLabelTextStyle = TextStyle(
   fontSize: 14.0,
 );
 
-const formTextStyle = TextStyle(
+const textStyle15BoldSepia = TextStyle(
   color: colorSepia,
   fontWeight: FontWeight.bold,
   fontSize: 15.0,
