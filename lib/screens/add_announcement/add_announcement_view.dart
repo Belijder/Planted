@@ -12,6 +12,7 @@ import 'package:planted/blocs/app_bloc.dart/app_event.dart';
 import 'package:planted/blocs/app_bloc.dart/app_state.dart';
 import 'package:planted/constants/colors.dart';
 import 'package:planted/helpers/create_input_decoration.dart';
+import 'package:planted/styles/box_decoration_styles.dart';
 import 'package:planted/styles/buttons_styles.dart';
 import 'package:planted/styles/text_styles.dart';
 import 'package:planted/utilities/dialogs/show_database_error_dialog.dart';
@@ -283,32 +284,38 @@ class ImageView extends StatelessWidget {
                   showCupertinoModalPopup(
                     context: context,
                     builder: (context) {
-                      return Padding(
-                        padding: const EdgeInsets.only(
-                            bottom: 120, left: 20, right: 20),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            SizedBox(
-                              width: double.infinity - 40,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  imagePath.value = null;
-                                  Navigator.pop(context);
-                                },
-                                child: const Text('Usuń zdjęcie'),
+                      return Container(
+                        decoration: cupertinoModalPopapBoxDecoration,
+                        child: Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SizedBox(
+                                width: double.infinity - 40,
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    foregroundColor: Colors.white,
+                                    backgroundColor: colorRedKenyanCopper,
+                                  ),
+                                  onPressed: () {
+                                    imagePath.value = null;
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('Usuń zdjęcie'),
+                                ),
                               ),
-                            ),
-                            SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: const Text('Anuluj'),
+                              SizedBox(
+                                width: double.infinity,
+                                child: OutlinedButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('Anuluj'),
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       );
                     },

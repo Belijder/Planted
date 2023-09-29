@@ -25,20 +25,27 @@ typedef ReturnBlocEvent = void Function({
   required String conversationID,
 });
 
+typedef BlockUserBlocEvent = void Function({
+  required String userToBlockID,
+  required String currentUserID,
+});
+
+enum MessagesPopUpMenuItem { blocUser }
+
 class ConversationView extends HookWidget {
-  final String conversationID;
-  final String announcementID;
   final String currentUserID;
   final Announcement announcement;
+  final Conversation conversation;
   final SendMessageBlocEvent sendMessageBlocEvent;
   final ReturnBlocEvent returnBlocEvent;
+  final BlockUserBlocEvent blockUserBlocEvent;
   const ConversationView({
-    required this.conversationID,
-    required this.announcementID,
     required this.currentUserID,
     required this.announcement,
+    required this.conversation,
     required this.sendMessageBlocEvent,
     required this.returnBlocEvent,
+    required this.blockUserBlocEvent,
     super.key,
   });
 
@@ -50,7 +57,7 @@ class ConversationView extends HookWidget {
     final messagesStream = useMemoized(() {
       return FirebaseFirestore.instance
           .collection(conversationsPath)
-          .doc(conversationID)
+          .doc(conversation.conversationID)
           .snapshots();
     }, [key]);
 
@@ -64,7 +71,7 @@ class ConversationView extends HookWidget {
             returnBlocEvent(
               announcement: announcement,
               messagesCount: messagesCount.value,
-              conversationID: conversationID,
+              conversationID: conversation.conversationID,
             );
           },
           icon: const Icon(Icons.arrow_back),
@@ -88,6 +95,29 @@ class ConversationView extends HookWidget {
             ),
           ],
         ),
+        actions: [
+          PopupMenuButton<MessagesPopUpMenuItem>(
+            onSelected: (value) {
+              final String userIDtoBlock = currentUserID == conversation.giver
+                  ? conversation.taker
+                  : conversation.giver;
+
+              blockUserBlocEvent(
+                userToBlockID: userIDtoBlock,
+                currentUserID: currentUserID,
+              );
+            },
+            itemBuilder: (context) => [
+              const PopupMenuItem<MessagesPopUpMenuItem>(
+                value: MessagesPopUpMenuItem.blocUser,
+                child: Text(
+                  'Zablokuj użytkownika',
+                  style: TextStyle(color: colorRedKenyanCopper),
+                ),
+              ),
+            ],
+          )
+        ],
       ),
       body: MultiBlocListener(
         listeners: [
@@ -201,7 +231,7 @@ class ConversationView extends HookWidget {
                         if (messageController.text != '') {
                           sendMessageBlocEvent(
                               announcement: announcement,
-                              conversationID: conversationID,
+                              conversationID: conversation.conversationID,
                               message: messageController.text);
                         }
                       }),

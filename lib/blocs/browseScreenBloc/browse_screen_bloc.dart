@@ -5,6 +5,7 @@ import 'package:planted/blocs/browseScreenBloc/browse_screen_event.dart';
 import 'package:planted/blocs/browseScreenBloc/browse_screen_state.dart';
 import 'package:planted/constants/firebase_paths.dart';
 import 'package:planted/database_error.dart';
+import 'package:planted/models/conversation.dart';
 import 'package:planted/models/user_profile.dart';
 import 'package:uuid/uuid.dart';
 
@@ -87,25 +88,25 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
         }
 
         try {
-          final conversation = await db
+          final conversationSnapshot = await db
               .collection(conversationsPath)
               .where('giver', isEqualTo: event.announcement.giverID)
               .where('taker', isEqualTo: user.uid)
               .where('announcementID', isEqualTo: event.announcement.docID)
               .get();
 
-          final String conversationID;
+          final Conversation conversation;
           final timeStamp = DateTime.timestamp();
 
           final snapshot =
               await db.collection(profilesPath).doc(user.uid).get();
           final userProfile = UserProfile.fromSnapshot(snapshot);
 
-          if (conversation.docs.isNotEmpty) {
-            final conversationData = conversation.docs[0].data();
-            conversationID = conversationData['conversationID'] as String;
+          if (conversationSnapshot.docs.isNotEmpty) {
+            conversation =
+                Conversation.fromSnapshot(conversationSnapshot.docs[0]);
           } else {
-            conversationID = const Uuid().v4();
+            final conversationID = const Uuid().v4();
 
             await db.collection(conversationsPath).doc(conversationID).set({
               'conversationID': conversationID,
@@ -122,13 +123,19 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
               'giverLastActivity': event.announcement.timeStamp,
               'takerLastActivity': timeStamp,
             });
+
+            conversation = await db
+                .collection(conversationsPath)
+                .doc(conversationID)
+                .get()
+                .then((snapshot) => Conversation.fromSnapshot(snapshot));
           }
 
           emit(InConversationViewBrowseScreenState(
             isLoading: false,
             user: user,
             announcement: event.announcement,
-            conversationID: conversationID,
+            conversation: conversation,
           ));
         } on FirebaseException catch (e) {
           emit(
@@ -162,7 +169,7 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
         try {
           await db
               .collection(conversationsPath)
-              .doc(event.conversationID)
+              .doc(event.conversation.conversationID)
               .update({
             'timeStamp': timeStamp,
             'takerLastActivity': timeStamp,
@@ -180,7 +187,7 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
             isLoading: false,
             user: user,
             announcement: event.announcement,
-            conversationID: event.conversationID,
+            conversation: event.conversation,
             messageSended: true,
           ));
         } on FirebaseException catch (e) {
@@ -188,9 +195,58 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
             isLoading: false,
             user: user,
             announcement: event.announcement,
-            conversationID: event.conversationID,
+            conversation: event.conversation,
             databaseError: DatabaseError.from(e),
           ));
+        }
+      },
+    );
+
+    on<BlockUserFromConvesationViewBrowseScreenEvent>(
+      (event, emit) async {
+        await db.collection(profilesPath).doc(event.currentUserID).update({
+          'blockedUsers': FieldValue.arrayUnion([event.userToBlockID])
+        });
+
+        emit(const InAnnouncementsListViewBrowseScreenState(
+            isLoading: false,
+            snackbarMessage: 'Użytkownik został zablokowany!'));
+      },
+    );
+
+    on<BlockUserFromDetailsViewBrowseScreenEvent>(
+      (event, emit) async {
+        emit(InAnnouncementDetailsBrowseScreenState(
+          announcement: event.announcement,
+          isLoading: true,
+        ));
+
+        final user = FirebaseAuth.instance.currentUser;
+        if (user == null) {
+          emit(
+            InAnnouncementDetailsBrowseScreenState(
+                announcement: event.announcement,
+                isLoading: false,
+                databaseError: const DatabaseErrorUserNotFound()),
+          );
+          return;
+        }
+
+        try {
+          await db.collection(profilesPath).doc(user.uid).update({
+            'blockedUsers': FieldValue.arrayUnion([event.userToBlockID])
+          });
+
+          emit(const InAnnouncementsListViewBrowseScreenState(
+              isLoading: false,
+              snackbarMessage: 'Użytkownik został zablokowany!'));
+        } on FirebaseException catch (e) {
+          emit(
+            InAnnouncementDetailsBrowseScreenState(
+                announcement: event.announcement,
+                isLoading: false,
+                databaseError: DatabaseError.from(e)),
+          );
         }
       },
     );

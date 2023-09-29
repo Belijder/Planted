@@ -24,3 +24,18 @@ final greenBackgroundBoxDecoration = BoxDecoration(
     ),
   ],
 );
+
+final cupertinoModalPopapBoxDecoration = BoxDecoration(
+  color: listTileBackground,
+  borderRadius: const BorderRadius.only(
+    topLeft: Radius.circular(20),
+    topRight: Radius.circular(20),
+  ),
+  boxShadow: [
+    BoxShadow(
+      color: colorSepia.withAlpha(50),
+      blurRadius: 4,
+      offset: const Offset(0, 4),
+    ),
+  ],
+);

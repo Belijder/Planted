@@ -34,3 +34,14 @@ class SendMessageMessagesScreenEvent implements MessagesScreenEvent {
     required this.message,
   });
 }
+
+@immutable
+class BlockUserMessagesScreenEvent implements MessagesScreenEvent {
+  final String currentUserID;
+  final String userToBlockID;
+
+  const BlockUserMessagesScreenEvent({
+    required this.currentUserID,
+    required this.userToBlockID,
+  });
+}

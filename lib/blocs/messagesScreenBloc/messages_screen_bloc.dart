@@ -13,6 +13,7 @@ import 'package:uuid/uuid.dart';
 class MessagesScreenBloc
     extends Bloc<MessagesScreenEvent, MessagesScreenState> {
   final db = FirebaseFirestore.instance;
+
   MessagesScreenBloc()
       : super(
           const InConversationsListMessagesScreenState(
@@ -145,6 +146,18 @@ class MessagesScreenBloc
           emit(const InConversationsListMessagesScreenState(
               isLoading: false, databaseError: DatabaseErrorUnknown()));
         }
+      },
+    );
+
+    on<BlockUserMessagesScreenEvent>(
+      (event, emit) async {
+        await db.collection(profilesPath).doc(event.currentUserID).update({
+          'blockedUsers': FieldValue.arrayUnion([event.userToBlockID])
+        });
+
+        emit(const InConversationsListMessagesScreenState(
+            isLoading: false,
+            snackbarMessage: 'Użytkownik został zablokowany!'));
       },
     );
   }

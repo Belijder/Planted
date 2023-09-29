@@ -9,7 +9,8 @@ import 'package:planted/screens/messages/conversation_tile.dart';
 import 'package:planted/screens/views/empty_state_view.dart';
 
 class MessagesListView extends HookWidget {
-  const MessagesListView({super.key});
+  const MessagesListView({required this.blockedUsers, super.key});
+  final Iterable<String> blockedUsers;
 
   @override
   Widget build(BuildContext context) {
@@ -63,15 +64,19 @@ class MessagesListView extends HookWidget {
             final conversations = snapshot.data!.docs
                 .map((snapshot) => Conversation.fromSnapshot(snapshot));
 
-            if (conversations.isEmpty) {
+            final filteredConversations = conversations.where((element) =>
+                !blockedUsers.contains(element.giver) &&
+                !blockedUsers.contains(element.taker));
+
+            if (filteredConversations.isEmpty) {
               return const EmptyStateView(
                 message: 'Nie masz żadnych wiadomości w skrzynce.',
               );
             } else {
               return ListView.builder(
-                itemCount: conversations.length,
+                itemCount: filteredConversations.length,
                 itemBuilder: (context, index) {
-                  final conversation = conversations.elementAt(index);
+                  final conversation = filteredConversations.elementAt(index);
                   final currentUserID = FirebaseAuth.instance.currentUser?.uid;
 
                   return ConversationTile(

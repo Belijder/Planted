@@ -31,6 +31,16 @@ class BrowseScreen extends StatelessWidget {
             databaseError: databaseError,
           );
         }
+
+        final message = browseScreenState.snackbarMessage;
+        if (message != null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              duration: const Duration(seconds: 2),
+              content: Text(message),
+            ),
+          );
+        }
       },
       builder: (context, browseScreenState) {
         Widget child;
@@ -43,10 +53,9 @@ class BrowseScreen extends StatelessWidget {
               announcement: browseScreenState.announcement);
         } else if (browseScreenState is InConversationViewBrowseScreenState) {
           child = ConversationView(
-            conversationID: browseScreenState.conversationID,
-            announcementID: browseScreenState.announcement.docID,
             currentUserID: browseScreenState.user.uid,
             announcement: browseScreenState.announcement,
+            conversation: browseScreenState.conversation,
             returnBlocEvent: ({
               required announcement,
               required int messagesCount,
@@ -71,8 +80,19 @@ class BrowseScreen extends StatelessWidget {
                 required message}) {
               context.read<BrowseScreenBloc>().add(SendMessageBrowseScreenEvent(
                   announcement: announcement,
-                  conversationID: conversationID,
+                  conversation: browseScreenState.conversation,
                   message: message));
+            },
+            blockUserBlocEvent: ({
+              required currentUserID,
+              required userToBlockID,
+            }) {
+              context
+                  .read<BrowseScreenBloc>()
+                  .add(BlockUserFromConvesationViewBrowseScreenEvent(
+                    currentUserID: currentUserID,
+                    userToBlockID: userToBlockID,
+                  ));
             },
           );
         } else {

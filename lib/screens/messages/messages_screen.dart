@@ -54,7 +54,7 @@ class MessagesScreen extends StatelessWidget {
         Widget child;
 
         if (appState is AppStateLoggedIn) {
-          child = const MessagesScreenBlocConsumer();
+          child = MessagesScreenBlocConsumer(userID: appState.user.uid);
         } else if (appState is AppStateLoggedOut) {
           child = const LoginView();
         } else if (appState is AppStateIsInRegistrationView) {

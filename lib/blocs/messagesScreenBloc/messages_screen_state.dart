@@ -8,10 +8,12 @@ import 'package:planted/models/user_profile.dart';
 abstract class MessagesScreenState {
   final bool isLoading;
   final DatabaseError? databaseError;
+  final String? snackbarMessage;
 
   const MessagesScreenState({
     required this.isLoading,
     required this.databaseError,
+    this.snackbarMessage,
   });
 }
 
@@ -20,6 +22,7 @@ class InConversationsListMessagesScreenState extends MessagesScreenState {
   const InConversationsListMessagesScreenState({
     required super.isLoading,
     super.databaseError,
+    super.snackbarMessage,
   });
 }
 

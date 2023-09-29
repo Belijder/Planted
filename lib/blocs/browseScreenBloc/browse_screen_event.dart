@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart' show immutable;
 import 'package:planted/models/announcement.dart';
+import 'package:planted/models/conversation.dart';
 
 @immutable
 abstract class BrowseScreenEvent {
@@ -50,10 +51,33 @@ class CancelConversationBrowseScreenEvent implements BrowseScreenEvent {
 class SendMessageBrowseScreenEvent implements BrowseScreenEvent {
   final Announcement announcement;
   final String message;
-  final String conversationID;
+  final Conversation conversation;
   const SendMessageBrowseScreenEvent({
     required this.announcement,
-    required this.conversationID,
+    required this.conversation,
     required this.message,
+  });
+}
+
+@immutable
+class BlockUserFromConvesationViewBrowseScreenEvent
+    implements BrowseScreenEvent {
+  final String currentUserID;
+  final String userToBlockID;
+
+  const BlockUserFromConvesationViewBrowseScreenEvent({
+    required this.currentUserID,
+    required this.userToBlockID,
+  });
+}
+
+@immutable
+class BlockUserFromDetailsViewBrowseScreenEvent implements BrowseScreenEvent {
+  final Announcement announcement;
+  final String userToBlockID;
+
+  const BlockUserFromDetailsViewBrowseScreenEvent({
+    required this.announcement,
+    required this.userToBlockID,
   });
 }

@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:planted/blocs/browseScreenBloc/browse_screen_bloc.dart';
@@ -199,32 +200,86 @@ class AnnouncementDetailsView extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                             fontSize: 17),
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const SizedBox(width: 10),
-                          SizedBox(
-                            height: 26,
-                            width: 26,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(13),
-                              child: CachedNetworkImage(
-                                fadeInDuration: Duration.zero,
-                                fadeOutDuration: Duration.zero,
-                                placeholder: (context, url) =>
-                                    Image.asset(personPlaceholder),
-                                imageUrl: announcement.giverPhotoURL,
-                                fit: BoxFit.cover,
+                      GestureDetector(
+                        onTap: () {
+                          showCupertinoModalPopup<bool>(
+                            context: context,
+                            builder: (context) {
+                              return Container(
+                                decoration: cupertinoModalPopapBoxDecoration,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      bottom: 20, left: 20, right: 20, top: 20),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      SizedBox(
+                                        width: double.infinity - 40,
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            foregroundColor: Colors.white,
+                                            backgroundColor:
+                                                colorRedKenyanCopper,
+                                          ),
+                                          onPressed: () {
+                                            Navigator.of(context).pop(true);
+                                          },
+                                          child: const Text(
+                                              'Zablokuj użytkownika'),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: double.infinity,
+                                        child: OutlinedButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop(false);
+                                          },
+                                          child: const Text('Anuluj'),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          ).then((value) {
+                            if (value == true) {
+                              context.read<BrowseScreenBloc>().add(
+                                  BlockUserFromDetailsViewBrowseScreenEvent(
+                                      announcement: announcement,
+                                      userToBlockID: announcement.giverID));
+                            }
+                          });
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const SizedBox(width: 10),
+                            SizedBox(
+                              height: 26,
+                              width: 26,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(13),
+                                child: CachedNetworkImage(
+                                  fadeInDuration: Duration.zero,
+                                  fadeOutDuration: Duration.zero,
+                                  placeholder: (context, url) =>
+                                      Image.asset(personPlaceholder),
+                                  imageUrl: announcement.giverPhotoURL,
+                                  errorWidget: (context, _, __) =>
+                                      Image.asset(personPlaceholder),
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
-                          ),
-                          const SizedBox(width: 5),
-                          Text(
-                            announcement.giverDisplayName,
-                            style: const TextStyle(
-                                color: colorSepia, fontSize: 17),
-                          ),
-                        ],
+                            const SizedBox(width: 5),
+                            Text(
+                              announcement.giverDisplayName,
+                              style: const TextStyle(
+                                  color: colorSepia, fontSize: 17),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),

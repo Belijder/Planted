@@ -58,7 +58,7 @@ class DatabaseErrorUserNotFound extends DatabaseError {
       : super(
           dialogTitle: 'Brak zalogowanego użytkownika',
           dialogText:
-              'Nie udało się odnaleść zalogowanego użytkownika. Aby móc wysyłać wiadomości musisz być zalogowany.',
+              'Nie udało się odnaleść zalogowanego użytkownika. Aby móc wykonać tę akcję trzeba być zalogowanym.',
         );
 }
 

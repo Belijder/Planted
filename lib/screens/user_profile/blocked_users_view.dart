@@ -58,9 +58,10 @@ class BlockedUsersView extends HookWidget {
             if (snapshot.hasError) {
               context.read<AppBloc>().add(const AppEventLogOut());
             }
-            // if (snapshot.connectionState == ConnectionState.waiting) {
-            //   return const Center(child: CircularProgressIndicator());
-            // }
+
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
             final userProfile = UserProfile.fromSnapshot(snapshot.data!);
 
