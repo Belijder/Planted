@@ -40,3 +40,14 @@ class UserProfileScreenEventArchiveAnnouncement
     required this.userID,
   });
 }
+
+@immutable
+class UserProfileScreenEventUnblockUser implements UserProfileScreenEvent {
+  final String currentUserID;
+  final String idToUnblock;
+
+  const UserProfileScreenEventUnblockUser({
+    required this.currentUserID,
+    required this.idToUnblock,
+  });
+}

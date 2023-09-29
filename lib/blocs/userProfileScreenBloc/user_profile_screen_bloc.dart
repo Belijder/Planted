@@ -85,6 +85,7 @@ class UserProfileScreenBloc
         }
       },
     );
+
     on<UserProfileScreenEventDeleteAnnouncement>((event, emit) async {
       emit(const UserProfileScreenStateInUsersAnnouncementsView(
           isLoading: true));
@@ -111,5 +112,27 @@ class UserProfileScreenBloc
         );
       }
     });
+
+    on<UserProfileScreenEventUnblockUser>(
+      (event, emit) async {
+        emit(const UserProfileScreenStateInBlockedUsersView(isLoading: true));
+
+        try {
+          await db.collection(profilesPath).doc(event.currentUserID).update({
+            'blockedUsers': FieldValue.arrayRemove([event.idToUnblock])
+          });
+
+          emit(const UserProfileScreenStateInBlockedUsersView(
+            isLoading: false,
+            snackbarMessage: 'Użytkownik został odblokowany!',
+          ));
+        } on FirebaseException catch (e) {
+          emit(UserProfileScreenStateInUserProfileView(
+            isLoading: false,
+            databaseError: DatabaseError.from(e),
+          ));
+        }
+      },
+    );
   }
 }
