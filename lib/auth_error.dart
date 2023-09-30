@@ -146,3 +146,23 @@ class AuthErrorWrongPassword extends AuthError {
               'Podane przez Ciebie hasło jest nieprawidłowe. Wpisz prawidłowe hasło i spróbuj ponownie.',
         );
 }
+
+@immutable
+class AuthErrorFieldsAreEmpty extends AuthError {
+  const AuthErrorFieldsAreEmpty()
+      : super(
+          dialogTitle: 'Znaleziono puste pola',
+          dialogText:
+              'Aby móc wykonać tę akcję musisz wypełnić wszystkie pola formularza.',
+        );
+}
+
+@immutable
+class AuthErrorLegalTermsNotAccepted extends AuthError {
+  const AuthErrorLegalTermsNotAccepted()
+      : super(
+          dialogTitle: 'Nie zaakceptowano warunków prawnych',
+          dialogText:
+              'Aby móc się zarejestrować musisz zaznaczyć, że zapoznałeś się i zaakceptowałeś regulamin oraz politykę prywatności.',
+        );
+}

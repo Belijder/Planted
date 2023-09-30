@@ -39,12 +39,13 @@ class AppEventRegister implements AppEvent {
   final String email;
   final String password;
   final String confirmPassword;
+  final bool areLegalTermsAccepted;
 
-  const AppEventRegister({
-    required this.email,
-    required this.password,
-    required this.confirmPassword,
-  });
+  const AppEventRegister(
+      {required this.email,
+      required this.password,
+      required this.confirmPassword,
+      required this.areLegalTermsAccepted});
 }
 
 @immutable
@@ -93,4 +94,10 @@ class AppEventReloadUserInfo implements AppEvent {
 @immutable
 class AppEventAnnouncemmentFieldsCleaned implements AppEvent {
   const AppEventAnnouncemmentFieldsCleaned();
+}
+
+@immutable
+class AppEventOpenLegalTerms implements AppEvent {
+  final String documentID;
+  const AppEventOpenLegalTerms({required this.documentID});
 }

@@ -72,9 +72,12 @@ class AppStateLoggedIn extends AppState {
 
 @immutable
 class AppStateIsInRegistrationView extends AppState {
+  final String? path;
   const AppStateIsInRegistrationView({
     required super.isLoading,
     super.authError,
+    super.databaseError,
+    this.path,
   });
 }
 

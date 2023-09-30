@@ -94,6 +94,28 @@ class AppBloc extends Bloc<AppEvent, AppState> {
         final email = event.email;
         final password = event.password;
         final confirmPassword = event.confirmPassword;
+        final areLegalTermsAccepted = event.areLegalTermsAccepted;
+
+        // check if the fields are not empty
+        if (email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
+          emit(
+            const AppStateIsInRegistrationView(
+              isLoading: false,
+              authError: AuthErrorFieldsAreEmpty(),
+            ),
+          );
+          return;
+        }
+
+        if (areLegalTermsAccepted == false) {
+          emit(
+            const AppStateIsInRegistrationView(
+              isLoading: false,
+              authError: AuthErrorLegalTermsNotAccepted(),
+            ),
+          );
+          return;
+        }
 
         // check passwords identicality
         if (password != confirmPassword) {
@@ -301,6 +323,17 @@ class AppBloc extends Bloc<AppEvent, AppState> {
         final email = event.email;
         final password = event.password;
 
+        // check if the fields are not empty
+        if (email.isEmpty || password.isEmpty) {
+          emit(
+            const AppStateLoggedOut(
+              isLoading: false,
+              authError: AuthErrorFieldsAreEmpty(),
+            ),
+          );
+          return;
+        }
+
         try {
           final credentials =
               await FirebaseAuth.instance.signInWithEmailAndPassword(
@@ -458,6 +491,28 @@ class AppBloc extends Bloc<AppEvent, AppState> {
           emit(
             AppStateLoggedOut(isLoading: false, authError: AuthError.from(e)),
           );
+        }
+      },
+    );
+
+    on<AppEventOpenLegalTerms>(
+      (event, emit) async {
+        try {
+          final path = await FirebaseFirestore.instance
+              .collection(legaltermsPath)
+              .doc(event.documentID)
+              .get()
+              .then((snapshot) => snapshot.data()?['path'] as String);
+
+          emit(AppStateIsInRegistrationView(
+            isLoading: false,
+            path: path,
+          ));
+        } on FirebaseException catch (e) {
+          emit(AppStateIsInRegistrationView(
+            isLoading: false,
+            databaseError: DatabaseError.from(e),
+          ));
         }
       },
     );
