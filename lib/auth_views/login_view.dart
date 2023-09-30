@@ -145,6 +145,7 @@ class LoginView extends HookWidget {
                         title: 'Resetowanie hasła',
                         content:
                             'Aby zresetować hasło podaj email użyty podczas zakładania konta.',
+                        dialogType: ConfirmationDialogType.email,
                       ).then((email) {
                         if (email != null) {
                           context

@@ -4,10 +4,13 @@ import 'package:planted/helpers/create_input_decoration.dart';
 import 'package:planted/styles/buttons_styles.dart';
 import 'package:planted/styles/text_styles.dart';
 
+enum ConfirmationDialogType { email, password }
+
 Future<String?> showDialogWithTextField({
   required BuildContext context,
   required String title,
   required String content,
+  required ConfirmationDialogType dialogType,
 }) {
   final emailController = TextEditingController();
   return showDialog<String>(
@@ -38,13 +41,21 @@ Future<String?> showDialogWithTextField({
             const SizedBox(height: 20),
             TextFormField(
               controller: emailController,
-              decoration: createInputDecoration(label: 'Email'),
+              decoration: createInputDecoration(
+                  label: dialogType == ConfirmationDialogType.email
+                      ? 'Email'
+                      : 'Hasło'),
               style: textStyle15BoldSepia,
               onFieldSubmitted: (_) => FocusScope.of(context).unfocus(),
               onTapOutside: (_) => FocusScope.of(context).unfocus(),
-              keyboardType: TextInputType.emailAddress,
+              keyboardType: dialogType == ConfirmationDialogType.email
+                  ? TextInputType.emailAddress
+                  : TextInputType.text,
               autocorrect: false,
               enableSuggestions: false,
+              obscureText:
+                  dialogType == ConfirmationDialogType.email ? false : true,
+              obscuringCharacter: '⦿',
             ),
           ],
         ),
@@ -52,7 +63,8 @@ Future<String?> showDialogWithTextField({
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
-              style: filledButtonStyle,
+              style: createFilledButtonStyle(
+                  backgroundColor: colorRedKenyanCopper),
               onPressed: () {
                 Navigator.of(context).pop(emailController.text);
               },
@@ -63,8 +75,11 @@ Future<String?> showDialogWithTextField({
           ),
           SizedBox(
             width: double.infinity,
-            child: ElevatedButton(
-              style: outlinedButtonStyle,
+            child: TextButton(
+              style: createOutlinedButtonStyle(
+                foregroundColor: colorSepia,
+                borderColor: colorSepia,
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
               },

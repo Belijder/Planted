@@ -65,7 +65,8 @@ class AppEventLogOut implements AppEvent {
 
 @immutable
 class AppEventDeleteAccount implements AppEvent {
-  const AppEventDeleteAccount();
+  final String password;
+  const AppEventDeleteAccount({required this.password});
 }
 
 @immutable

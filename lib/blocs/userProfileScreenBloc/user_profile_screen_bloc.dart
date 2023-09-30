@@ -134,5 +134,29 @@ class UserProfileScreenBloc
         }
       },
     );
+
+    on<UserProfileScreenEventOpenLegalTerms>(
+      (event, emit) async {
+        emit(const UserProfileScreenStateInUserProfileView(isLoading: false));
+
+        try {
+          final path = await db
+              .collection(legaltermsPath)
+              .doc(event.documentID)
+              .get()
+              .then((snapshot) => snapshot.data()?['path'] as String);
+
+          emit(UserProfileScreenStateInUserProfileView(
+            isLoading: false,
+            path: path,
+          ));
+        } on FirebaseException catch (e) {
+          emit(UserProfileScreenStateInUserProfileView(
+            isLoading: false,
+            databaseError: DatabaseError.from(e),
+          ));
+        }
+      },
+    );
   }
 }

@@ -5,10 +5,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:planted/auth_error.dart';
 import 'package:planted/blocs/app_bloc.dart/app_event.dart';
 import 'package:planted/blocs/app_bloc.dart/app_state.dart';
+import 'package:planted/constants/firebase_paths.dart';
 import 'package:planted/constants/strings.dart';
 import 'package:planted/database_error.dart';
 import 'package:planted/helpers/compress_image.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:planted/models/announcement.dart';
 
 class AppBloc extends Bloc<AppEvent, AppState> {
   AppBloc()
@@ -292,40 +294,6 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       },
     );
 
-    // on<AppEventLogIn>(
-    //   (event, emit) async {
-    //     emit(const AppStateLoggedOut(isLoading: true));
-
-    //     final email = event.email;
-    //     final password = event.password;
-
-    //     try {
-    //       final credentials =
-    //           await FirebaseAuth.instance.signInWithEmailAndPassword(
-    //         email: email,
-    //         password: password,
-    //       );
-
-    //       final user = credentials.user;
-    //       if (user == null) {
-    //         emit(const AppStateLoggedOut(
-    //           isLoading: false,
-    //         ));
-    //       } else {
-    //         emit(AppStateLoggedIn(
-    //           isLoading: false,
-    //           user: user,
-    //         ));
-    //       }
-    //     } on FirebaseAuthException catch (e) {
-    //       emit(AppStateLoggedOut(
-    //         isLoading: false,
-    //         authError: AuthError.from(e),
-    //       ));
-    //     }
-    //   },
-    // );
-
     on<AppEventLogIn>(
       (event, emit) async {
         emit(const AppStateLoggedOut(isLoading: true));
@@ -416,6 +384,80 @@ class AppBloc extends Bloc<AppEvent, AppState> {
             isLoading: false,
             authError: AuthError.from(e),
           ));
+        }
+      },
+    );
+
+    on<AppEventDeleteAccount>(
+      (event, emit) async {
+        final user = FirebaseAuth.instance.currentUser;
+        if (user == null) {
+          emit(const AppStateLoggedOut(isLoading: true));
+          return;
+        }
+
+        emit(AppStateLoggedIn(isLoading: true, user: user));
+
+        try {
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
+            email: user.email!,
+            password: event.password,
+          );
+        } on FirebaseAuthException catch (e) {
+          emit(AppStateLoggedIn(
+            isLoading: false,
+            user: user,
+            authError: AuthError.from(e),
+          ));
+          return;
+        }
+
+        emit(const AppStateLoggedOut(isLoading: true));
+
+        //change All user announcement to Archived
+        final announcements = await FirebaseFirestore.instance
+            .collection(announcemensPath)
+            .where('giverID', isEqualTo: user.uid)
+            .get()
+            .then((querySnapshot) => querySnapshot.docs
+                .map((snapshot) => Announcement.fromSnapshot(snapshot)));
+
+        final futures = <Future<void>>[];
+
+        for (var announcement in announcements) {
+          futures.add(FirebaseFirestore.instance
+              .collection(announcemensPath)
+              .doc(announcement.docID)
+              .update({'status': 3}));
+        }
+
+        await Future.wait(futures);
+
+        //DeleteUserImage
+        await FirebaseStorage.instance
+            .ref(storageProfileImagesRef)
+            .child(user.uid)
+            .delete()
+            .onError((_, __) => null);
+
+        //DeleteUserProfile
+        await FirebaseFirestore.instance
+            .collection(profilesPath)
+            .doc(user.uid)
+            .delete()
+            .onError((_, __) => null);
+
+        //DeleteAccount
+        try {
+          await FirebaseAuth.instance.currentUser?.delete();
+          emit(const AppStateLoggedOut(
+            isLoading: false,
+            snackbarMessage: 'Konto zostało usunięte!',
+          ));
+        } on FirebaseAuthException catch (e) {
+          emit(
+            AppStateLoggedOut(isLoading: false, authError: AuthError.from(e)),
+          );
         }
       },
     );

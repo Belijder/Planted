@@ -51,3 +51,9 @@ class UserProfileScreenEventUnblockUser implements UserProfileScreenEvent {
     required this.idToUnblock,
   });
 }
+
+@immutable
+class UserProfileScreenEventOpenLegalTerms implements UserProfileScreenEvent {
+  final String documentID;
+  const UserProfileScreenEventOpenLegalTerms({required this.documentID});
+}

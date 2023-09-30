@@ -20,11 +20,16 @@ abstract class UserProfileScreenState extends Equatable {
 
 @immutable
 class UserProfileScreenStateInUserProfileView extends UserProfileScreenState {
+  final String? path;
   const UserProfileScreenStateInUserProfileView({
     required super.isLoading,
     super.databaseError,
     super.snackbarMessage,
+    this.path,
   });
+
+  @override
+  List<Object?> get props => [isLoading, databaseError, snackbarMessage, path];
 }
 
 @immutable

@@ -41,10 +41,8 @@ class AppStateLoggedOut extends AppState {
 @immutable
 class AppStateLoggedIn extends AppState {
   final User user;
-  final bool shouldClean;
 
   const AppStateLoggedIn({
-    this.shouldClean = false,
     required super.isLoading,
     super.authError,
     super.databaseError,
@@ -57,8 +55,7 @@ class AppStateLoggedIn extends AppState {
     final otherClass = other;
     if (otherClass is AppStateLoggedIn) {
       return isLoading == otherClass.isLoading &&
-          user.uid == otherClass.user.uid &&
-          shouldClean == otherClass.shouldClean;
+          user.uid == otherClass.user.uid;
     } else {
       return false;
     }
@@ -69,7 +66,7 @@ class AppStateLoggedIn extends AppState {
 
   @override
   String toString() {
-    return 'AppStateLoggedIn, (isLoading: $isLoading, authError: $shouldClean, userUID: ${user.uid})';
+    return 'AppStateLoggedIn, (isLoading: $isLoading, authError: $authError, userUID: ${user.uid})';
   }
 }
 
