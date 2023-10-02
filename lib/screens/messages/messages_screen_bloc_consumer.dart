@@ -104,6 +104,8 @@ class MessagesScreenBlocConsumer extends HookWidget {
             blockUserBlocEvent: ({
               required currentUserID,
               required userToBlockID,
+              required announcement,
+              required conversation,
             }) {
               context
                   .read<MessagesScreenBloc>()

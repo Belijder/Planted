@@ -104,7 +104,9 @@ class ConversationTile extends StatelessWidget {
                       ],
                     ),
                     Text(
-                      conversation.messages.last.message,
+                      conversation.messages.isNotEmpty
+                          ? conversation.messages.last.message
+                          : '',
                       maxLines: 2,
                       style: TextStyle(
                         fontWeight: hasUnreadMessages

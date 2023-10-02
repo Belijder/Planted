@@ -49,6 +49,9 @@ class UserProfileView extends HookWidget {
               final Uri legalTermsUrl = Uri(scheme: 'https', path: path);
               launchUrl(legalTermsUrl);
             }
+            context
+                .read<UserProfileScreenBloc>()
+                .add(const UserProfileScreenEventGoToUserProfileView());
           }
         },
         child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(

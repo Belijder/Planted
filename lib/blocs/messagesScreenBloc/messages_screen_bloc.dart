@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:planted/blocs/messagesScreenBloc/messages_screen_event.dart';
 import 'package:planted/blocs/messagesScreenBloc/messages_screen_state.dart';
 import 'package:planted/constants/firebase_paths.dart';
 import 'package:planted/database_error.dart';
+import 'package:planted/managers/conectivity_manager.dart';
 import 'package:planted/models/announcement.dart';
 import 'package:planted/models/conversation.dart';
 import 'package:planted/models/user_profile.dart';
@@ -13,6 +15,7 @@ import 'package:uuid/uuid.dart';
 class MessagesScreenBloc
     extends Bloc<MessagesScreenEvent, MessagesScreenState> {
   final db = FirebaseFirestore.instance;
+  final connectivityManager = ConnectivityManager();
 
   MessagesScreenBloc()
       : super(
@@ -30,6 +33,14 @@ class MessagesScreenBloc
 
     on<GoToConversationMessagesScreenEvent>(
       (event, emit) async {
+        if (connectivityManager.status == ConnectivityResult.none) {
+          emit(const InConversationsListMessagesScreenState(
+            isLoading: false,
+            databaseError: DatabaseErrorNetworkRequestFailed(),
+          ));
+          return;
+        }
+
         emit(const InConversationsListMessagesScreenState(isLoading: true));
 
         final user = FirebaseAuth.instance.currentUser;
@@ -100,6 +111,16 @@ class MessagesScreenBloc
           userProfile = state.userProfile!;
           conversation = state.conversation!;
 
+          if (connectivityManager.status == ConnectivityResult.none) {
+            emit(InConversationMessagesScreenState(
+              isLoading: false,
+              conversation: conversation,
+              announcement: announcement,
+              userProfile: userProfile,
+              databaseError: const DatabaseErrorNetworkRequestFailed(),
+            ));
+          }
+
           final messageID = const Uuid().v4();
           final timeStamp = DateTime.timestamp();
 
@@ -136,11 +157,12 @@ class MessagesScreenBloc
             ));
           } on FirebaseException catch (e) {
             emit(InConversationMessagesScreenState(
-                isLoading: false,
-                conversation: conversation,
-                announcement: announcement,
-                userProfile: userProfile,
-                databaseError: DatabaseError.from(e)));
+              isLoading: false,
+              conversation: conversation,
+              announcement: announcement,
+              userProfile: userProfile,
+              databaseError: DatabaseError.from(e),
+            ));
           }
         } catch (e) {
           emit(const InConversationsListMessagesScreenState(
@@ -151,6 +173,15 @@ class MessagesScreenBloc
 
     on<BlockUserMessagesScreenEvent>(
       (event, emit) async {
+        if (connectivityManager.status == ConnectivityResult.none) {
+          emit(InConversationMessagesScreenState(
+            isLoading: false,
+            conversation: state.conversation!,
+            announcement: state.announcement!,
+            userProfile: state.userProfile!,
+            databaseError: const DatabaseErrorNetworkRequestFailed(),
+          ));
+        }
         await db.collection(profilesPath).doc(event.currentUserID).update({
           'blockedUsers': FieldValue.arrayUnion([event.userToBlockID])
         });

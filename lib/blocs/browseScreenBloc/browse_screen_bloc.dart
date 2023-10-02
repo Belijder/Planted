@@ -1,17 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:planted/blocs/browseScreenBloc/browse_screen_event.dart';
 import 'package:planted/blocs/browseScreenBloc/browse_screen_state.dart';
 import 'package:planted/constants/firebase_paths.dart';
 import 'package:planted/database_error.dart';
+import 'package:planted/managers/conectivity_manager.dart';
 import 'package:planted/models/conversation.dart';
 import 'package:planted/models/user_profile.dart';
 import 'package:uuid/uuid.dart';
 
 class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
   final db = FirebaseFirestore.instance;
-
+  final connectivityManager = ConnectivityManager();
   BrowseScreenBloc()
       : super(
           const InAnnouncementsListViewBrowseScreenState(
@@ -31,6 +33,16 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
 
     on<CancelConversationBrowseScreenEvent>(
       (event, emit) async {
+        if (connectivityManager.status == ConnectivityResult.none) {
+          emit(
+            InAnnouncementDetailsBrowseScreenState(
+              announcement: event.announcement,
+              isLoading: false,
+            ),
+          );
+          return;
+        }
+
         emit(
           InAnnouncementDetailsBrowseScreenState(
             announcement: event.announcement,
@@ -72,6 +84,16 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
 
     on<GoToConversationViewBrowseScreenEvent>(
       (event, emit) async {
+        if (connectivityManager.status == ConnectivityResult.none) {
+          emit(
+            InAnnouncementDetailsBrowseScreenState(
+                announcement: event.announcement,
+                isLoading: false,
+                databaseError: const DatabaseErrorNetworkRequestFailed()),
+          );
+          return;
+        }
+
         emit(InAnnouncementDetailsBrowseScreenState(
             announcement: event.announcement, isLoading: true));
 
@@ -163,6 +185,17 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
           return;
         }
 
+        if (connectivityManager.status == ConnectivityResult.none) {
+          emit(InConversationViewBrowseScreenState(
+            isLoading: false,
+            user: user,
+            announcement: event.announcement,
+            conversation: event.conversation,
+            databaseError: const DatabaseErrorNetworkRequestFailed(),
+          ));
+          return;
+        }
+
         final messageID = const Uuid().v4();
         final timeStamp = DateTime.timestamp();
 
@@ -204,6 +237,29 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
 
     on<BlockUserFromConvesationViewBrowseScreenEvent>(
       (event, emit) async {
+        final user = FirebaseAuth.instance.currentUser;
+        if (user == null) {
+          emit(
+            InAnnouncementDetailsBrowseScreenState(
+              announcement: event.announcement,
+              isLoading: false,
+              databaseError: const DatabaseErrorUserNotFound(),
+            ),
+          );
+          return;
+        }
+
+        if (connectivityManager.status == ConnectivityResult.none) {
+          emit(InConversationViewBrowseScreenState(
+            isLoading: false,
+            user: user,
+            announcement: event.announcement,
+            conversation: event.conversation,
+            databaseError: const DatabaseErrorNetworkRequestFailed(),
+          ));
+          return;
+        }
+
         await db.collection(profilesPath).doc(event.currentUserID).update({
           'blockedUsers': FieldValue.arrayUnion([event.userToBlockID])
         });
@@ -216,6 +272,15 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
 
     on<BlockUserFromDetailsViewBrowseScreenEvent>(
       (event, emit) async {
+        if (connectivityManager.status == ConnectivityResult.none) {
+          emit(InAnnouncementDetailsBrowseScreenState(
+            announcement: event.announcement,
+            isLoading: false,
+            databaseError: const DatabaseErrorNetworkRequestFailed(),
+          ));
+          return;
+        }
+
         emit(InAnnouncementDetailsBrowseScreenState(
           announcement: event.announcement,
           isLoading: true,

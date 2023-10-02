@@ -11,6 +11,7 @@ const Map<String, AuthError> authErrorMapping = {
   'no-current-user': AuthErrorNoCurrentUser(),
   'too-many-requests': AuthErrorTooManyRequests(),
   'wrong-password': AuthErrorWrongPassword(),
+  'network-request-failed': AuthErrorNetworkRequestFailed(),
 };
 
 @immutable
@@ -124,6 +125,17 @@ class AuthErrorTooManyRequests extends AuthError {
           dialogTitle: 'Zbyt wiele prób',
           dialogText:
               'Wygląda na to, że próbowałem wykonać tę czynność zbyt wiele razy. Poczekaj chwilę, zanim spróbujesz ponownie.',
+        );
+}
+
+//auth/network-request-failed
+@immutable
+class AuthErrorNetworkRequestFailed extends AuthError {
+  const AuthErrorNetworkRequestFailed()
+      : super(
+          dialogTitle: 'Brak połączenia z internetem',
+          dialogText:
+              'Wygląda na to, że nie masz połączenia z interetem. Sprawdź połączenie i spróbuj ponownie.',
         );
 }
 

@@ -28,6 +28,8 @@ typedef ReturnBlocEvent = void Function({
 typedef BlockUserBlocEvent = void Function({
   required String userToBlockID,
   required String currentUserID,
+  required Announcement announcement,
+  required Conversation conversation,
 });
 
 enum MessagesPopUpMenuItem { blocUser }
@@ -105,6 +107,8 @@ class ConversationView extends HookWidget {
               blockUserBlocEvent(
                 userToBlockID: userIDtoBlock,
                 currentUserID: currentUserID,
+                announcement: announcement,
+                conversation: conversation,
               );
             },
             itemBuilder: (context) => [

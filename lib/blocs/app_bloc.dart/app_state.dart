@@ -1,10 +1,11 @@
+import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart' show immutable;
 import 'package:planted/auth_error.dart';
 import 'package:planted/database_error.dart';
 
 @immutable
-abstract class AppState {
+abstract class AppState extends Equatable {
   final bool isLoading;
   final AuthError? authError;
   final String? snackbarMessage;
@@ -22,6 +23,9 @@ class AppStateInitialState extends AppState {
   const AppStateInitialState({
     required super.isLoading,
   });
+
+  @override
+  List<Object?> get props => [isLoading];
 }
 
 @immutable
@@ -36,6 +40,9 @@ class AppStateLoggedOut extends AppState {
   String toString() {
     return 'AppStateLoggedOut, (isLoading; $isLoading, authError: $authError)';
   }
+
+  @override
+  List<Object?> get props => [isLoading, authError, snackbarMessage];
 }
 
 @immutable
@@ -51,23 +58,13 @@ class AppStateLoggedIn extends AppState {
   });
 
   @override
-  bool operator ==(other) {
-    final otherClass = other;
-    if (otherClass is AppStateLoggedIn) {
-      return isLoading == otherClass.isLoading &&
-          user.uid == otherClass.user.uid;
-    } else {
-      return false;
-    }
-  }
-
-  @override
-  int get hashCode => Object.hash(user.uid, isLoading);
-
-  @override
   String toString() {
     return 'AppStateLoggedIn, (isLoading: $isLoading, authError: $authError, userUID: ${user.uid})';
   }
+
+  @override
+  List<Object?> get props =>
+      [isLoading, authError, databaseError, snackbarMessage, user];
 }
 
 @immutable
@@ -79,6 +76,9 @@ class AppStateIsInRegistrationView extends AppState {
     super.databaseError,
     this.path,
   });
+
+  @override
+  List<Object?> get props => [path, isLoading, authError, databaseError];
 }
 
 @immutable
@@ -88,6 +88,9 @@ class AppStateIsInConfirmationEmailView extends AppState {
     super.authError,
     super.snackbarMessage,
   });
+
+  @override
+  List<Object?> get props => [isLoading, authError, snackbarMessage];
 }
 
 @immutable
@@ -101,6 +104,10 @@ class AppStateIsInCompleteProfileView extends AppState {
     super.databaseError,
     required this.user,
   });
+
+  @override
+  List<Object?> get props =>
+      [user, isLoading, authError, snackbarMessage, databaseError];
 }
 
 extension GetUser on AppState {

@@ -26,8 +26,3 @@ class AddNewAnnouncementAddScreenEvent implements AddScreenEvent {
     required this.description,
   });
 }
-
-@immutable
-class FieldsWasClearedAddScreenEvent implements AddScreenEvent {
-  const FieldsWasClearedAddScreenEvent();
-}

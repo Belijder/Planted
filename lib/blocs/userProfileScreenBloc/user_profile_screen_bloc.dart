@@ -5,10 +5,14 @@ import 'package:planted/blocs/userProfileScreenBloc/user_profile_screen_event.da
 import 'package:planted/blocs/userProfileScreenBloc/user_profile_screen_state.dart';
 import 'package:planted/constants/firebase_paths.dart';
 import 'package:planted/database_error.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:planted/managers/conectivity_manager.dart';
 
 class UserProfileScreenBloc
     extends Bloc<UserProfileScreenEvent, UserProfileScreenState> {
   final db = FirebaseFirestore.instance;
+  final connectivityManager = ConnectivityManager();
+
   UserProfileScreenBloc()
       : super(
           const UserProfileScreenStateInUserProfileView(
@@ -36,6 +40,14 @@ class UserProfileScreenBloc
 
     on<UserProfileScreenEventArchiveAnnouncement>(
       (event, emit) async {
+        if (connectivityManager.status == ConnectivityResult.none) {
+          emit(const UserProfileScreenStateInUsersAnnouncementsView(
+            isLoading: false,
+            databaseError: DatabaseErrorNetworkRequestFailed(),
+          ));
+          return;
+        }
+
         emit(const UserProfileScreenStateInUsersAnnouncementsView(
             isLoading: true));
 
@@ -87,6 +99,14 @@ class UserProfileScreenBloc
     );
 
     on<UserProfileScreenEventDeleteAnnouncement>((event, emit) async {
+      if (connectivityManager.status == ConnectivityResult.none) {
+        emit(const UserProfileScreenStateInUsersAnnouncementsView(
+          isLoading: false,
+          databaseError: DatabaseErrorNetworkRequestFailed(),
+        ));
+        return;
+      }
+
       emit(const UserProfileScreenStateInUsersAnnouncementsView(
           isLoading: true));
 
@@ -115,6 +135,14 @@ class UserProfileScreenBloc
 
     on<UserProfileScreenEventUnblockUser>(
       (event, emit) async {
+        if (connectivityManager.status == ConnectivityResult.none) {
+          emit(const UserProfileScreenStateInBlockedUsersView(
+            isLoading: false,
+            databaseError: DatabaseErrorNetworkRequestFailed(),
+          ));
+          return;
+        }
+
         emit(const UserProfileScreenStateInBlockedUsersView(isLoading: true));
 
         try {
@@ -137,6 +165,14 @@ class UserProfileScreenBloc
 
     on<UserProfileScreenEventOpenLegalTerms>(
       (event, emit) async {
+        if (connectivityManager.status == ConnectivityResult.none) {
+          emit(const UserProfileScreenStateInUserProfileView(
+            isLoading: false,
+            databaseError: DatabaseErrorNetworkRequestFailed(),
+          ));
+          return;
+        }
+
         emit(const UserProfileScreenStateInUserProfileView(isLoading: false));
 
         try {

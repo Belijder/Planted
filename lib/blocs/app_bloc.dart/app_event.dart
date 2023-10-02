@@ -87,11 +87,6 @@ class AppEventCompletingUserProfile implements AppEvent {
 }
 
 @immutable
-class AppEventReloadUserInfo implements AppEvent {
-  const AppEventReloadUserInfo();
-}
-
-@immutable
 class AppEventAnnouncemmentFieldsCleaned implements AppEvent {
   const AppEventAnnouncemmentFieldsCleaned();
 }

@@ -80,3 +80,13 @@ class DatabaseErrorAborted extends DatabaseError {
           dialogText: 'Oparacja została przerwana. Spróbuj ponownie za chwilę.',
         );
 }
+
+@immutable
+class DatabaseErrorNetworkRequestFailed extends DatabaseError {
+  const DatabaseErrorNetworkRequestFailed()
+      : super(
+          dialogTitle: 'Brak połączenia z internetem',
+          dialogText:
+              'Wygląda na to, że nie masz połączenia z interetem. Aby móc wykonać tę akcję, musisz mieć aktywne połączenie z internetem.',
+        );
+}

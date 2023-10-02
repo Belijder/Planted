@@ -34,6 +34,7 @@ class RegisterView extends HookWidget {
               final Uri legalTermsUrl = Uri(scheme: 'https', path: path);
               launchUrl(legalTermsUrl);
             }
+            context.read<AppBloc>().add(const AppEventGoToRegisterView());
           }
         },
         child: Padding(

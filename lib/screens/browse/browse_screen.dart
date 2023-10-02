@@ -74,10 +74,11 @@ class BrowseScreen extends StatelessWidget {
                         announcement: announcement));
               }
             },
-            sendMessageBlocEvent: (
-                {required announcement,
-                required conversationID,
-                required message}) {
+            sendMessageBlocEvent: ({
+              required announcement,
+              required conversationID,
+              required message,
+            }) {
               context.read<BrowseScreenBloc>().add(SendMessageBrowseScreenEvent(
                   announcement: announcement,
                   conversation: browseScreenState.conversation,
@@ -86,13 +87,15 @@ class BrowseScreen extends StatelessWidget {
             blockUserBlocEvent: ({
               required currentUserID,
               required userToBlockID,
+              required announcement,
+              required conversation,
             }) {
-              context
-                  .read<BrowseScreenBloc>()
-                  .add(BlockUserFromConvesationViewBrowseScreenEvent(
-                    currentUserID: currentUserID,
-                    userToBlockID: userToBlockID,
-                  ));
+              context.read<BrowseScreenBloc>().add(
+                  BlockUserFromConvesationViewBrowseScreenEvent(
+                      currentUserID: currentUserID,
+                      userToBlockID: userToBlockID,
+                      announcement: announcement,
+                      conversation: conversation));
             },
           );
         } else {

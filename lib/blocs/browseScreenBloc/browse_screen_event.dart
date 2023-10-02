@@ -64,10 +64,14 @@ class BlockUserFromConvesationViewBrowseScreenEvent
     implements BrowseScreenEvent {
   final String currentUserID;
   final String userToBlockID;
+  final Announcement announcement;
+  final Conversation conversation;
 
   const BlockUserFromConvesationViewBrowseScreenEvent({
     required this.currentUserID,
     required this.userToBlockID,
+    required this.announcement,
+    required this.conversation,
   });
 }
 

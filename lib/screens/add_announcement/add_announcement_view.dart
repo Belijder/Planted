@@ -82,9 +82,6 @@ class AddAnnouncementView extends HookWidget {
             descriptionController.text = '';
             imagePath.value = null;
             seedCount.value = 1;
-            context
-                .read<AddScreenBloc>()
-                .add(const FieldsWasClearedAddScreenEvent());
           }
         },
         child: Padding(

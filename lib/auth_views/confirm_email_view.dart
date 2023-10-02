@@ -88,18 +88,6 @@ class ConfrimEmailView extends StatelessWidget {
                     ),
                   ],
                 ),
-                // const SizedBox(height: 20),
-                // TextButton(
-                //   onPressed: () {
-                //     context.read<AppBloc>().add(
-                //           const AppEventLogOut(),
-                //         );
-                //   },
-                //   style: TextButton.styleFrom(
-                //     foregroundColor: colorDarkMossGreen,
-                //   ),
-                //   child: const Text('Zaloguj się na inne konto'),
-                // ),
               ],
             ),
             Column(
