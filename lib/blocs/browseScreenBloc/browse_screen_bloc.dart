@@ -1,19 +1,16 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:planted/blocs/browseScreenBloc/browse_screen_event.dart';
 import 'package:planted/blocs/browseScreenBloc/browse_screen_state.dart';
-import 'package:planted/constants/firebase_paths.dart';
 import 'package:planted/database_error.dart';
 import 'package:planted/managers/conectivity_manager.dart';
+import 'package:planted/managers/firebase_database_manager.dart';
 import 'package:planted/models/conversation.dart';
-import 'package:planted/models/user_profile.dart';
-import 'package:uuid/uuid.dart';
 
 class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
-  final db = FirebaseFirestore.instance;
   final connectivityManager = ConnectivityManager();
+  final databaseManager = FirebaseDatabaseManager();
   BrowseScreenBloc()
       : super(
           const InAnnouncementsListViewBrowseScreenState(
@@ -49,11 +46,9 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
             isLoading: true,
           ),
         );
+
         try {
-          await db
-              .collection(conversationsPath)
-              .doc(event.conversationID)
-              .delete();
+          databaseManager.deleteConversation(id: event.conversationID);
           emit(
             InAnnouncementDetailsBrowseScreenState(
               announcement: event.announcement,
@@ -109,48 +104,23 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
           return;
         }
 
+        final Conversation conversation;
+
         try {
-          final conversationSnapshot = await db
-              .collection(conversationsPath)
-              .where('giver', isEqualTo: event.announcement.giverID)
-              .where('taker', isEqualTo: user.uid)
-              .where('announcementID', isEqualTo: event.announcement.docID)
-              .get();
+          final existingConversation =
+              await databaseManager.checkIfConversationExist(
+            giverID: event.announcement.giverID,
+            takerID: user.uid,
+            announcementID: event.announcement.docID,
+          );
 
-          final Conversation conversation;
-          final timeStamp = DateTime.timestamp();
-
-          final snapshot =
-              await db.collection(profilesPath).doc(user.uid).get();
-          final userProfile = UserProfile.fromSnapshot(snapshot);
-
-          if (conversationSnapshot.docs.isNotEmpty) {
-            conversation =
-                Conversation.fromSnapshot(conversationSnapshot.docs[0]);
+          if (existingConversation != null) {
+            conversation = existingConversation;
           } else {
-            final conversationID = const Uuid().v4();
-
-            await db.collection(conversationsPath).doc(conversationID).set({
-              'conversationID': conversationID,
-              'announcementID': event.announcement.docID,
-              'announcementName': event.announcement.name,
-              'giver': event.announcement.giverID,
-              'taker': user.uid,
-              'timeStamp': timeStamp,
-              'messages': [],
-              'giverDisplayName': event.announcement.giverDisplayName,
-              'takerDisplayName': userProfile.displayName,
-              'giverPhotoURL': event.announcement.giverPhotoURL,
-              'takerPhotoURL': userProfile.photoURL,
-              'giverLastActivity': event.announcement.timeStamp,
-              'takerLastActivity': timeStamp,
-            });
-
-            conversation = await db
-                .collection(conversationsPath)
-                .doc(conversationID)
-                .get()
-                .then((snapshot) => Conversation.fromSnapshot(snapshot));
+            conversation = await databaseManager.createNewConversation(
+              announcement: event.announcement,
+              userID: user.uid,
+            );
           }
 
           emit(InConversationViewBrowseScreenState(
@@ -196,25 +166,12 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
           return;
         }
 
-        final messageID = const Uuid().v4();
-        final timeStamp = DateTime.timestamp();
-
         try {
-          await db
-              .collection(conversationsPath)
-              .doc(event.conversation.conversationID)
-              .update({
-            'timeStamp': timeStamp,
-            'takerLastActivity': timeStamp,
-            'messages': FieldValue.arrayUnion([
-              {
-                'id': messageID,
-                'message': event.message.trim(),
-                'timeStamp': timeStamp,
-                'sender': user.uid,
-              },
-            ])
-          });
+          await databaseManager.sendMessage(
+            conversation: event.conversation,
+            sender: user.uid,
+            message: event.message,
+          );
 
           emit(InConversationViewBrowseScreenState(
             isLoading: false,
@@ -260,9 +217,10 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
           return;
         }
 
-        await db.collection(profilesPath).doc(event.currentUserID).update({
-          'blockedUsers': FieldValue.arrayUnion([event.userToBlockID])
-        });
+        await databaseManager.addUserToBlockedUsersList(
+          currentUserID: user.uid,
+          userToBlockID: event.userToBlockID,
+        );
 
         emit(const InAnnouncementsListViewBrowseScreenState(
             isLoading: false,
@@ -298,9 +256,10 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
         }
 
         try {
-          await db.collection(profilesPath).doc(user.uid).update({
-            'blockedUsers': FieldValue.arrayUnion([event.userToBlockID])
-          });
+          await databaseManager.addUserToBlockedUsersList(
+            currentUserID: user.uid,
+            userToBlockID: event.userToBlockID,
+          );
 
           emit(const InAnnouncementsListViewBrowseScreenState(
               isLoading: false,

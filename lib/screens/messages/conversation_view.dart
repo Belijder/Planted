@@ -86,7 +86,9 @@ class ConversationView extends HookWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              announcement.giverDisplayName,
+              currentUserID == conversation.giver
+                  ? conversation.takerDisplayName
+                  : conversation.giverDisplayName,
               style: const TextStyle(
                   color: colorSepia, fontSize: 20, fontWeight: FontWeight.bold),
             ),

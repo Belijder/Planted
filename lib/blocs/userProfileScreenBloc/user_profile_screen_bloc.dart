@@ -1,17 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:planted/blocs/userProfileScreenBloc/user_profile_screen_event.dart';
 import 'package:planted/blocs/userProfileScreenBloc/user_profile_screen_state.dart';
-import 'package:planted/constants/firebase_paths.dart';
 import 'package:planted/database_error.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:planted/enums/announcement_action.dart';
 import 'package:planted/managers/conectivity_manager.dart';
+import 'package:planted/managers/firebase_database_manager.dart';
 
 class UserProfileScreenBloc
     extends Bloc<UserProfileScreenEvent, UserProfileScreenState> {
-  final db = FirebaseFirestore.instance;
   final connectivityManager = ConnectivityManager();
+  final databaseManager = FirebaseDatabaseManager();
 
   UserProfileScreenBloc()
       : super(
@@ -52,40 +52,19 @@ class UserProfileScreenBloc
             isLoading: true));
 
         try {
-          final aggregateQuerySnapshot = await db
-              .collection(conversationsPath)
-              .where(
-                Filter.or(
-                  Filter('giver', isEqualTo: event.userID),
-                  Filter('taker', isEqualTo: event.userID),
-                ),
-              )
-              .where('announcementID', isEqualTo: event.documentID)
-              .count()
-              .get();
-
-          if (aggregateQuerySnapshot.count > 0) {
-            await db
-                .collection(announcemensPath)
-                .doc(event.documentID)
-                .update({'status': 3});
-          } else {
-            await db
-                .collection(announcemensPath)
-                .doc(event.documentID)
-                .delete();
-            await FirebaseStorage.instance
-                .ref('images')
-                .child(event.documentID)
-                .delete();
-          }
+          final announcementStatus =
+              await databaseManager.archiveOrDeleteAnnouncement(
+            userID: event.userID,
+            announcementID: event.documentID,
+          );
 
           emit(
             UserProfileScreenStateInUsersAnnouncementsView(
                 isLoading: false,
-                snackbarMessage: aggregateQuerySnapshot.count == 0
-                    ? 'Ogłoszenie zostało usunięte!'
-                    : 'Ogłoszenie zostało zarchiwizowane!'),
+                snackbarMessage:
+                    announcementStatus == AnnouncementAction.deleted
+                        ? 'Ogłoszenie zostało usunięte!'
+                        : 'Ogłoszenie zostało zarchiwizowane!'),
           );
         } on FirebaseException catch (e) {
           emit(
@@ -111,11 +90,8 @@ class UserProfileScreenBloc
           isLoading: true));
 
       try {
-        await db.collection(announcemensPath).doc(event.documentID).delete();
-        await FirebaseStorage.instance
-            .ref('images')
-            .child(event.documentID)
-            .delete();
+        await databaseManager.deleteAnnouncement(
+            announcementID: event.documentID);
 
         emit(
           const UserProfileScreenStateInUsersAnnouncementsView(
@@ -146,9 +122,10 @@ class UserProfileScreenBloc
         emit(const UserProfileScreenStateInBlockedUsersView(isLoading: true));
 
         try {
-          await db.collection(profilesPath).doc(event.currentUserID).update({
-            'blockedUsers': FieldValue.arrayRemove([event.idToUnblock])
-          });
+          await databaseManager.unblockUser(
+            currentUserID: event.currentUserID,
+            userToUnblockID: event.idToUnblock,
+          );
 
           emit(const UserProfileScreenStateInBlockedUsersView(
             isLoading: false,
@@ -176,11 +153,9 @@ class UserProfileScreenBloc
         emit(const UserProfileScreenStateInUserProfileView(isLoading: false));
 
         try {
-          final path = await db
-              .collection(legaltermsPath)
-              .doc(event.documentID)
-              .get()
-              .then((snapshot) => snapshot.data()?['path'] as String);
+          final path = await databaseManager.getPathToLegalTerms(
+            documentID: event.documentID,
+          );
 
           emit(UserProfileScreenStateInUserProfileView(
             isLoading: false,

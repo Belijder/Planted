@@ -1,0 +1,1 @@
+enum AnnouncementAction { archived, deleted }

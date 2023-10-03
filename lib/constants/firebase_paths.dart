@@ -5,3 +5,4 @@ const legaltermsPath = 'legalTerms';
 const privacyPolicyDoc = 'privacyPolicy';
 const termsOfUseDoc = 'termsOfUse';
 const storageProfileImagesRef = 'profileImages';
+const storageImagesRef = 'images';

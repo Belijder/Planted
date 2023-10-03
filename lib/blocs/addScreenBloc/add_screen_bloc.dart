@@ -8,10 +8,11 @@ import 'package:planted/blocs/addScreenBloc/add_screen_state.dart';
 import 'package:planted/database_error.dart';
 import 'package:planted/helpers/compress_image.dart';
 import 'package:planted/managers/conectivity_manager.dart';
-import 'package:uuid/uuid.dart';
+import 'package:planted/managers/firebase_database_manager.dart';
 
 class AddScreenBloc extends Bloc<AddScreenEvent, AddScreenState> {
   final connectivityManager = ConnectivityManager();
+  final databaseManager = FirebaseDatabaseManager();
 
   AddScreenBloc()
       : super(
@@ -28,13 +29,10 @@ class AddScreenBloc extends Bloc<AddScreenEvent, AddScreenState> {
                 databaseError: DatabaseErrorNetworkRequestFailed()),
           );
           return;
-        } else {
-          emit(const AddScreenState(isLoading: true));
         }
 
-        final user = event.user;
-        final announcementId = const Uuid().v4();
-        final timeStamp = DateTime.timestamp();
+        emit(const AddScreenState(isLoading: true));
+
         final file = File(event.imagePath);
 
         try {
@@ -47,37 +45,15 @@ class AddScreenBloc extends Bloc<AddScreenEvent, AddScreenState> {
             fileToPut = file;
           }
 
-          final task = await FirebaseStorage.instance
-              .ref('images')
-              .child(announcementId)
-              .putFile(fileToPut);
-
-          final imageURL = await task.ref.getDownloadURL();
-
-          final db = FirebaseFirestore.instance;
-
-          final currentUserInfo = await db
-              .collection('profiles')
-              .doc(user.uid)
-              .get()
-              .then((snapshot) => snapshot.data());
-
-          final docData = {
-            'docID': announcementId,
-            'status': 0,
-            'name': event.name,
-            'latinName': event.latinName,
-            'seedCount': event.seedCount,
-            'city': event.city,
-            'description': event.description,
-            'timeStamp': timeStamp,
-            'giverID': user.uid,
-            'imageURL': imageURL,
-            'giverDisplayName': currentUserInfo!['displayName'] ?? 'Unknown',
-            'giverPhotoURL': currentUserInfo['photoURL'] ?? '',
-          };
-
-          await db.collection('announcements').doc(announcementId).set(docData);
+          await databaseManager.addAnnouncement(
+            name: event.name,
+            latinName: event.latinName,
+            seedCount: event.seedCount,
+            city: event.city,
+            description: event.description,
+            giverID: event.user.uid,
+            imageFile: fileToPut,
+          );
 
           emit(
             const AddScreenState(
