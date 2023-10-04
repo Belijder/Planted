@@ -14,6 +14,14 @@ class GoToConversationMessagesScreenEvent implements MessagesScreenEvent {
   });
 }
 
+class GoToConversationFromPushMessageMessagesScreenEvent
+    implements MessagesScreenEvent {
+  final String conversationID;
+  const GoToConversationFromPushMessageMessagesScreenEvent({
+    required this.conversationID,
+  });
+}
+
 @immutable
 class GoToListOfConvesationsMessagesScreenEvent implements MessagesScreenEvent {
   final Announcement announcement;

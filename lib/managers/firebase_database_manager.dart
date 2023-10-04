@@ -1,12 +1,15 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:planted/constants/firebase_paths.dart';
 import 'package:planted/enums/announcement_action.dart';
+import 'package:planted/fb_key.dart';
 import 'package:planted/models/announcement.dart';
 import 'package:planted/models/conversation.dart';
 import 'package:planted/models/user_profile.dart';
 import 'package:uuid/uuid.dart';
+import 'package:http/http.dart' as http;
 
 class FirebaseDatabaseManager {
   FirebaseDatabaseManager._private();
@@ -116,6 +119,18 @@ class FirebaseDatabaseManager {
     }
   }
 
+  Future<Conversation> getConversation({required String conversationID}) async {
+    try {
+      return await db
+          .collection(conversationsPath)
+          .doc(conversationID)
+          .get()
+          .then((snapshot) => Conversation.fromSnapshot(snapshot));
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<Conversation> createNewConversation({
     required Announcement announcement,
     required String userID,
@@ -173,6 +188,14 @@ class FirebaseDatabaseManager {
         ? 'giverLastActivity'
         : 'takerLastActivity';
 
+    final cotalkerID = (sender == conversation.giver)
+        ? conversation.taker
+        : conversation.giver;
+
+    final String userDisplayName = (sender == conversation.giver)
+        ? conversation.takerDisplayName
+        : conversation.giverDisplayName;
+
     try {
       await db
           .collection(conversationsPath)
@@ -190,10 +213,47 @@ class FirebaseDatabaseManager {
         ])
       });
 
-      return;
+      final cotalkerUserProfile = await getUserProfile(id: cotalkerID);
+      final token = cotalkerUserProfile.fcmToken;
+
+      await sendPushMessage(
+        token: token,
+        title: userDisplayName,
+        body: message.trim(),
+        conversationID: conversation.conversationID,
+      );
     } catch (e) {
       rethrow;
     }
+  }
+
+  Future<void> sendPushMessage({
+    required String token,
+    required String title,
+    required String body,
+    required String conversationID,
+  }) async {
+    try {
+      await http.post(
+        Uri.parse('https://fcm.googleapis.com/fcm/send'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'authorization': key
+        },
+        body: jsonEncode({
+          'to': token,
+          'data': {
+            'type': 'conversation',
+            'conversationID': conversationID,
+          },
+          'priority': 'high',
+          'notification': {
+            'title': title,
+            'body': body,
+          },
+        }),
+      );
+    } catch (_) {}
   }
 
   Future<void> addUserToBlockedUsersList({

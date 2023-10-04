@@ -52,6 +52,9 @@ dependencies:
   cached_network_image: ^3.2.3
   in_app_review: ^2.0.6
   connectivity_plus: ^4.0.2
+  firebase_messaging: ^14.6.8
+  flutter_local_notifications: ^15.1.1
+  http: ^1.1.0
 
 dev_dependencies:
   flutter_test:
@@ -79,6 +82,7 @@ flutter:
     - assets/images/planted_logo.png
     - assets/images/person.png
     - assets/images/add.png
+    - assets/images/planted_icon.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

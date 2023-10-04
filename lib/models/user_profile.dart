@@ -7,12 +7,16 @@ class UserProfile {
   final String photoURL;
   final String userID;
   final List<String> blockedUsers;
+  final String fcmToken;
+  final bool isAdmin;
 
   const UserProfile({
     required this.displayName,
     required this.photoURL,
     required this.userID,
     required this.blockedUsers,
+    required this.isAdmin,
+    required this.fcmToken,
   });
 
   factory UserProfile.fromSnapshot(
@@ -23,6 +27,8 @@ class UserProfile {
       photoURL: data['photoURL'] ?? '',
       userID: data['userID'],
       blockedUsers: List<String>.from(data['blockedUsers'] ?? []),
+      isAdmin: data['isAdmin'] ?? false,
+      fcmToken: data['fcmToken'] ?? '',
     );
   }
 }

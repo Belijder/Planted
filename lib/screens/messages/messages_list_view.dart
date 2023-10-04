@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:planted/constants/colors.dart';
 import 'package:planted/constants/firebase_paths.dart';
+import 'package:planted/helpers/request_permission_for_push.dart';
 import 'package:planted/models/conversation.dart';
 import 'package:planted/screens/messages/conversation_tile.dart';
 import 'package:planted/screens/views/empty_state_view.dart';
@@ -14,6 +15,7 @@ class MessagesListView extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    requestPermissionForPushNotifications();
     final conversationStream = useMemoized(() {
       final userID = FirebaseAuth.instance.currentUser?.uid ?? '';
       return FirebaseFirestore.instance

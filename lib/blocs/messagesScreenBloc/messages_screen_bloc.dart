@@ -157,5 +157,61 @@ class MessagesScreenBloc
             snackbarMessage: 'Użytkownik został zablokowany!'));
       },
     );
+
+    on<GoToConversationFromPushMessageMessagesScreenEvent>(
+      (event, emit) async {
+        if (connectivityManager.status == ConnectivityResult.none) {
+          emit(const InConversationsListMessagesScreenState(
+            isLoading: false,
+            databaseError: DatabaseErrorNetworkRequestFailed(),
+          ));
+          return;
+        }
+
+        emit(const InConversationsListMessagesScreenState(isLoading: true));
+
+        final user = FirebaseAuth.instance.currentUser;
+        if (user == null) {
+          emit(
+            const InConversationsListMessagesScreenState(
+              isLoading: false,
+              databaseError: DatabaseErrorUserNotFound(),
+            ),
+          );
+          return;
+        }
+
+        try {
+          final conversation = await databaseManager.getConversation(
+              conversationID: event.conversationID);
+
+          final announcement = await databaseManager.getAnnouncement(
+              id: conversation.announcementID);
+
+          final userProfile =
+              await databaseManager.getUserProfile(id: user.uid);
+
+          await databaseManager.updateLastActivityInConversation(
+            currentUserID: user.uid,
+            giverID: announcement.giverID,
+            conversationID: conversation.conversationID,
+          );
+
+          emit(InConversationMessagesScreenState(
+            isLoading: false,
+            conversation: conversation,
+            announcement: announcement,
+            userProfile: userProfile,
+          ));
+        } on FirebaseException catch (e) {
+          emit(
+            InConversationsListMessagesScreenState(
+              isLoading: false,
+              databaseError: DatabaseError.from(e),
+            ),
+          );
+        }
+      },
+    );
   }
 }

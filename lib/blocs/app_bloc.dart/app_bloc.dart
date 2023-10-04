@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:planted/auth_error.dart';
 import 'package:planted/blocs/app_bloc.dart/app_event.dart';
 import 'package:planted/blocs/app_bloc.dart/app_state.dart';
@@ -237,11 +238,15 @@ class AppBloc extends Bloc<AppEvent, AppState> {
             imageURL = '';
           }
 
+          final fcmToken = await FirebaseMessaging.instance.getToken();
+
           final userProfileData = {
             'displayName': event.displayName,
             'userID': user.uid,
             'photoURL': imageURL,
-            'blockedUsers': []
+            'blockedUsers': [],
+            'isAdmin': false,
+            'fcmToken': fcmToken
           };
 
           await FirebaseFirestore.instance
@@ -347,13 +352,17 @@ class AppBloc extends Bloc<AppEvent, AppState> {
               .where('userID', isEqualTo: user.uid)
               .get();
 
+          final fcmToken = await FirebaseMessaging.instance.getToken();
+
           if (query.docs.isEmpty) {
             if (user.displayName != null) {
               final userProfileData = {
                 'displayName': user.displayName!,
                 'userID': user.uid,
                 'photoURL': user.photoURL ?? '',
-                'blockedUsers': []
+                'blockedUsers': [],
+                'isAdmin': false,
+                'fcmToken': fcmToken
               };
 
               await FirebaseFirestore.instance
