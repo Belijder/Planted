@@ -4,6 +4,7 @@ import 'package:planted/blocs/userProfileScreenBloc/user_profile_screen_event.da
 import 'package:planted/blocs/userProfileScreenBloc/user_profile_screen_state.dart';
 import 'package:planted/database_error.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:planted/enums/admin_announcement_action.dart';
 import 'package:planted/enums/announcement_action.dart';
 import 'package:planted/managers/conectivity_manager.dart';
 import 'package:planted/managers/firebase_database_manager.dart';
@@ -164,6 +165,50 @@ class UserProfileScreenBloc
         } on FirebaseException catch (e) {
           emit(UserProfileScreenStateInUserProfileView(
             isLoading: false,
+            databaseError: DatabaseError.from(e),
+          ));
+        }
+      },
+    );
+    on<UserProfileScreenEventGoToAdministratorPanelView>(
+      (event, emit) {
+        if (!event.userProfile.isAdmin) {
+          emit(const UserProfileScreenStateInUserProfileView(
+            isLoading: false,
+            databaseError: DatabaseErrorPermissionDenied(),
+          ));
+        }
+
+        try {
+          emit(
+            UserProfileScreenStateInAdministratorPanel(
+              announcementsStream:
+                  databaseManager.createAnnouncementsStreamWith(status: 0),
+              initialTabBarIndex: event.initialTabBarIndex,
+              isLoading: false,
+            ),
+          );
+        } on FirebaseException catch (e) {
+          emit(UserProfileScreenStateInUserProfileView(
+            isLoading: false,
+            databaseError: DatabaseError.from(e),
+          ));
+        }
+      },
+    );
+
+    on<UserProfileScreenEventChangeStatusOfAnnouncement>(
+      (event, emit) async {
+        final newStatus =
+            event.action == AdminAnnouncementAction.accept ? 1 : 2;
+        try {
+          await databaseManager.changeStatusOfAnnouncement(
+              announcementID: event.announcementID, newStatus: newStatus);
+        } on FirebaseException catch (e) {
+          emit(UserProfileScreenStateInAdministratorPanel(
+            initialTabBarIndex: 0,
+            isLoading: false,
+            announcementsStream: state.announcementsStream,
             databaseError: DatabaseError.from(e),
           ));
         }

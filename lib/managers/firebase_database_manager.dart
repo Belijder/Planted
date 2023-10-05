@@ -19,6 +19,20 @@ class FirebaseDatabaseManager {
 
   final db = FirebaseFirestore.instance;
 
+  Stream<List<Announcement>> createAnnouncementsStreamWith(
+      {required int status}) {
+    return FirebaseFirestore.instance
+        .collection(announcemensPath)
+        .where('status', isEqualTo: status)
+        .orderBy('timeStamp', descending: true)
+        .snapshots()
+        .map((querySnapshot) {
+      return querySnapshot.docs.map((docSnapshot) {
+        return Announcement.fromSnapshot(docSnapshot);
+      }).toList();
+    });
+  }
+
   Future<TaskSnapshot> putImageInStorage({
     required String childRef,
     required File file,
@@ -335,6 +349,20 @@ class FirebaseDatabaseManager {
             .delete();
         return AnnouncementAction.deleted;
       }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> changeStatusOfAnnouncement({
+    required String announcementID,
+    required int newStatus,
+  }) async {
+    try {
+      await db
+          .collection(announcemensPath)
+          .doc(announcementID)
+          .update({'status': newStatus});
     } catch (e) {
       rethrow;
     }

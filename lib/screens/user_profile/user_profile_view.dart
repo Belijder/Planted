@@ -113,6 +113,20 @@ class UserProfileView extends HookWidget {
                       const SizedBox(height: 30),
                       Column(
                         children: [
+                          if (userProfile.isAdmin)
+                            Column(
+                              children: [
+                                UserProfileActionButton(
+                                    title: 'Panel Administratora',
+                                    onPressed: () {
+                                      context.read<UserProfileScreenBloc>().add(
+                                          UserProfileScreenEventGoToAdministratorPanelView(
+                                              initialTabBarIndex: 0,
+                                              userProfile: userProfile));
+                                    }),
+                                const SizedBox(height: 20),
+                              ],
+                            ),
                           UserProfileActionButton(
                               title: 'Twoje ogłoszenia',
                               onPressed: () {

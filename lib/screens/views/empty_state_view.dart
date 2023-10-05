@@ -12,12 +12,15 @@ class EmptyStateView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Text(
-        message,
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          color: colorSepia.withAlpha(150),
-          fontSize: 15,
+      child: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Text(
+          message,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: colorSepia.withAlpha(150),
+            fontSize: 15,
+          ),
         ),
       ),
     );

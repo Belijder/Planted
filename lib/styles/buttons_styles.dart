@@ -18,6 +18,7 @@ final filledButtonStyle = ElevatedButton.styleFrom(
 ButtonStyle createFilledButtonStyle({
   Color backgroundColor = colorDarkMossGreen,
   Color foregroundColor = Colors.white,
+  BorderRadius borderRadius = const BorderRadius.all(Radius.circular(12)),
 }) =>
     ElevatedButton.styleFrom(
       shadowColor: colorSepia,
@@ -25,7 +26,7 @@ ButtonStyle createFilledButtonStyle({
       backgroundColor: backgroundColor,
       foregroundColor: foregroundColor,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: borderRadius,
       ),
       textStyle: const TextStyle(
         fontSize: 15,
