@@ -213,5 +213,66 @@ class MessagesScreenBloc
         }
       },
     );
+
+    on<GoToReportViewMessagesScreenEvent>(
+      (event, emit) {
+        emit(InReportViewMessagesScreenState(
+          isLoading: false,
+          userID: event.userID,
+          announcement: event.announcement,
+          conversation: event.conversation,
+        ));
+      },
+    );
+
+    on<SendReportMessagesScreenEvent>(
+      (event, emit) async {
+        if (connectivityManager.status == ConnectivityResult.none) {
+          emit(InReportViewMessagesScreenState(
+            isLoading: false,
+            userID: event.userID,
+            announcement: event.announcement,
+            conversation: event.conversation,
+            databaseError: const DatabaseErrorNetworkRequestFailed(),
+          ));
+          return;
+        }
+
+        try {
+          await databaseManager.sendReport(
+              announcement: event.announcement,
+              conversationID: event.conversation?.conversationID ?? '',
+              reasonForReporting: event.reasonForReporting,
+              additionalInformation: event.additionalInformation,
+              userID: event.userID);
+
+          final userProfile =
+              await databaseManager.getUserProfile(id: event.userID);
+
+          if (event.conversation != null) {
+            emit(InConversationMessagesScreenState(
+              isLoading: false,
+              conversation: event.conversation!,
+              announcement: event.announcement,
+              userProfile: userProfile,
+              snackbarMessage: 'Zgłoszenie zostało wysłane!',
+            ));
+          } else {
+            emit(const InConversationsListMessagesScreenState(
+              isLoading: false,
+              snackbarMessage: 'Zgłoszenie zostało wysłane!',
+            ));
+          }
+        } on FirebaseException catch (e) {
+          emit(InReportViewMessagesScreenState(
+            isLoading: false,
+            userID: event.userID,
+            announcement: event.announcement,
+            conversation: event.conversation,
+            databaseError: DatabaseError.from(e),
+          ));
+        }
+      },
+    );
   }
 }

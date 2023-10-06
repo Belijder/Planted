@@ -245,6 +245,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
             'userID': user.uid,
             'photoURL': imageURL,
             'blockedUsers': [],
+            'userReports': [],
             'isAdmin': false,
             'fcmToken': fcmToken
           };
@@ -361,6 +362,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
                 'userID': user.uid,
                 'photoURL': user.photoURL ?? '',
                 'blockedUsers': [],
+                'userReports': [],
                 'isAdmin': false,
                 'fcmToken': fcmToken
               };

@@ -32,7 +32,13 @@ typedef BlockUserBlocEvent = void Function({
   required Conversation conversation,
 });
 
-enum MessagesPopUpMenuItem { blocUser }
+typedef GoToReportViewBlocEvent = void Function({
+  required Announcement announcement,
+  required Conversation conversation,
+  required String currentUserID,
+});
+
+enum MessagesPopUpMenuItem { blocUser, reportUser }
 
 class ConversationView extends HookWidget {
   final String currentUserID;
@@ -41,6 +47,7 @@ class ConversationView extends HookWidget {
   final SendMessageBlocEvent sendMessageBlocEvent;
   final ReturnBlocEvent returnBlocEvent;
   final BlockUserBlocEvent blockUserBlocEvent;
+  final GoToReportViewBlocEvent goToReportViewBlocEvent;
   const ConversationView({
     required this.currentUserID,
     required this.announcement,
@@ -48,6 +55,7 @@ class ConversationView extends HookWidget {
     required this.sendMessageBlocEvent,
     required this.returnBlocEvent,
     required this.blockUserBlocEvent,
+    required this.goToReportViewBlocEvent,
     super.key,
   });
 
@@ -102,22 +110,38 @@ class ConversationView extends HookWidget {
         actions: [
           PopupMenuButton<MessagesPopUpMenuItem>(
             onSelected: (value) {
-              final String userIDtoBlock = currentUserID == conversation.giver
-                  ? conversation.taker
-                  : conversation.giver;
+              switch (value) {
+                case MessagesPopUpMenuItem.blocUser:
+                  final String userIDtoBlock =
+                      currentUserID == conversation.giver
+                          ? conversation.taker
+                          : conversation.giver;
 
-              blockUserBlocEvent(
-                userToBlockID: userIDtoBlock,
-                currentUserID: currentUserID,
-                announcement: announcement,
-                conversation: conversation,
-              );
+                  blockUserBlocEvent(
+                    userToBlockID: userIDtoBlock,
+                    currentUserID: currentUserID,
+                    announcement: announcement,
+                    conversation: conversation,
+                  );
+                case MessagesPopUpMenuItem.reportUser:
+                  goToReportViewBlocEvent(
+                      announcement: announcement,
+                      conversation: conversation,
+                      currentUserID: currentUserID);
+              }
             },
             itemBuilder: (context) => [
               const PopupMenuItem<MessagesPopUpMenuItem>(
                 value: MessagesPopUpMenuItem.blocUser,
                 child: Text(
                   'Zablokuj użytkownika',
+                  style: TextStyle(color: colorRedKenyanCopper),
+                ),
+              ),
+              const PopupMenuItem<MessagesPopUpMenuItem>(
+                value: MessagesPopUpMenuItem.reportUser,
+                child: Text(
+                  'Zgłoś użytkownika',
                   style: TextStyle(color: colorRedKenyanCopper),
                 ),
               ),

@@ -10,6 +10,8 @@ import 'package:planted/models/announcement.dart';
 import 'package:planted/styles/box_decoration_styles.dart';
 import 'package:planted/styles/buttons_styles.dart';
 
+enum ModalPopupAction { report, block }
+
 class AnnouncementDetailsView extends StatelessWidget {
   final Announcement announcement;
   const AnnouncementDetailsView({super.key, required this.announcement});
@@ -202,7 +204,7 @@ class AnnouncementDetailsView extends StatelessWidget {
                       ),
                       GestureDetector(
                         onTap: () {
-                          showCupertinoModalPopup<bool>(
+                          showCupertinoModalPopup<ModalPopupAction>(
                             context: context,
                             builder: (context) {
                               return Container(
@@ -222,7 +224,24 @@ class AnnouncementDetailsView extends StatelessWidget {
                                                 colorRedKenyanCopper,
                                           ),
                                           onPressed: () {
-                                            Navigator.of(context).pop(true);
+                                            Navigator.of(context)
+                                                .pop(ModalPopupAction.report);
+                                          },
+                                          child:
+                                              const Text('Zgłoś użytkownika'),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: double.infinity - 40,
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            foregroundColor: Colors.white,
+                                            backgroundColor:
+                                                colorRedKenyanCopper,
+                                          ),
+                                          onPressed: () {
+                                            Navigator.of(context)
+                                                .pop(ModalPopupAction.block);
                                           },
                                           child: const Text(
                                               'Zablokuj użytkownika'),
@@ -232,7 +251,7 @@ class AnnouncementDetailsView extends StatelessWidget {
                                         width: double.infinity,
                                         child: OutlinedButton(
                                           onPressed: () {
-                                            Navigator.of(context).pop(false);
+                                            Navigator.of(context).pop();
                                           },
                                           child: const Text('Anuluj'),
                                         ),
@@ -243,11 +262,19 @@ class AnnouncementDetailsView extends StatelessWidget {
                               );
                             },
                           ).then((value) {
-                            if (value == true) {
-                              context.read<BrowseScreenBloc>().add(
-                                  BlockUserFromDetailsViewBrowseScreenEvent(
-                                      announcement: announcement,
-                                      userToBlockID: announcement.giverID));
+                            if (value != null) {
+                              switch (value) {
+                                case ModalPopupAction.report:
+                                  context.read<BrowseScreenBloc>().add(
+                                          GoToReportViewFromAnnouncementBrowseScreenEvent(
+                                        announcement: announcement,
+                                      ));
+                                case ModalPopupAction.block:
+                                  context.read<BrowseScreenBloc>().add(
+                                      BlockUserFromDetailsViewBrowseScreenEvent(
+                                          announcement: announcement,
+                                          userToBlockID: announcement.giverID));
+                              }
                             }
                           });
                         },

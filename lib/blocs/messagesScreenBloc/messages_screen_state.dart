@@ -36,10 +36,26 @@ class InConversationMessagesScreenState extends MessagesScreenState {
   const InConversationMessagesScreenState({
     required super.isLoading,
     super.databaseError,
+    super.snackbarMessage,
     required this.conversation,
     required this.announcement,
     required this.userProfile,
     this.messageSended = false,
+  });
+}
+
+@immutable
+class InReportViewMessagesScreenState extends MessagesScreenState {
+  final String userID;
+  final Announcement announcement;
+  final Conversation? conversation;
+
+  const InReportViewMessagesScreenState({
+    required super.isLoading,
+    super.databaseError,
+    required this.userID,
+    required this.announcement,
+    required this.conversation,
   });
 }
 

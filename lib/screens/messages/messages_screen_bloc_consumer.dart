@@ -11,6 +11,7 @@ import 'package:planted/constants/firebase_paths.dart';
 import 'package:planted/models/user_profile.dart';
 import 'package:planted/screens/messages/conversation_view.dart';
 import 'package:planted/screens/messages/messages_list_view.dart';
+import 'package:planted/screens/views/report_view.dart';
 import 'package:planted/utilities/dialogs/show_database_error_dialog.dart';
 import 'package:planted/utilities/loading/loading_screen.dart';
 
@@ -112,6 +113,53 @@ class MessagesScreenBlocConsumer extends HookWidget {
                   .add(BlockUserMessagesScreenEvent(
                     currentUserID: currentUserID,
                     userToBlockID: userToBlockID,
+                  ));
+            },
+            goToReportViewBlocEvent: ({
+              required announcement,
+              required conversation,
+              required currentUserID,
+            }) {
+              context.read<MessagesScreenBloc>().add(
+                  GoToReportViewMessagesScreenEvent(
+                      announcement: announcement,
+                      conversation: conversation,
+                      userID: currentUserID));
+            },
+          );
+        } else if (messagesScreenState is InReportViewMessagesScreenState) {
+          child = ReportView(
+            announcement: messagesScreenState.announcement,
+            conversation: messagesScreenState.conversation,
+            userID: userID,
+            returnAction: (
+                {required announcement,
+                required conversation,
+                required userID}) {
+              if (conversation != null) {
+                context.read<MessagesScreenBloc>().add(
+                    GoToConversationMessagesScreenEvent(
+                        conversation: conversation));
+              } else {
+                context.read<MessagesScreenBloc>().add(
+                    GoToListOfConvesationsMessagesScreenEvent(
+                        announcement: announcement));
+              }
+            },
+            reportAction: (
+                {required additionalInformation,
+                required announcement,
+                required conversation,
+                required reasonForReporting,
+                required userID}) {
+              context
+                  .read<MessagesScreenBloc>()
+                  .add(SendReportMessagesScreenEvent(
+                    announcement: announcement,
+                    conversation: conversation,
+                    userID: userID,
+                    reasonForReporting: reasonForReporting,
+                    additionalInformation: additionalInformation,
                   ));
             },
           );

@@ -394,4 +394,34 @@ class FirebaseDatabaseManager {
         .get()
         .then((snapshot) => snapshot.data()?['path'] as String);
   }
+
+  Future<void> sendReport({
+    required Announcement announcement,
+    required String? conversationID,
+    required String reasonForReporting,
+    required String additionalInformation,
+    required String userID,
+  }) async {
+    final reportID = const Uuid().v4();
+    final data = {
+      'reportID': reportID,
+      'reportingPersonID': userID,
+      'reportedPersonID': announcement.giverID,
+      'reportedPersonDisplayName': announcement.giverDisplayName,
+      'conversationID': conversationID ?? '',
+      'announcementID': announcement.docID,
+      'reasonForReporting': reasonForReporting,
+      'additionalInformation': additionalInformation,
+      'status': 0,
+      'adminResponse': '',
+    };
+    try {
+      await db.collection(reportsPath).doc(reportID).set(data);
+      await db.collection(profilesPath).doc(userID).update({
+        'userReports': FieldValue.arrayUnion([reportID])
+      });
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

@@ -7,6 +7,7 @@ class UserProfile {
   final String photoURL;
   final String userID;
   final List<String> blockedUsers;
+  final List<String> userReports;
   final String fcmToken;
   final bool isAdmin;
 
@@ -15,6 +16,7 @@ class UserProfile {
     required this.photoURL,
     required this.userID,
     required this.blockedUsers,
+    required this.userReports,
     required this.isAdmin,
     required this.fcmToken,
   });
@@ -27,6 +29,7 @@ class UserProfile {
       photoURL: data['photoURL'] ?? '',
       userID: data['userID'],
       blockedUsers: List<String>.from(data['blockedUsers'] ?? []),
+      userReports: List<String>.from(data['userReports'] ?? []),
       isAdmin: data['isAdmin'] ?? false,
       fcmToken: data['fcmToken'] ?? '',
     );

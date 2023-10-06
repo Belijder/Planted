@@ -125,7 +125,7 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
 
           emit(InConversationViewBrowseScreenState(
             isLoading: false,
-            user: user,
+            userID: user.uid,
             announcement: event.announcement,
             conversation: conversation,
           ));
@@ -158,7 +158,7 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
         if (connectivityManager.status == ConnectivityResult.none) {
           emit(InConversationViewBrowseScreenState(
             isLoading: false,
-            user: user,
+            userID: user.uid,
             announcement: event.announcement,
             conversation: event.conversation,
             databaseError: const DatabaseErrorNetworkRequestFailed(),
@@ -175,7 +175,7 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
 
           emit(InConversationViewBrowseScreenState(
             isLoading: false,
-            user: user,
+            userID: user.uid,
             announcement: event.announcement,
             conversation: event.conversation,
             messageSended: true,
@@ -183,7 +183,7 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
         } on FirebaseException catch (e) {
           emit(InConversationViewBrowseScreenState(
             isLoading: false,
-            user: user,
+            userID: user.uid,
             announcement: event.announcement,
             conversation: event.conversation,
             databaseError: DatabaseError.from(e),
@@ -209,7 +209,7 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
         if (connectivityManager.status == ConnectivityResult.none) {
           emit(InConversationViewBrowseScreenState(
             isLoading: false,
-            user: user,
+            userID: user.uid,
             announcement: event.announcement,
             conversation: event.conversation,
             databaseError: const DatabaseErrorNetworkRequestFailed(),
@@ -271,6 +271,113 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
                 isLoading: false,
                 databaseError: DatabaseError.from(e)),
           );
+        }
+      },
+    );
+
+    on<GoToReportViewFromAnnouncementBrowseScreenEvent>(
+      (event, emit) async {
+        final user = FirebaseAuth.instance.currentUser;
+        if (user == null) {
+          emit(
+            InAnnouncementDetailsBrowseScreenState(
+                announcement: event.announcement,
+                isLoading: false,
+                databaseError: const DatabaseErrorUserNotFound()),
+          );
+          return;
+        }
+
+        emit(InReportViewBrowseScreenState(
+          isLoading: false,
+          userID: user.uid,
+          announcement: event.announcement,
+          conversation: null,
+        ));
+      },
+    );
+
+    on<GoToReportViewFromConversationBrowseScreenEvent>(
+      (event, emit) async {
+        final user = FirebaseAuth.instance.currentUser;
+        if (user == null) {
+          emit(
+            InAnnouncementDetailsBrowseScreenState(
+                announcement: event.announcement,
+                isLoading: false,
+                databaseError: const DatabaseErrorUserNotFound()),
+          );
+          return;
+        }
+
+        emit(InReportViewBrowseScreenState(
+          isLoading: false,
+          userID: user.uid,
+          announcement: event.announcement,
+          conversation: event.conversation,
+        ));
+      },
+    );
+
+    on<SendReportBrowseScreenEvent>(
+      (event, emit) async {
+        if (connectivityManager.status == ConnectivityResult.none) {
+          emit(InReportViewBrowseScreenState(
+            isLoading: false,
+            userID: event.userID,
+            announcement: event.announcement,
+            conversation: event.conversation,
+            databaseError: const DatabaseErrorNetworkRequestFailed(),
+          ));
+          return;
+        }
+
+        emit(InReportViewBrowseScreenState(
+          isLoading: true,
+          userID: event.userID,
+          announcement: event.announcement,
+          conversation: event.conversation,
+        ));
+
+        try {
+          await databaseManager.sendReport(
+            announcement: event.announcement,
+            conversationID: event.conversation?.conversationID ?? '',
+            reasonForReporting: event.reasonForReporting,
+            additionalInformation: event.additionalInformation,
+            userID: event.userID,
+          );
+          if (event.conversation == null) {
+            emit(InAnnouncementDetailsBrowseScreenState(
+              announcement: event.announcement,
+              isLoading: false,
+              snackbarMessage: 'Zgłoszenie zostało wysłane!',
+            ));
+          } else {
+            emit(InConversationViewBrowseScreenState(
+              isLoading: false,
+              userID: event.userID,
+              announcement: event.announcement,
+              conversation: event.conversation!,
+              snackbarMessage: 'Zgłoszenie zostało wysłane!',
+            ));
+          }
+        } on FirebaseException catch (e) {
+          if (event.conversation == null) {
+            emit(InAnnouncementDetailsBrowseScreenState(
+              announcement: event.announcement,
+              isLoading: false,
+              databaseError: DatabaseError.from(e),
+            ));
+          } else {
+            emit(InConversationViewBrowseScreenState(
+              isLoading: false,
+              userID: event.userID,
+              announcement: event.announcement,
+              conversation: event.conversation!,
+              databaseError: DatabaseError.from(e),
+            ));
+          }
         }
       },
     );

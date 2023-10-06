@@ -6,6 +6,7 @@ import 'package:planted/blocs/browseScreenBloc/browse_screen_state.dart';
 import 'package:planted/screens/browse/announcement_details_view.dart';
 import 'package:planted/screens/browse/announcements_list_view.dart';
 import 'package:planted/screens/messages/conversation_view.dart';
+import 'package:planted/screens/views/report_view.dart';
 import 'package:planted/utilities/dialogs/show_database_error_dialog.dart';
 import 'package:planted/utilities/loading/loading_screen.dart';
 
@@ -53,7 +54,7 @@ class BrowseScreen extends StatelessWidget {
               announcement: browseScreenState.announcement);
         } else if (browseScreenState is InConversationViewBrowseScreenState) {
           child = ConversationView(
-            currentUserID: browseScreenState.user.uid,
+            currentUserID: browseScreenState.userID,
             announcement: browseScreenState.announcement,
             conversation: browseScreenState.conversation,
             returnBlocEvent: ({
@@ -96,6 +97,53 @@ class BrowseScreen extends StatelessWidget {
                       userToBlockID: userToBlockID,
                       announcement: announcement,
                       conversation: conversation));
+            },
+            goToReportViewBlocEvent: (
+                {required announcement,
+                required conversation,
+                required currentUserID}) {
+              context
+                  .read<BrowseScreenBloc>()
+                  .add(GoToReportViewFromConversationBrowseScreenEvent(
+                    announcement: announcement,
+                    conversation: conversation,
+                  ));
+            },
+          );
+        } else if (browseScreenState is InReportViewBrowseScreenState) {
+          child = ReportView(
+            announcement: browseScreenState.announcement,
+            conversation: browseScreenState.conversation,
+            userID: browseScreenState.userID,
+            returnAction: ({
+              required announcement,
+              required conversation,
+              required userID,
+            }) {
+              if (conversation != null) {
+                context.read<BrowseScreenBloc>().add(
+                    GoToConversationViewBrowseScreenEvent(
+                        announcement: announcement));
+              } else {
+                context.read<BrowseScreenBloc>().add(
+                    GoToDetailViewBrowseScreenEvent(
+                        announcement: announcement));
+              }
+            },
+            reportAction: ({
+              required additionalInformation,
+              required announcement,
+              required conversation,
+              required reasonForReporting,
+              required userID,
+            }) {
+              context.read<BrowseScreenBloc>().add(SendReportBrowseScreenEvent(
+                    announcement: announcement,
+                    conversation: conversation,
+                    userID: userID,
+                    reasonForReporting: reasonForReporting,
+                    additionalInformation: additionalInformation,
+                  ));
             },
           );
         } else {

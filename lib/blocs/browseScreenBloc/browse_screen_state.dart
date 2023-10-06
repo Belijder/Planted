@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart' show immutable;
 import 'package:planted/database_error.dart';
 import 'package:planted/models/announcement.dart';
@@ -28,13 +27,14 @@ class InAnnouncementDetailsBrowseScreenState extends BrowseScreenState {
   const InAnnouncementDetailsBrowseScreenState({
     required this.announcement,
     super.databaseError,
+    super.snackbarMessage,
     required super.isLoading,
   });
 }
 
 @immutable
 class InConversationViewBrowseScreenState extends BrowseScreenState {
-  final User user;
+  final String userID;
   final Announcement announcement;
   final Conversation conversation;
   final bool messageSended;
@@ -42,9 +42,25 @@ class InConversationViewBrowseScreenState extends BrowseScreenState {
   const InConversationViewBrowseScreenState({
     required super.isLoading,
     super.databaseError,
-    required this.user,
+    super.snackbarMessage,
+    required this.userID,
     required this.announcement,
     required this.conversation,
     this.messageSended = false,
+  });
+}
+
+@immutable
+class InReportViewBrowseScreenState extends BrowseScreenState {
+  final String userID;
+  final Announcement announcement;
+  final Conversation? conversation;
+
+  const InReportViewBrowseScreenState({
+    required super.isLoading,
+    super.databaseError,
+    required this.userID,
+    required this.announcement,
+    required this.conversation,
   });
 }

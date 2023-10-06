@@ -53,3 +53,33 @@ class BlockUserMessagesScreenEvent implements MessagesScreenEvent {
     required this.userToBlockID,
   });
 }
+
+@immutable
+class GoToReportViewMessagesScreenEvent implements MessagesScreenEvent {
+  final Announcement announcement;
+  final Conversation conversation;
+  final String userID;
+  const GoToReportViewMessagesScreenEvent({
+    required this.announcement,
+    required this.conversation,
+    required this.userID,
+  });
+}
+
+@immutable
+@immutable
+class SendReportMessagesScreenEvent implements MessagesScreenEvent {
+  final Announcement announcement;
+  final Conversation? conversation;
+  final String userID;
+  final String reasonForReporting;
+  final String additionalInformation;
+
+  const SendReportMessagesScreenEvent({
+    required this.announcement,
+    required this.conversation,
+    required this.userID,
+    required this.reasonForReporting,
+    required this.additionalInformation,
+  });
+}

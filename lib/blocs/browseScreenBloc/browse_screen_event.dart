@@ -85,3 +85,42 @@ class BlockUserFromDetailsViewBrowseScreenEvent implements BrowseScreenEvent {
     required this.userToBlockID,
   });
 }
+
+@immutable
+class GoToReportViewFromAnnouncementBrowseScreenEvent
+    implements BrowseScreenEvent {
+  final Announcement announcement;
+
+  const GoToReportViewFromAnnouncementBrowseScreenEvent({
+    required this.announcement,
+  });
+}
+
+@immutable
+class GoToReportViewFromConversationBrowseScreenEvent
+    implements BrowseScreenEvent {
+  final Announcement announcement;
+  final Conversation conversation;
+
+  const GoToReportViewFromConversationBrowseScreenEvent({
+    required this.announcement,
+    required this.conversation,
+  });
+}
+
+@immutable
+class SendReportBrowseScreenEvent implements BrowseScreenEvent {
+  final Announcement announcement;
+  final Conversation? conversation;
+  final String userID;
+  final String reasonForReporting;
+  final String additionalInformation;
+
+  const SendReportBrowseScreenEvent({
+    required this.announcement,
+    required this.conversation,
+    required this.userID,
+    required this.reasonForReporting,
+    required this.additionalInformation,
+  });
+}
