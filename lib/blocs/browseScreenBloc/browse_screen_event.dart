@@ -10,7 +10,11 @@ abstract class BrowseScreenEvent {
 @immutable
 class GoToDetailViewBrowseScreenEvent implements BrowseScreenEvent {
   final Announcement announcement;
-  const GoToDetailViewBrowseScreenEvent({required this.announcement});
+  final double? scrollViewOffset;
+  const GoToDetailViewBrowseScreenEvent({
+    required this.announcement,
+    this.scrollViewOffset,
+  });
 }
 
 @immutable

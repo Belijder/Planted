@@ -8,15 +8,21 @@ abstract class BrowseScreenState {
   final bool isLoading;
   final DatabaseError? databaseError;
   final String? snackbarMessage;
+  final double scrollViewOffset;
 
-  const BrowseScreenState(
-      {required this.isLoading, this.databaseError, this.snackbarMessage});
+  const BrowseScreenState({
+    required this.isLoading,
+    this.databaseError,
+    this.snackbarMessage,
+    required this.scrollViewOffset,
+  });
 }
 
 @immutable
 class InAnnouncementsListViewBrowseScreenState extends BrowseScreenState {
   const InAnnouncementsListViewBrowseScreenState({
     required super.isLoading,
+    required super.scrollViewOffset,
     super.snackbarMessage,
   });
 }
@@ -28,6 +34,7 @@ class InAnnouncementDetailsBrowseScreenState extends BrowseScreenState {
     required this.announcement,
     super.databaseError,
     super.snackbarMessage,
+    required super.scrollViewOffset,
     required super.isLoading,
   });
 }
@@ -41,6 +48,7 @@ class InConversationViewBrowseScreenState extends BrowseScreenState {
 
   const InConversationViewBrowseScreenState({
     required super.isLoading,
+    required super.scrollViewOffset,
     super.databaseError,
     super.snackbarMessage,
     required this.userID,
@@ -58,6 +66,7 @@ class InReportViewBrowseScreenState extends BrowseScreenState {
 
   const InReportViewBrowseScreenState({
     required super.isLoading,
+    required super.scrollViewOffset,
     super.databaseError,
     required this.userID,
     required this.announcement,

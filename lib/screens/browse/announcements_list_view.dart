@@ -34,6 +34,11 @@ class AnnouncementListView extends HookWidget {
           .snapshots();
     }, [key]);
 
+    final initialOffset =
+        context.read<BrowseScreenBloc>().state.scrollViewOffset;
+    final scrollViewController =
+        useScrollController(initialScrollOffset: initialOffset);
+
     return Scaffold(
       appBar: AppBar(
         title: const Row(
@@ -65,57 +70,59 @@ class AnnouncementListView extends HookWidget {
             blockedUsers = userProfile?.blockedUsers ?? [];
 
             return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                stream: announcementsStream,
-                builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    return const Center(
-                        child: Text(
-                      'Nie udało się pobrać ogłoszeń. Sprawdz połączenie z internetem i spróbuj ponownie za chwilę.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: colorSepia, fontSize: 10),
-                    ));
-                  }
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-
-                  final announcements = snapshot.data!.docs
-                      .map((doc) => Announcement.fromSnapshot(doc));
-
-                  final filteredAnnouncements = announcements.where(
-                      (element) => !blockedUsers.contains(element.giverID));
-
-                  if (filteredAnnouncements.isEmpty) {
-                    return Center(
+              stream: announcementsStream,
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return const Center(
                       child: Text(
-                        'Nie ma żadnych dostępnych ogłoszeń. Sprawdź ponownie za jakiś czas.',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: colorSepia.withAlpha(150),
-                          fontSize: 15,
-                        ),
+                    'Nie udało się pobrać ogłoszeń. Sprawdz połączenie z internetem i spróbuj ponownie za chwilę.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: colorSepia, fontSize: 10),
+                  ));
+                }
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                final announcements = snapshot.data!.docs
+                    .map((doc) => Announcement.fromSnapshot(doc));
+
+                final filteredAnnouncements = announcements.where(
+                    (element) => !blockedUsers.contains(element.giverID));
+
+                if (filteredAnnouncements.isEmpty) {
+                  return Center(
+                    child: Text(
+                      'Nie ma żadnych dostępnych ogłoszeń. Sprawdź ponownie za jakiś czas.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: colorSepia.withAlpha(150),
+                        fontSize: 15,
                       ),
-                    );
-                  }
-                  return ListView.builder(
-                    itemCount: filteredAnnouncements.length,
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: () {
-                          context.read<BrowseScreenBloc>().add(
-                                GoToDetailViewBrowseScreenEvent(
-                                  announcement:
-                                      filteredAnnouncements.elementAt(index),
-                                ),
-                              );
-                        },
-                        child: AnnouncementListTile(
-                            announcement:
-                                filteredAnnouncements.elementAt(index)),
-                      );
-                    },
+                    ),
                   );
-                });
+                }
+                return ListView.builder(
+                  controller: scrollViewController,
+                  itemCount: filteredAnnouncements.length,
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () {
+                        context.read<BrowseScreenBloc>().add(
+                              GoToDetailViewBrowseScreenEvent(
+                                scrollViewOffset: scrollViewController.offset,
+                                announcement:
+                                    filteredAnnouncements.elementAt(index),
+                              ),
+                            );
+                      },
+                      child: AnnouncementListTile(
+                          announcement: filteredAnnouncements.elementAt(index)),
+                    );
+                  },
+                );
+              },
+            );
           },
         ),
       ),

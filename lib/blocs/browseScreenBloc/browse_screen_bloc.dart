@@ -14,6 +14,7 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
   BrowseScreenBloc()
       : super(
           const InAnnouncementsListViewBrowseScreenState(
+            scrollViewOffset: 0.0,
             isLoading: false,
           ),
         ) {
@@ -23,6 +24,7 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
           InAnnouncementDetailsBrowseScreenState(
             announcement: event.announcement,
             isLoading: false,
+            scrollViewOffset: event.scrollViewOffset ?? state.scrollViewOffset,
           ),
         );
       },
@@ -33,6 +35,7 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
         if (connectivityManager.status == ConnectivityResult.none) {
           emit(
             InAnnouncementDetailsBrowseScreenState(
+              scrollViewOffset: state.scrollViewOffset,
               announcement: event.announcement,
               isLoading: false,
             ),
@@ -42,6 +45,7 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
 
         emit(
           InAnnouncementDetailsBrowseScreenState(
+            scrollViewOffset: state.scrollViewOffset,
             announcement: event.announcement,
             isLoading: true,
           ),
@@ -51,6 +55,7 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
           databaseManager.deleteConversation(id: event.conversationID);
           emit(
             InAnnouncementDetailsBrowseScreenState(
+              scrollViewOffset: state.scrollViewOffset,
               announcement: event.announcement,
               isLoading: false,
             ),
@@ -58,6 +63,7 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
         } on FirebaseException catch (e) {
           emit(
             InAnnouncementDetailsBrowseScreenState(
+              scrollViewOffset: state.scrollViewOffset,
               announcement: event.announcement,
               isLoading: false,
               databaseError: DatabaseError.from(e),
@@ -70,7 +76,8 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
     on<GoToListViewBrowseScreenEvent>(
       (event, emit) {
         emit(
-          const InAnnouncementsListViewBrowseScreenState(
+          InAnnouncementsListViewBrowseScreenState(
+            scrollViewOffset: state.scrollViewOffset,
             isLoading: false,
           ),
         );
@@ -82,6 +89,7 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
         if (connectivityManager.status == ConnectivityResult.none) {
           emit(
             InAnnouncementDetailsBrowseScreenState(
+                scrollViewOffset: state.scrollViewOffset,
                 announcement: event.announcement,
                 isLoading: false,
                 databaseError: const DatabaseErrorNetworkRequestFailed()),
@@ -90,12 +98,15 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
         }
 
         emit(InAnnouncementDetailsBrowseScreenState(
-            announcement: event.announcement, isLoading: true));
+            scrollViewOffset: state.scrollViewOffset,
+            announcement: event.announcement,
+            isLoading: true));
 
         final user = FirebaseAuth.instance.currentUser;
         if (user == null) {
           emit(
             InAnnouncementDetailsBrowseScreenState(
+              scrollViewOffset: state.scrollViewOffset,
               announcement: event.announcement,
               isLoading: false,
               databaseError: const DatabaseErrorUserNotFound(),
@@ -124,6 +135,7 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
           }
 
           emit(InConversationViewBrowseScreenState(
+            scrollViewOffset: state.scrollViewOffset,
             isLoading: false,
             userID: user.uid,
             announcement: event.announcement,
@@ -132,6 +144,7 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
         } on FirebaseException catch (e) {
           emit(
             InAnnouncementDetailsBrowseScreenState(
+              scrollViewOffset: state.scrollViewOffset,
               announcement: event.announcement,
               isLoading: false,
               databaseError: DatabaseError.from(e),
@@ -147,6 +160,7 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
         if (user == null) {
           emit(
             InAnnouncementDetailsBrowseScreenState(
+              scrollViewOffset: state.scrollViewOffset,
               announcement: event.announcement,
               isLoading: false,
               databaseError: const DatabaseErrorUserNotFound(),
@@ -157,6 +171,7 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
 
         if (connectivityManager.status == ConnectivityResult.none) {
           emit(InConversationViewBrowseScreenState(
+            scrollViewOffset: state.scrollViewOffset,
             isLoading: false,
             userID: user.uid,
             announcement: event.announcement,
@@ -174,6 +189,7 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
           );
 
           emit(InConversationViewBrowseScreenState(
+            scrollViewOffset: state.scrollViewOffset,
             isLoading: false,
             userID: user.uid,
             announcement: event.announcement,
@@ -182,6 +198,7 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
           ));
         } on FirebaseException catch (e) {
           emit(InConversationViewBrowseScreenState(
+            scrollViewOffset: state.scrollViewOffset,
             isLoading: false,
             userID: user.uid,
             announcement: event.announcement,
@@ -198,6 +215,7 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
         if (user == null) {
           emit(
             InAnnouncementDetailsBrowseScreenState(
+              scrollViewOffset: state.scrollViewOffset,
               announcement: event.announcement,
               isLoading: false,
               databaseError: const DatabaseErrorUserNotFound(),
@@ -208,6 +226,7 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
 
         if (connectivityManager.status == ConnectivityResult.none) {
           emit(InConversationViewBrowseScreenState(
+            scrollViewOffset: state.scrollViewOffset,
             isLoading: false,
             userID: user.uid,
             announcement: event.announcement,
@@ -222,7 +241,8 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
           userToBlockID: event.userToBlockID,
         );
 
-        emit(const InAnnouncementsListViewBrowseScreenState(
+        emit(InAnnouncementsListViewBrowseScreenState(
+            scrollViewOffset: state.scrollViewOffset,
             isLoading: false,
             snackbarMessage: 'Użytkownik został zablokowany!'));
       },
@@ -232,6 +252,7 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
       (event, emit) async {
         if (connectivityManager.status == ConnectivityResult.none) {
           emit(InAnnouncementDetailsBrowseScreenState(
+            scrollViewOffset: state.scrollViewOffset,
             announcement: event.announcement,
             isLoading: false,
             databaseError: const DatabaseErrorNetworkRequestFailed(),
@@ -240,6 +261,7 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
         }
 
         emit(InAnnouncementDetailsBrowseScreenState(
+          scrollViewOffset: state.scrollViewOffset,
           announcement: event.announcement,
           isLoading: true,
         ));
@@ -248,6 +270,7 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
         if (user == null) {
           emit(
             InAnnouncementDetailsBrowseScreenState(
+                scrollViewOffset: state.scrollViewOffset,
                 announcement: event.announcement,
                 isLoading: false,
                 databaseError: const DatabaseErrorUserNotFound()),
@@ -261,12 +284,14 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
             userToBlockID: event.userToBlockID,
           );
 
-          emit(const InAnnouncementsListViewBrowseScreenState(
+          emit(InAnnouncementsListViewBrowseScreenState(
+              scrollViewOffset: state.scrollViewOffset,
               isLoading: false,
               snackbarMessage: 'Użytkownik został zablokowany!'));
         } on FirebaseException catch (e) {
           emit(
             InAnnouncementDetailsBrowseScreenState(
+                scrollViewOffset: state.scrollViewOffset,
                 announcement: event.announcement,
                 isLoading: false,
                 databaseError: DatabaseError.from(e)),
@@ -281,6 +306,7 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
         if (user == null) {
           emit(
             InAnnouncementDetailsBrowseScreenState(
+                scrollViewOffset: state.scrollViewOffset,
                 announcement: event.announcement,
                 isLoading: false,
                 databaseError: const DatabaseErrorUserNotFound()),
@@ -289,6 +315,7 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
         }
 
         emit(InReportViewBrowseScreenState(
+          scrollViewOffset: state.scrollViewOffset,
           isLoading: false,
           userID: user.uid,
           announcement: event.announcement,
@@ -303,6 +330,7 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
         if (user == null) {
           emit(
             InAnnouncementDetailsBrowseScreenState(
+                scrollViewOffset: state.scrollViewOffset,
                 announcement: event.announcement,
                 isLoading: false,
                 databaseError: const DatabaseErrorUserNotFound()),
@@ -311,6 +339,7 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
         }
 
         emit(InReportViewBrowseScreenState(
+          scrollViewOffset: state.scrollViewOffset,
           isLoading: false,
           userID: user.uid,
           announcement: event.announcement,
@@ -323,6 +352,7 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
       (event, emit) async {
         if (connectivityManager.status == ConnectivityResult.none) {
           emit(InReportViewBrowseScreenState(
+            scrollViewOffset: state.scrollViewOffset,
             isLoading: false,
             userID: event.userID,
             announcement: event.announcement,
@@ -333,6 +363,7 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
         }
 
         emit(InReportViewBrowseScreenState(
+          scrollViewOffset: state.scrollViewOffset,
           isLoading: true,
           userID: event.userID,
           announcement: event.announcement,
@@ -349,12 +380,14 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
           );
           if (event.conversation == null) {
             emit(InAnnouncementDetailsBrowseScreenState(
+              scrollViewOffset: state.scrollViewOffset,
               announcement: event.announcement,
               isLoading: false,
               snackbarMessage: 'Zgłoszenie zostało wysłane!',
             ));
           } else {
             emit(InConversationViewBrowseScreenState(
+              scrollViewOffset: state.scrollViewOffset,
               isLoading: false,
               userID: event.userID,
               announcement: event.announcement,
@@ -365,12 +398,14 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
         } on FirebaseException catch (e) {
           if (event.conversation == null) {
             emit(InAnnouncementDetailsBrowseScreenState(
+              scrollViewOffset: state.scrollViewOffset,
               announcement: event.announcement,
               isLoading: false,
               databaseError: DatabaseError.from(e),
             ));
           } else {
             emit(InConversationViewBrowseScreenState(
+              scrollViewOffset: state.scrollViewOffset,
               isLoading: false,
               userID: event.userID,
               announcement: event.announcement,
