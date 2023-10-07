@@ -5,11 +5,11 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:planted/blocs/messagesScreenBloc/messages_screen_bloc.dart';
 import 'package:planted/blocs/messagesScreenBloc/messages_screen_event.dart';
 import 'package:planted/constants/colors.dart';
+import 'package:planted/managers/push_notifications_manager.dart';
 import 'package:planted/screens/add_announcement/add_announcement_screen.dart';
 import 'package:planted/screens/browse/browse_screen.dart';
 import 'package:planted/screens/messages/messages_screen.dart';
 import 'package:planted/screens/user_profile/user_profile_screen.dart';
-import 'package:planted/utilities/push_notifications_handler.dart';
 
 class NavigationBarView extends HookWidget {
   const NavigationBarView({super.key});
@@ -28,7 +28,8 @@ class NavigationBarView extends HookWidget {
       }
     });
 
-    FirebaseMessaging.onMessage.listen(showFlutterNotification);
+    FirebaseMessaging.onMessage
+        .listen(PushNotificationManager().showFlutterNotification);
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       currentPageIndex.value = 2;

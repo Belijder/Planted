@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:planted/app.dart';
 import 'package:planted/firebase_options.dart';
 import 'package:planted/managers/conectivity_manager.dart';
-import 'package:planted/utilities/push_notifications_handler.dart';
+import 'package:planted/managers/push_notifications_manager.dart';
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  await setupFlutterNotifications();
-  showFlutterNotification(message);
+  await PushNotificationManager().setupFlutterNotifications();
+  PushNotificationManager().showFlutterNotification(message);
 }
 
 void main() async {
@@ -19,7 +19,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  await setupFlutterNotifications();
+  await PushNotificationManager().setupFlutterNotifications();
   await ConnectivityManager().checkConnectivity();
 
   runApp(

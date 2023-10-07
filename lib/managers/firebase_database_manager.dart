@@ -1,16 +1,14 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:planted/constants/firebase_paths.dart';
 import 'package:planted/enums/announcement_action.dart';
-import 'package:planted/fb_key.dart';
+import 'package:planted/managers/push_notifications_manager.dart';
 import 'package:planted/models/announcement.dart';
 import 'package:planted/models/conversation.dart';
 import 'package:planted/models/report.dart';
 import 'package:planted/models/user_profile.dart';
 import 'package:uuid/uuid.dart';
-import 'package:http/http.dart' as http;
 
 class FirebaseDatabaseManager {
   FirebaseDatabaseManager._private();
@@ -56,6 +54,38 @@ class FirebaseDatabaseManager {
           .then((snapshot) => UserProfile.fromSnapshot(snapshot));
     } catch (e) {
       rethrow;
+    }
+  }
+
+  Future<void> updateFcmTokenIfNeeded(
+      {required String userID, required String? fcmToken}) async {
+    if (fcmToken == null) {
+      return;
+    }
+    try {
+      final userProfile = await getUserProfile(id: userID);
+
+      if (userProfile.fcmToken == fcmToken) {
+        return;
+      } else {
+        await db.collection(profilesPath).doc(userID).update({
+          'fcmToken': fcmToken,
+        });
+      }
+    } catch (e) {
+      return;
+    }
+  }
+
+  Future<void> removeFcmToken({
+    required String userID,
+  }) async {
+    try {
+      await db.collection(profilesPath).doc(userID).update({
+        'fcmToken': '',
+      });
+    } catch (e) {
+      return;
     }
   }
 
@@ -230,7 +260,7 @@ class FirebaseDatabaseManager {
       final cotalkerUserProfile = await getUserProfile(id: cotalkerID);
       final token = cotalkerUserProfile.fcmToken;
 
-      await sendPushMessage(
+      await PushNotificationManager().sendPushMessage(
         token: token,
         title: userDisplayName,
         body: message.trim(),
@@ -239,35 +269,6 @@ class FirebaseDatabaseManager {
     } catch (e) {
       rethrow;
     }
-  }
-
-  Future<void> sendPushMessage({
-    required String token,
-    required String title,
-    required String body,
-    required String conversationID,
-  }) async {
-    try {
-      await http.post(
-        Uri.parse('https://fcm.googleapis.com/fcm/send'),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-          'authorization': key
-        },
-        body: jsonEncode({
-          'to': token,
-          'data': {
-            'type': 'conversation',
-            'conversationID': conversationID,
-          },
-          'priority': 'high',
-          'notification': {
-            'title': title,
-            'body': body,
-          },
-        }),
-      );
-    } catch (_) {}
   }
 
   Future<void> addUserToBlockedUsersList({

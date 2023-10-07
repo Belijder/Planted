@@ -293,14 +293,14 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
     on<AppEventLogOut>(
       (event, emit) async {
+        final user = FirebaseAuth.instance.currentUser;
+
+        if (user == null) {
+          emit(const AppStateLoggedOut(isLoading: false));
+          return;
+        }
+
         if (connectivityManager.status == ConnectivityResult.none) {
-          final user = FirebaseAuth.instance.currentUser;
-
-          if (user == null) {
-            emit(const AppStateLoggedOut(isLoading: false));
-            return;
-          }
-
           emit(AppStateLoggedIn(
             isLoading: false,
             user: user,
@@ -310,6 +310,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
         }
 
         emit(const AppStateLoggedOut(isLoading: true));
+        await databaseManager.removeFcmToken(userID: user.uid);
 
         try {
           await FirebaseAuth.instance.signOut();
@@ -406,6 +407,11 @@ class AppBloc extends Bloc<AppEvent, AppState> {
             }
             return;
           }
+
+          await databaseManager.updateFcmTokenIfNeeded(
+            fcmToken: fcmToken,
+            userID: user.uid,
+          );
 
           emit(AppStateLoggedIn(
             isLoading: false,
