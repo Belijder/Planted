@@ -178,3 +178,22 @@ class AuthErrorLegalTermsNotAccepted extends AuthError {
               'Aby móc się zarejestrować musisz zaznaczyć, że zapoznałeś się i zaakceptowałeś regulamin oraz politykę prywatności.',
         );
 }
+
+@immutable
+class AuthErrorDisplayNameToLong extends AuthError {
+  const AuthErrorDisplayNameToLong()
+      : super(
+          dialogTitle: 'Zbyt długa nazwa użytkownika.',
+          dialogText: 'Nazwa użytkownika nie może przekraczać 20 znaków',
+        );
+}
+
+@immutable
+class AuthErrorDisplayNameTaken extends AuthError {
+  const AuthErrorDisplayNameTaken()
+      : super(
+          dialogTitle: 'Zajęta nazwa użytkownika',
+          dialogText:
+              'Ta nazwa użytkownika jest zajęta. Musisz podać inną nazwę, aby dokończyć rejestrację.',
+        );
+}

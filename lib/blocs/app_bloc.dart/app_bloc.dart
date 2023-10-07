@@ -14,10 +14,12 @@ import 'package:planted/database_error.dart';
 import 'package:planted/helpers/compress_image.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:planted/managers/conectivity_manager.dart';
+import 'package:planted/managers/firebase_database_manager.dart';
 import 'package:planted/models/announcement.dart';
 
 class AppBloc extends Bloc<AppEvent, AppState> {
   final connectivityManager = ConnectivityManager();
+  final databaseManager = FirebaseDatabaseManager();
 
   AppBloc()
       : super(
@@ -212,9 +214,32 @@ class AppBloc extends Bloc<AppEvent, AppState> {
           return;
         }
 
+        if (event.displayName.length > 20) {
+          emit(AppStateIsInCompleteProfileView(
+            user: user,
+            isLoading: false,
+            authError: const AuthErrorDisplayNameToLong(),
+          ));
+          return;
+        }
+
         emit(AppStateIsInCompleteProfileView(user: user, isLoading: true));
 
         try {
+          final displayNameIsAvaileble =
+              await databaseManager.isDisplayNameAvaileble(
+            displayName: event.displayName,
+          );
+
+          if (!displayNameIsAvaileble) {
+            emit(AppStateIsInCompleteProfileView(
+              user: user,
+              isLoading: false,
+              authError: const AuthErrorDisplayNameTaken(),
+            ));
+            return;
+          }
+
           final String imageURL;
 
           if (event.imagePath != null) {

@@ -34,6 +34,19 @@ class FirebaseDatabaseManager {
     }
   }
 
+  Future<bool> isDisplayNameAvaileble({required String displayName}) async {
+    try {
+      final querySnapshot = await db
+          .collection(profilesPath)
+          .where('displayName', isEqualTo: displayName)
+          .get();
+
+      return querySnapshot.docs.isEmpty;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<UserProfile> getUserProfile({required String id}) async {
     try {
       return await db
