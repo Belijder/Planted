@@ -7,6 +7,7 @@ import 'package:planted/enums/announcement_action.dart';
 import 'package:planted/fb_key.dart';
 import 'package:planted/models/announcement.dart';
 import 'package:planted/models/conversation.dart';
+import 'package:planted/models/report.dart';
 import 'package:planted/models/user_profile.dart';
 import 'package:uuid/uuid.dart';
 import 'package:http/http.dart' as http;
@@ -18,20 +19,6 @@ class FirebaseDatabaseManager {
   factory FirebaseDatabaseManager() => _instance;
 
   final db = FirebaseFirestore.instance;
-
-  Stream<List<Announcement>> createAnnouncementsStreamWith(
-      {required int status}) {
-    return FirebaseFirestore.instance
-        .collection(announcemensPath)
-        .where('status', isEqualTo: status)
-        .orderBy('timeStamp', descending: true)
-        .snapshots()
-        .map((querySnapshot) {
-      return querySnapshot.docs.map((docSnapshot) {
-        return Announcement.fromSnapshot(docSnapshot);
-      }).toList();
-    });
-  }
 
   Future<TaskSnapshot> putImageInStorage({
     required String childRef,
@@ -403,6 +390,7 @@ class FirebaseDatabaseManager {
     required String userID,
   }) async {
     final reportID = const Uuid().v4();
+    final timeStamp = DateTime.timestamp();
     final data = {
       'reportID': reportID,
       'reportingPersonID': userID,
@@ -414,6 +402,7 @@ class FirebaseDatabaseManager {
       'additionalInformation': additionalInformation,
       'status': 0,
       'adminResponse': '',
+      'reportingDate': timeStamp,
     };
     try {
       await db.collection(reportsPath).doc(reportID).set(data);
@@ -423,5 +412,47 @@ class FirebaseDatabaseManager {
     } catch (e) {
       rethrow;
     }
+  }
+
+  Stream<List<Announcement>> createAnnouncementsStreamWith(
+      {required int status}) {
+    return db
+        .collection(announcemensPath)
+        .where('status', isEqualTo: status)
+        .orderBy('timeStamp', descending: true)
+        .snapshots()
+        .map((querySnapshot) {
+      return querySnapshot.docs.map((docSnapshot) {
+        return Announcement.fromSnapshot(docSnapshot);
+      }).toList();
+    });
+  }
+
+  Stream<List<Report>> createUserReportsStream({
+    required String userID,
+  }) {
+    return db
+        .collection(reportsPath)
+        .where('reportingPersonID', isEqualTo: userID)
+        .snapshots()
+        .map((querySnapshot) {
+      return querySnapshot.docs.map((docSnapshot) {
+        return Report.fromSnapshot(docSnapshot);
+      }).toList();
+    });
+  }
+
+  Stream<List<Report>> createReportsStreamFor({
+    required int status,
+  }) {
+    return db
+        .collection(reportsPath)
+        .where('status', isEqualTo: 0)
+        .snapshots()
+        .map((querySnapshot) {
+      return querySnapshot.docs.map((docSnapshot) {
+        return Report.fromSnapshot(docSnapshot);
+      }).toList();
+    });
   }
 }

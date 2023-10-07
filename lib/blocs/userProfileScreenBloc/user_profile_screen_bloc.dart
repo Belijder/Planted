@@ -184,6 +184,7 @@ class UserProfileScreenBloc
             UserProfileScreenStateInAdministratorPanel(
               announcementsStream:
                   databaseManager.createAnnouncementsStreamWith(status: 0),
+              reportsStream: databaseManager.createReportsStreamFor(status: 0),
               initialTabBarIndex: event.initialTabBarIndex,
               isLoading: false,
             ),
@@ -209,9 +210,20 @@ class UserProfileScreenBloc
             initialTabBarIndex: 0,
             isLoading: false,
             announcementsStream: state.announcementsStream,
+            reportsStream: state.reportsStream,
             databaseError: DatabaseError.from(e),
           ));
         }
+      },
+    );
+    on<UserProfileScreenEventGoToUserReportsView>(
+      (event, emit) {
+        emit(UserProfileScreenStateInUserReportsView(
+          isLoading: false,
+          reportsStream: databaseManager.createUserReportsStream(
+            userID: event.userID,
+          ),
+        ));
       },
     );
   }

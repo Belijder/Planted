@@ -6,6 +6,17 @@ final formLabelTextStyle = TextStyle(
   fontSize: 14.0,
 );
 
+const textStyle10Sepia = TextStyle(
+  color: colorSepia,
+  fontSize: 10.0,
+);
+
+const textStyle10BoldSepia = TextStyle(
+  color: colorSepia,
+  fontWeight: FontWeight.bold,
+  fontSize: 10.0,
+);
+
 const textStyle15BoldSepia = TextStyle(
   color: colorSepia,
   fontWeight: FontWeight.bold,

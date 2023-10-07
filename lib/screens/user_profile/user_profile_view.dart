@@ -133,14 +133,33 @@ class UserProfileView extends HookWidget {
                                 context.read<UserProfileScreenBloc>().add(
                                     const UserProfileScreenEventGoToUsersAnnouncementsView());
                               }),
-                          const SizedBox(height: 10),
-                          UserProfileActionButton(
-                              title: 'Zablokowani użytkownicy',
-                              onPressed: () {
-                                context.read<UserProfileScreenBloc>().add(
-                                    const UserProfileScreenEventGoToBlockedUsersView());
-                              }),
                           const SizedBox(height: 20),
+                          if (userProfile.blockedUsers.isNotEmpty)
+                            Column(
+                              children: [
+                                UserProfileActionButton(
+                                    title: 'Zablokowani użytkownicy',
+                                    onPressed: () {
+                                      context.read<UserProfileScreenBloc>().add(
+                                          const UserProfileScreenEventGoToBlockedUsersView());
+                                    }),
+                                const SizedBox(height: 10),
+                              ],
+                            ),
+                          if (userProfile.userReports.isNotEmpty)
+                            Column(
+                              children: [
+                                UserProfileActionButton(
+                                    title: 'Twoje zgłoszenia',
+                                    onPressed: () {
+                                      context.read<UserProfileScreenBloc>().add(
+                                          UserProfileScreenEventGoToUserReportsView(
+                                              userID: userProfile.userID));
+                                    }),
+                                const SizedBox(height: 10),
+                              ],
+                            ),
+                          const SizedBox(height: 10),
                           UserProfileActionButton(
                               title: 'Oceń aplikację',
                               onPressed: () {

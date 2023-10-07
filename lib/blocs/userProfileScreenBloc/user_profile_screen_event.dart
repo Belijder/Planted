@@ -82,3 +82,12 @@ class UserProfileScreenEventChangeStatusOfAnnouncement
     required this.action,
   });
 }
+
+@immutable
+class UserProfileScreenEventGoToUserReportsView
+    implements UserProfileScreenEvent {
+  final String userID;
+  const UserProfileScreenEventGoToUserReportsView({
+    required this.userID,
+  });
+}

@@ -8,6 +8,7 @@ import 'package:planted/constants/firebase_paths.dart';
 import 'package:planted/screens/user_profile/administratorPanel/administrator_panel_view.dart';
 import 'package:planted/screens/user_profile/blocked_users_view.dart';
 import 'package:planted/screens/user_profile/user_profile_view.dart';
+import 'package:planted/screens/user_profile/user_reports_view.dart';
 import 'package:planted/screens/user_profile/users_announcements_view.dart';
 import 'package:planted/utilities/dialogs/show_database_error_dialog.dart';
 import 'package:planted/utilities/loading/loading_screen.dart';
@@ -68,6 +69,9 @@ class UserProfileScreenBlocConsumer extends HookWidget {
           child = AdministatorPanelView(
             initialIndex: userProfileScreenState.initialTabBarIndex,
           );
+        } else if (userProfileScreenState
+            is UserProfileScreenStateInUserReportsView) {
+          child = const UserReportsView();
         } else {
           child = const Center(child: CircularProgressIndicator());
         }
