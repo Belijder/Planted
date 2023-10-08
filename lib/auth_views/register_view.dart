@@ -37,203 +37,209 @@ class RegisterView extends HookWidget {
             context.read<AppBloc>().add(const AppEventGoToRegisterView());
           }
         },
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  SizedBox(
-                    height: 40,
-                    child: Image.asset(plantedLogo),
-                  ),
-                  const Text(
-                    'share nature',
-                    style: TextStyle(
-                        color: colorSepia,
-                        fontWeight: FontWeight.w300,
-                        fontSize: 18),
-                  )
-                ],
-              ),
-              Column(
-                children: [
-                  const Row(
-                    children: [
-                      Text(
-                        'Zakładanie konta',
-                        style: TextStyle(
-                          color: colorSepia,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  TextFormField(
-                    controller: emailController,
-                    decoration: createInputDecoration(label: 'Email'),
-                    style: textStyle15BoldSepia,
-                    onFieldSubmitted: (_) => FocusScope.of(context).unfocus(),
-                    onTapOutside: (_) => FocusScope.of(context).unfocus(),
-                    keyboardType: TextInputType.emailAddress,
-                    autocorrect: false,
-                    enableSuggestions: false,
-                  ),
-                  const SizedBox(height: 20),
-                  TextFormField(
-                    controller: passwordController,
-                    decoration: createInputDecoration(label: 'Hasło'),
-                    style: textStyle15BoldSepia,
-                    onFieldSubmitted: (_) => FocusScope.of(context).unfocus(),
-                    onTapOutside: (_) => FocusScope.of(context).unfocus(),
-                    keyboardType: TextInputType.emailAddress,
-                    autocorrect: false,
-                    enableSuggestions: false,
-                    obscureText: true,
-                    obscuringCharacter: '⦿',
-                  ),
-                  const SizedBox(height: 20),
-                  TextFormField(
-                    controller: confirmPasswordController,
-                    decoration: createInputDecoration(label: 'Potwierdź hasło'),
-                    style: textStyle15BoldSepia,
-                    onFieldSubmitted: (_) => FocusScope.of(context).unfocus(),
-                    onTapOutside: (_) => FocusScope.of(context).unfocus(),
-                    keyboardType: TextInputType.emailAddress,
-                    autocorrect: false,
-                    enableSuggestions: false,
-                    obscureText: true,
-                    obscuringCharacter: '⦿',
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          areLegalTermsAccepted.value =
-                              !areLegalTermsAccepted.value;
-                        },
-                        child: Icon(
-                          areLegalTermsAccepted.value == true
-                              ? Icons.check_box_outlined
-                              : Icons.check_box_outline_blank_rounded,
-                          color: areLegalTermsAccepted.value == true
-                              ? colorDarkMossGreen
-                              : colorSepia,
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: SizedBox(
-                          height: 40,
-                          child: RichText(
-                            maxLines: 2,
-                            text: TextSpan(
-                                text: 'Zapoznałem się i akceptuję ',
-                                style: const TextStyle(
-                                    fontSize: 12, color: colorSepia),
-                                children: [
-                                  WidgetSpan(
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        context
-                                            .read<AppBloc>()
-                                            .add(const AppEventOpenLegalTerms(
-                                              documentID: termsOfUseDoc,
-                                            ));
-                                      },
-                                      child: const Text(
-                                        'regulamin',
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: colorSepia,
-                                          fontWeight: FontWeight.bold,
-                                          decoration: TextDecoration.underline,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  const TextSpan(text: ' oraz '),
-                                  WidgetSpan(
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        context
-                                            .read<AppBloc>()
-                                            .add(const AppEventOpenLegalTerms(
-                                              documentID: privacyPolicyDoc,
-                                            ));
-                                      },
-                                      child: const Text(
-                                        'poliitykę prywatności.',
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: colorSepia,
-                                          fontWeight: FontWeight.bold,
-                                          decoration: TextDecoration.underline,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ]),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  SizedBox(
-                    height: 50,
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      style: createFilledButtonStyle(
-                          backgroundColor: colorDarkMossGreen),
-                      onPressed: () {
-                        context.read<AppBloc>().add(
-                              AppEventRegister(
-                                email: emailController.text,
-                                password: passwordController.text,
-                                confirmPassword: confirmPasswordController.text,
-                                areLegalTermsAccepted:
-                                    areLegalTermsAccepted.value,
-                              ),
-                            );
-                      },
-                      child: const Text('Zarejestruj się'),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    SizedBox(
+                      height: 40,
+                      child: Image.asset(plantedLogo),
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                  TextButton(
-                    onPressed: () {
-                      context.read<AppBloc>().add(
-                            const AppEventGoToLoginView(),
-                          );
-                    },
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    const Text(
+                      'share nature',
+                      style: TextStyle(
+                          color: colorSepia,
+                          fontWeight: FontWeight.w300,
+                          fontSize: 18),
+                    )
+                  ],
+                ),
+                Column(
+                  children: [
+                    const Row(
                       children: [
                         Text(
-                          'Masz już konto? ',
+                          'Zakładanie konta',
                           style: TextStyle(
-                            color: colorDarkMossGreen,
+                            color: colorSepia,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
                           ),
                         ),
-                        Text(
-                          'Zaloguj się!',
-                          style: TextStyle(
-                              color: colorDarkMossGreen,
-                              fontWeight: FontWeight.bold),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    TextFormField(
+                      controller: emailController,
+                      decoration: createInputDecoration(label: 'Email'),
+                      style: textStyle15BoldSepia,
+                      onFieldSubmitted: (_) => FocusScope.of(context).unfocus(),
+                      onTapOutside: (_) => FocusScope.of(context).unfocus(),
+                      keyboardType: TextInputType.emailAddress,
+                      autocorrect: false,
+                      enableSuggestions: false,
+                    ),
+                    const SizedBox(height: 20),
+                    TextFormField(
+                      controller: passwordController,
+                      decoration: createInputDecoration(label: 'Hasło'),
+                      style: textStyle15BoldSepia,
+                      onFieldSubmitted: (_) => FocusScope.of(context).unfocus(),
+                      onTapOutside: (_) => FocusScope.of(context).unfocus(),
+                      keyboardType: TextInputType.emailAddress,
+                      autocorrect: false,
+                      enableSuggestions: false,
+                      obscureText: true,
+                      obscuringCharacter: '⦿',
+                    ),
+                    const SizedBox(height: 20),
+                    TextFormField(
+                      controller: confirmPasswordController,
+                      decoration:
+                          createInputDecoration(label: 'Potwierdź hasło'),
+                      style: textStyle15BoldSepia,
+                      onFieldSubmitted: (_) => FocusScope.of(context).unfocus(),
+                      onTapOutside: (_) => FocusScope.of(context).unfocus(),
+                      keyboardType: TextInputType.emailAddress,
+                      autocorrect: false,
+                      enableSuggestions: false,
+                      obscureText: true,
+                      obscuringCharacter: '⦿',
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            areLegalTermsAccepted.value =
+                                !areLegalTermsAccepted.value;
+                          },
+                          child: Icon(
+                            areLegalTermsAccepted.value == true
+                                ? Icons.check_box_outlined
+                                : Icons.check_box_outline_blank_rounded,
+                            color: areLegalTermsAccepted.value == true
+                                ? colorDarkMossGreen
+                                : colorSepia,
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: SizedBox(
+                            height: 40,
+                            child: RichText(
+                              maxLines: 2,
+                              text: TextSpan(
+                                  text: 'Zapoznałem się i akceptuję ',
+                                  style: const TextStyle(
+                                      fontSize: 12, color: colorSepia),
+                                  children: [
+                                    WidgetSpan(
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          context
+                                              .read<AppBloc>()
+                                              .add(const AppEventOpenLegalTerms(
+                                                documentID: termsOfUseDoc,
+                                              ));
+                                        },
+                                        child: const Text(
+                                          'regulamin',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: colorSepia,
+                                            fontWeight: FontWeight.bold,
+                                            decoration:
+                                                TextDecoration.underline,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    const TextSpan(text: ' oraz '),
+                                    WidgetSpan(
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          context
+                                              .read<AppBloc>()
+                                              .add(const AppEventOpenLegalTerms(
+                                                documentID: privacyPolicyDoc,
+                                              ));
+                                        },
+                                        child: const Text(
+                                          'poliitykę prywatności.',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: colorSepia,
+                                            fontWeight: FontWeight.bold,
+                                            decoration:
+                                                TextDecoration.underline,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ]),
+                            ),
+                          ),
                         )
                       ],
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox()
-            ],
+                    const SizedBox(height: 20),
+                    SizedBox(
+                      height: 50,
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: createFilledButtonStyle(
+                            backgroundColor: colorDarkMossGreen),
+                        onPressed: () {
+                          context.read<AppBloc>().add(
+                                AppEventRegister(
+                                  email: emailController.text,
+                                  password: passwordController.text,
+                                  confirmPassword:
+                                      confirmPasswordController.text,
+                                  areLegalTermsAccepted:
+                                      areLegalTermsAccepted.value,
+                                ),
+                              );
+                        },
+                        child: const Text('Zarejestruj się'),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    TextButton(
+                      onPressed: () {
+                        context.read<AppBloc>().add(
+                              const AppEventGoToLoginView(),
+                            );
+                      },
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Masz już konto? ',
+                            style: TextStyle(
+                              color: colorDarkMossGreen,
+                            ),
+                          ),
+                          Text(
+                            'Zaloguj się!',
+                            style: TextStyle(
+                                color: colorDarkMossGreen,
+                                fontWeight: FontWeight.bold),
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox()
+              ],
+            ),
           ),
         ),
       ),
