@@ -237,8 +237,8 @@ class FirebaseDatabaseManager {
         : conversation.giver;
 
     final String userDisplayName = (sender == conversation.giver)
-        ? conversation.takerDisplayName
-        : conversation.giverDisplayName;
+        ? conversation.giverDisplayName
+        : conversation.takerDisplayName;
 
     try {
       await db

@@ -62,37 +62,32 @@ class ConversationTile extends StatelessWidget {
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                              currentUserID == conversation.giver
-                                  ? conversation.takerDisplayName
-                                  : conversation.giverDisplayName,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 15,
-                                color: colorSepia,
-                              ),
-                            ),
-                            const SizedBox(width: 5),
-                            SizedBox(
-                              width: 150,
-                              child: Text(
-                                ('(${conversation.announcementName})'),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w300,
-                                  fontSize: 10,
-                                  color: colorSepia,
-                                ),
-                              ),
-                            ),
-                          ],
+                        Text(
+                          currentUserID == conversation.giver
+                              ? conversation.takerDisplayName
+                              : conversation.giverDisplayName,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                            color: colorSepia,
+                          ),
                         ),
+                        const SizedBox(width: 5),
+                        Expanded(
+                          child: Text(
+                            ('(${conversation.announcementName})'),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w300,
+                              fontSize: 10,
+                              color: colorSepia,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
                         Text(
                           formatTimestamp(conversation.timeStamp),
                           style: const TextStyle(
