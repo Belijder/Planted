@@ -90,22 +90,31 @@ class ConversationView extends HookWidget {
           ),
           color: colorSepia,
         ),
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              currentUserID == conversation.giver
-                  ? conversation.takerDisplayName
-                  : conversation.giverDisplayName,
-              style: const TextStyle(
-                  color: colorSepia, fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            Text(
-              'Roślina: ${announcement.name}, odbór: ${announcement.city}',
-              style: const TextStyle(
-                  color: colorSepia, fontSize: 10, fontWeight: FontWeight.w300),
-            ),
-          ],
+        title: Align(
+          alignment: Alignment.centerLeft,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                currentUserID == conversation.giver
+                    ? conversation.takerDisplayName
+                    : conversation.giverDisplayName,
+                style: const TextStyle(
+                    color: colorSepia,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold),
+              ),
+              Text(
+                'Roślina: ${announcement.name}, odbór: ${announcement.city}',
+                style: const TextStyle(
+                    color: colorSepia,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w300),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
         ),
         actions: [
           PopupMenuButton<MessagesPopUpMenuItem>(

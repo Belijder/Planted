@@ -27,12 +27,15 @@ class AdministatorPanelView extends StatelessWidget {
             icon: const Icon(Icons.arrow_back),
             color: colorSepia,
           ),
-          title: const Text(
-            'Panel Administratora',
-            style: TextStyle(
-              color: colorSepia,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
+          title: const Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              'Panel Administratora',
+              style: TextStyle(
+                color: colorSepia,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
           bottom: const TabBar(tabs: [

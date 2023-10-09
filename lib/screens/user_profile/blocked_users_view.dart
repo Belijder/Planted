@@ -46,12 +46,15 @@ class BlockedUsersView extends HookWidget {
           ),
           color: colorSepia,
         ),
-        title: const Text(
-          'Zablokowani użytkownicy',
-          style: TextStyle(
-            color: colorSepia,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
+        title: const Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            'Zablokowani użytkownicy',
+            style: TextStyle(
+              color: colorSepia,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
       ),

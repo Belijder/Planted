@@ -32,10 +32,16 @@ class UserProfileView extends HookWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Twoje konto',
-          style: TextStyle(
-              color: colorSepia, fontSize: 30.0, fontWeight: FontWeight.w800),
+        title: const Row(
+          children: [
+            Text(
+              'Twoje konto',
+              style: TextStyle(
+                  color: colorSepia,
+                  fontSize: 30.0,
+                  fontWeight: FontWeight.w800),
+            ),
+          ],
         ),
         backgroundColor: colorEggsheel,
         automaticallyImplyLeading: false,

@@ -30,12 +30,15 @@ class UserReportsView extends StatelessWidget {
           ),
           color: colorSepia,
         ),
-        title: const Text(
-          'Twoje zgłoszenia',
-          style: TextStyle(
-            color: colorSepia,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
+        title: const Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            'Twoje zgłoszenia',
+            style: TextStyle(
+              color: colorSepia,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
       ),

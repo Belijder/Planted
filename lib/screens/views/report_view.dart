@@ -79,17 +79,20 @@ class ReportView extends HookWidget {
           ),
           color: colorSepia,
         ),
-        title: const Text(
-          'Zgłoś użytkownika',
-          style: TextStyle(
-              color: colorSepia, fontSize: 20, fontWeight: FontWeight.bold),
+        title: const Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            'Zgłoś użytkownika',
+            style: TextStyle(
+                color: colorSepia, fontSize: 20, fontWeight: FontWeight.bold),
+          ),
         ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: SingleChildScrollView(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
                 'Zgłoszenie dotyczące użytkownika:',

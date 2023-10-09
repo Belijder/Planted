@@ -53,6 +53,7 @@ class AnnouncementListTile extends StatelessWidget {
                       ],
                     ),
                   ),
+                  const SizedBox(width: 15),
                   Text(
                     announcement.timeStamp.toFormattedDateString(),
                     style: const TextStyle(

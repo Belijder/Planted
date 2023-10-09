@@ -36,10 +36,13 @@ class AnnouncementDetailsView extends StatelessWidget {
             color: colorSepia,
           ),
         ),
-        title: const Text(
-          'Szczegóły ogłoszenia',
-          style: TextStyle(
-              color: colorSepia, fontSize: 20, fontWeight: FontWeight.bold),
+        title: const Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            'Szczegóły ogłoszenia',
+            style: TextStyle(
+                color: colorSepia, fontSize: 20, fontWeight: FontWeight.bold),
+          ),
         ),
         actions: [
           Padding(

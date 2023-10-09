@@ -43,12 +43,15 @@ class UsersAnnouncementsView extends HookWidget {
           ),
           color: colorSepia,
         ),
-        title: const Text(
-          'Twoje ogłoszenia',
-          style: TextStyle(
-            color: colorSepia,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
+        title: const Align(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            'Twoje ogłoszenia',
+            style: TextStyle(
+              color: colorSepia,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
       ),
