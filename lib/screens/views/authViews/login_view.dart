@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:planted/blocs/app_bloc.dart/app_bloc.dart';
-import 'package:planted/blocs/app_bloc.dart/app_event.dart';
+import 'package:planted/blocs/authBloc/auth_bloc.dart';
+import 'package:planted/blocs/authBloc/auth_event.dart';
 import 'package:planted/constants/colors.dart';
 import 'package:planted/constants/images.dart';
-import 'package:planted/helpers/create_input_decoration.dart';
+import 'package:planted/styles/create_input_decoration.dart';
 import 'package:planted/styles/buttons_styles.dart';
 import 'package:planted/styles/text_styles.dart';
 import 'package:planted/utilities/dialogs/show_dialog_with_text_field.dart';
@@ -88,8 +88,8 @@ class LoginView extends HookWidget {
                   child: ElevatedButton(
                     style: filledButtonStyle,
                     onPressed: () {
-                      context.read<AppBloc>().add(
-                            AppEventLogIn(
+                      context.read<AuthBloc>().add(
+                            AuthEventLogIn(
                               email: emailController.text,
                               password: passwordController.text,
                             ),
@@ -101,8 +101,8 @@ class LoginView extends HookWidget {
                 const SizedBox(height: 20),
                 TextButton(
                   onPressed: () {
-                    context.read<AppBloc>().add(
-                          const AppEventGoToRegisterView(),
+                    context.read<AuthBloc>().add(
+                          const AuthEventGoToRegisterView(),
                         );
                   },
                   child: const Row(
@@ -149,8 +149,8 @@ class LoginView extends HookWidget {
                       ).then((email) {
                         if (email != null) {
                           context
-                              .read<AppBloc>()
-                              .add(AppEventSendResetPassword(email: email));
+                              .read<AuthBloc>()
+                              .add(AuthEventSendResetPassword(email: email));
                         }
                       });
                     },

@@ -7,36 +7,36 @@ abstract class MessagesScreenEvent {
   const MessagesScreenEvent();
 }
 
-class GoToConversationMessagesScreenEvent implements MessagesScreenEvent {
+class MessagesScreenEventGoToConversation implements MessagesScreenEvent {
   final Conversation conversation;
-  const GoToConversationMessagesScreenEvent({
+  const MessagesScreenEventGoToConversation({
     required this.conversation,
   });
 }
 
-class GoToConversationFromPushMessageMessagesScreenEvent
+class MessagesScreenEventGoToConversationFromPushMessage
     implements MessagesScreenEvent {
   final String conversationID;
-  const GoToConversationFromPushMessageMessagesScreenEvent({
+  const MessagesScreenEventGoToConversationFromPushMessage({
     required this.conversationID,
   });
 }
 
 @immutable
-class GoToListOfConvesationsMessagesScreenEvent implements MessagesScreenEvent {
+class MessagesScreenEventGoToListOfConvesations implements MessagesScreenEvent {
   final Announcement announcement;
-  const GoToListOfConvesationsMessagesScreenEvent({
+  const MessagesScreenEventGoToListOfConvesations({
     required this.announcement,
   });
 }
 
 @immutable
-class SendMessageMessagesScreenEvent implements MessagesScreenEvent {
+class MessagesScreenEventSendMessage implements MessagesScreenEvent {
   final Announcement announcement;
   final String conversationID;
   final String message;
 
-  const SendMessageMessagesScreenEvent({
+  const MessagesScreenEventSendMessage({
     required this.announcement,
     required this.conversationID,
     required this.message,
@@ -44,22 +44,22 @@ class SendMessageMessagesScreenEvent implements MessagesScreenEvent {
 }
 
 @immutable
-class BlockUserMessagesScreenEvent implements MessagesScreenEvent {
+class MessagesScreenEventBlockUser implements MessagesScreenEvent {
   final String currentUserID;
   final String userToBlockID;
 
-  const BlockUserMessagesScreenEvent({
+  const MessagesScreenEventBlockUser({
     required this.currentUserID,
     required this.userToBlockID,
   });
 }
 
 @immutable
-class GoToReportViewMessagesScreenEvent implements MessagesScreenEvent {
+class MessagesScreenEventGoToReportView implements MessagesScreenEvent {
   final Announcement announcement;
   final Conversation conversation;
   final String userID;
-  const GoToReportViewMessagesScreenEvent({
+  const MessagesScreenEventGoToReportView({
     required this.announcement,
     required this.conversation,
     required this.userID,
@@ -68,14 +68,14 @@ class GoToReportViewMessagesScreenEvent implements MessagesScreenEvent {
 
 @immutable
 @immutable
-class SendReportMessagesScreenEvent implements MessagesScreenEvent {
+class MessagesScreenEventSendReport implements MessagesScreenEvent {
   final Announcement announcement;
   final Conversation? conversation;
   final String userID;
   final String reasonForReporting;
   final String additionalInformation;
 
-  const SendReportMessagesScreenEvent({
+  const MessagesScreenEventSendReport({
     required this.announcement,
     required this.conversation,
     required this.userID,

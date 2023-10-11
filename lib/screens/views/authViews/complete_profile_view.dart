@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:planted/blocs/app_bloc.dart/app_bloc.dart';
-import 'package:planted/blocs/app_bloc.dart/app_event.dart';
+import 'package:planted/blocs/authBloc/auth_bloc.dart';
+import 'package:planted/blocs/authBloc/auth_event.dart';
 import 'package:planted/constants/colors.dart';
 import 'package:planted/constants/images.dart';
-import 'package:planted/helpers/create_input_decoration.dart';
+import 'package:planted/styles/create_input_decoration.dart';
 import 'package:planted/styles/buttons_styles.dart';
 import 'package:planted/styles/text_styles.dart';
 
@@ -77,8 +77,8 @@ class CompleteProfileView extends HookWidget {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      context.read<AppBloc>().add(
-                            AppEventCompletingUserProfile(
+                      context.read<AuthBloc>().add(
+                            AuthEventCompletingUserProfile(
                               displayName: nameController.text,
                               imagePath: imagePath.value,
                             ),

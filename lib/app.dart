@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:planted/blocs/addScreenBloc/add_screen_bloc.dart';
-import 'package:planted/blocs/app_bloc.dart/app_bloc.dart';
-import 'package:planted/blocs/app_bloc.dart/app_event.dart';
+import 'package:planted/blocs/authBloc/auth_bloc.dart';
+import 'package:planted/blocs/authBloc/auth_event.dart';
 import 'package:planted/blocs/browseScreenBloc/browse_screen_bloc.dart';
 import 'package:planted/blocs/messagesScreenBloc/messages_screen_bloc.dart';
 import 'package:planted/blocs/userProfileScreenBloc/user_profile_screen_bloc.dart';
@@ -36,8 +36,8 @@ class App extends StatelessWidget {
       ),
       home: MultiBlocProvider(
         providers: [
-          BlocProvider<AppBloc>(
-            create: (_) => AppBloc()
+          BlocProvider<AuthBloc>(
+            create: (_) => AuthBloc()
               ..add(
                 const AppEventInitialize(),
               ),

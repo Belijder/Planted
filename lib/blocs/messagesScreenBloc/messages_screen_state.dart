@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart' show immutable;
-import 'package:planted/database_error.dart';
+import 'package:planted/blocs/database_error.dart';
 import 'package:planted/models/announcement.dart';
 import 'package:planted/models/conversation.dart';
 import 'package:planted/models/user_profile.dart';
@@ -18,8 +18,8 @@ abstract class MessagesScreenState {
 }
 
 @immutable
-class InConversationsListMessagesScreenState extends MessagesScreenState {
-  const InConversationsListMessagesScreenState({
+class MessagesScreenStateInConversationsList extends MessagesScreenState {
+  const MessagesScreenStateInConversationsList({
     required super.isLoading,
     super.databaseError,
     super.snackbarMessage,
@@ -27,13 +27,13 @@ class InConversationsListMessagesScreenState extends MessagesScreenState {
 }
 
 @immutable
-class InConversationMessagesScreenState extends MessagesScreenState {
+class MessagesScreenStateInConversation extends MessagesScreenState {
   final Conversation conversation;
   final Announcement announcement;
   final UserProfile userProfile;
   final bool messageSended;
 
-  const InConversationMessagesScreenState({
+  const MessagesScreenStateInConversation({
     required super.isLoading,
     super.databaseError,
     super.snackbarMessage,
@@ -45,12 +45,12 @@ class InConversationMessagesScreenState extends MessagesScreenState {
 }
 
 @immutable
-class InReportViewMessagesScreenState extends MessagesScreenState {
+class MessagesScreenStateInReportView extends MessagesScreenState {
   final String userID;
   final Announcement announcement;
   final Conversation? conversation;
 
-  const InReportViewMessagesScreenState({
+  const MessagesScreenStateInReportView({
     required super.isLoading,
     super.databaseError,
     required this.userID,
@@ -62,7 +62,7 @@ class InReportViewMessagesScreenState extends MessagesScreenState {
 extension GetAnnouncement on MessagesScreenState {
   Announcement? get announcement {
     final cls = this;
-    if (cls is InConversationMessagesScreenState) {
+    if (cls is MessagesScreenStateInConversation) {
       return cls.announcement;
     } else {
       return null;
@@ -73,7 +73,7 @@ extension GetAnnouncement on MessagesScreenState {
 extension GetConversation on MessagesScreenState {
   Conversation? get conversation {
     final cls = this;
-    if (cls is InConversationMessagesScreenState) {
+    if (cls is MessagesScreenStateInConversation) {
       return cls.conversation;
     } else {
       return null;
@@ -84,7 +84,7 @@ extension GetConversation on MessagesScreenState {
 extension GetProfile on MessagesScreenState {
   UserProfile? get userProfile {
     final cls = this;
-    if (cls is InConversationMessagesScreenState) {
+    if (cls is MessagesScreenStateInConversation) {
       return cls.userProfile;
     } else {
       return null;

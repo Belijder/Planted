@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:planted/blocs/database_error.dart';
 import 'package:planted/blocs/userProfileScreenBloc/user_profile_screen_event.dart';
 import 'package:planted/blocs/userProfileScreenBloc/user_profile_screen_state.dart';
-import 'package:planted/database_error.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:planted/enums/admin_announcement_action.dart';
-import 'package:planted/enums/announcement_action.dart';
+import 'package:planted/constants/enums/admin_announcement_action.dart';
+import 'package:planted/constants/enums/announcement_action.dart';
 import 'package:planted/managers/conectivity_manager.dart';
 import 'package:planted/managers/firebase_database_manager.dart';
 

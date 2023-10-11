@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:planted/blocs/userProfileScreenBloc/user_profile_screen_bloc.dart';
 import 'package:planted/models/report.dart';
-import 'package:planted/screens/user_profile/report_item_list_tile.dart';
+import 'package:planted/screens/userProfile/report_item_list_tile.dart';
 import 'package:planted/screens/views/empty_state_view.dart';
 
 class ReportsTabBarView extends StatelessWidget {

@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:planted/constants/firebase_paths.dart';
-import 'package:planted/enums/announcement_action.dart';
+import 'package:planted/constants/enums/announcement_action.dart';
 import 'package:planted/managers/push_notifications_manager.dart';
 import 'package:planted/models/announcement.dart';
 import 'package:planted/models/conversation.dart';

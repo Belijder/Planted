@@ -1,9 +1,9 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:planted/blocs/database_error.dart';
 import 'package:planted/blocs/messagesScreenBloc/messages_screen_event.dart';
 import 'package:planted/blocs/messagesScreenBloc/messages_screen_state.dart';
-import 'package:planted/database_error.dart';
 import 'package:planted/managers/conectivity_manager.dart';
 import 'package:planted/managers/firebase_database_manager.dart';
 import 'package:planted/models/announcement.dart';
@@ -17,34 +17,34 @@ class MessagesScreenBloc
 
   MessagesScreenBloc()
       : super(
-          const InConversationsListMessagesScreenState(
+          const MessagesScreenStateInConversationsList(
             isLoading: false,
           ),
         ) {
-    on<GoToListOfConvesationsMessagesScreenEvent>(
+    on<MessagesScreenEventGoToListOfConvesations>(
       (event, emit) {
-        emit(const InConversationsListMessagesScreenState(
+        emit(const MessagesScreenStateInConversationsList(
           isLoading: false,
         ));
       },
     );
 
-    on<GoToConversationMessagesScreenEvent>(
+    on<MessagesScreenEventGoToConversation>(
       (event, emit) async {
         if (connectivityManager.status == ConnectivityResult.none) {
-          emit(const InConversationsListMessagesScreenState(
+          emit(const MessagesScreenStateInConversationsList(
             isLoading: false,
             databaseError: DatabaseErrorNetworkRequestFailed(),
           ));
           return;
         }
 
-        emit(const InConversationsListMessagesScreenState(isLoading: true));
+        emit(const MessagesScreenStateInConversationsList(isLoading: true));
 
         final user = FirebaseAuth.instance.currentUser;
         if (user == null) {
           emit(
-            const InConversationsListMessagesScreenState(
+            const MessagesScreenStateInConversationsList(
               isLoading: false,
               databaseError: DatabaseErrorUserNotFound(),
             ),
@@ -65,7 +65,7 @@ class MessagesScreenBloc
             conversationID: event.conversation.conversationID,
           );
 
-          emit(InConversationMessagesScreenState(
+          emit(MessagesScreenStateInConversation(
             isLoading: false,
             conversation: event.conversation,
             announcement: announcement,
@@ -73,7 +73,7 @@ class MessagesScreenBloc
           ));
         } on FirebaseException catch (e) {
           emit(
-            InConversationsListMessagesScreenState(
+            MessagesScreenStateInConversationsList(
               isLoading: false,
               databaseError: DatabaseError.from(e),
             ),
@@ -82,7 +82,7 @@ class MessagesScreenBloc
       },
     );
 
-    on<SendMessageMessagesScreenEvent>(
+    on<MessagesScreenEventSendMessage>(
       (event, emit) async {
         final Announcement announcement;
         final UserProfile userProfile;
@@ -94,7 +94,7 @@ class MessagesScreenBloc
           conversation = state.conversation!;
 
           if (connectivityManager.status == ConnectivityResult.none) {
-            emit(InConversationMessagesScreenState(
+            emit(MessagesScreenStateInConversation(
               isLoading: false,
               conversation: conversation,
               announcement: announcement,
@@ -110,7 +110,7 @@ class MessagesScreenBloc
               message: event.message.trim(),
             );
 
-            emit(InConversationMessagesScreenState(
+            emit(MessagesScreenStateInConversation(
               isLoading: false,
               conversation: conversation,
               announcement: announcement,
@@ -118,7 +118,7 @@ class MessagesScreenBloc
               messageSended: true,
             ));
           } on FirebaseException catch (e) {
-            emit(InConversationMessagesScreenState(
+            emit(MessagesScreenStateInConversation(
               isLoading: false,
               conversation: conversation,
               announcement: announcement,
@@ -127,7 +127,7 @@ class MessagesScreenBloc
             ));
           }
         } catch (e) {
-          emit(const InConversationsListMessagesScreenState(
+          emit(const MessagesScreenStateInConversationsList(
             isLoading: false,
             databaseError: DatabaseErrorUnknown(),
           ));
@@ -135,10 +135,10 @@ class MessagesScreenBloc
       },
     );
 
-    on<BlockUserMessagesScreenEvent>(
+    on<MessagesScreenEventBlockUser>(
       (event, emit) async {
         if (connectivityManager.status == ConnectivityResult.none) {
-          emit(InConversationMessagesScreenState(
+          emit(MessagesScreenStateInConversation(
             isLoading: false,
             conversation: state.conversation!,
             announcement: state.announcement!,
@@ -152,28 +152,28 @@ class MessagesScreenBloc
           userToBlockID: event.userToBlockID,
         );
 
-        emit(const InConversationsListMessagesScreenState(
+        emit(const MessagesScreenStateInConversationsList(
             isLoading: false,
             snackbarMessage: 'Użytkownik został zablokowany!'));
       },
     );
 
-    on<GoToConversationFromPushMessageMessagesScreenEvent>(
+    on<MessagesScreenEventGoToConversationFromPushMessage>(
       (event, emit) async {
         if (connectivityManager.status == ConnectivityResult.none) {
-          emit(const InConversationsListMessagesScreenState(
+          emit(const MessagesScreenStateInConversationsList(
             isLoading: false,
             databaseError: DatabaseErrorNetworkRequestFailed(),
           ));
           return;
         }
 
-        emit(const InConversationsListMessagesScreenState(isLoading: true));
+        emit(const MessagesScreenStateInConversationsList(isLoading: true));
 
         final user = FirebaseAuth.instance.currentUser;
         if (user == null) {
           emit(
-            const InConversationsListMessagesScreenState(
+            const MessagesScreenStateInConversationsList(
               isLoading: false,
               databaseError: DatabaseErrorUserNotFound(),
             ),
@@ -197,7 +197,7 @@ class MessagesScreenBloc
             conversationID: conversation.conversationID,
           );
 
-          emit(InConversationMessagesScreenState(
+          emit(MessagesScreenStateInConversation(
             isLoading: false,
             conversation: conversation,
             announcement: announcement,
@@ -205,7 +205,7 @@ class MessagesScreenBloc
           ));
         } on FirebaseException catch (e) {
           emit(
-            InConversationsListMessagesScreenState(
+            MessagesScreenStateInConversationsList(
               isLoading: false,
               databaseError: DatabaseError.from(e),
             ),
@@ -214,9 +214,9 @@ class MessagesScreenBloc
       },
     );
 
-    on<GoToReportViewMessagesScreenEvent>(
+    on<MessagesScreenEventGoToReportView>(
       (event, emit) {
-        emit(InReportViewMessagesScreenState(
+        emit(MessagesScreenStateInReportView(
           isLoading: false,
           userID: event.userID,
           announcement: event.announcement,
@@ -225,10 +225,10 @@ class MessagesScreenBloc
       },
     );
 
-    on<SendReportMessagesScreenEvent>(
+    on<MessagesScreenEventSendReport>(
       (event, emit) async {
         if (connectivityManager.status == ConnectivityResult.none) {
-          emit(InReportViewMessagesScreenState(
+          emit(MessagesScreenStateInReportView(
             isLoading: false,
             userID: event.userID,
             announcement: event.announcement,
@@ -250,7 +250,7 @@ class MessagesScreenBloc
               await databaseManager.getUserProfile(id: event.userID);
 
           if (event.conversation != null) {
-            emit(InConversationMessagesScreenState(
+            emit(MessagesScreenStateInConversation(
               isLoading: false,
               conversation: event.conversation!,
               announcement: event.announcement,
@@ -258,13 +258,13 @@ class MessagesScreenBloc
               snackbarMessage: 'Zgłoszenie zostało wysłane!',
             ));
           } else {
-            emit(const InConversationsListMessagesScreenState(
+            emit(const MessagesScreenStateInConversationsList(
               isLoading: false,
               snackbarMessage: 'Zgłoszenie zostało wysłane!',
             ));
           }
         } on FirebaseException catch (e) {
-          emit(InReportViewMessagesScreenState(
+          emit(MessagesScreenStateInReportView(
             isLoading: false,
             userID: event.userID,
             announcement: event.announcement,

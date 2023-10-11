@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:in_app_review/in_app_review.dart';
-import 'package:planted/blocs/app_bloc.dart/app_bloc.dart';
-import 'package:planted/blocs/app_bloc.dart/app_event.dart';
+import 'package:planted/blocs/authBloc/auth_bloc.dart';
+import 'package:planted/blocs/authBloc/auth_event.dart';
 import 'package:planted/blocs/userProfileScreenBloc/user_profile_screen_bloc.dart';
 import 'package:planted/blocs/userProfileScreenBloc/user_profile_screen_event.dart';
 import 'package:planted/blocs/userProfileScreenBloc/user_profile_screen_state.dart';
@@ -64,7 +64,7 @@ class UserProfileView extends HookWidget {
             stream: userProfileStream,
             builder: (context, snapshot) {
               if (snapshot.hasError) {
-                context.read<AppBloc>().add(const AppEventLogOut());
+                context.read<AuthBloc>().add(const AuthEventLogOut());
               }
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
@@ -206,8 +206,8 @@ class UserProfileView extends HookWidget {
                             width: double.infinity,
                             child: ElevatedButton(
                               onPressed: () {
-                                context.read<AppBloc>().add(
-                                      const AppEventLogOut(),
+                                context.read<AuthBloc>().add(
+                                      const AuthEventLogOut(),
                                     );
                               },
                               style: createFilledButtonStyle(
@@ -239,8 +239,8 @@ class UserProfileView extends HookWidget {
                                   dialogType: ConfirmationDialogType.password,
                                 ).then((password) {
                                   if (password != null && password.isNotEmpty) {
-                                    context.read<AppBloc>().add(
-                                        AppEventDeleteAccount(
+                                    context.read<AuthBloc>().add(
+                                        AuthEventDeleteAccount(
                                             password: password));
                                   }
                                 });

@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:planted/blocs/userProfileScreenBloc/user_profile_screen_bloc.dart';
 import 'package:planted/blocs/userProfileScreenBloc/user_profile_screen_event.dart';
 import 'package:planted/constants/colors.dart';
-import 'package:planted/screens/user_profile/administratorPanel/announcements_tab_bar_view.dart';
-import 'package:planted/screens/user_profile/administratorPanel/reports_tab_bar_view.dart';
+import 'package:planted/screens/userProfile/administratorPanel/announcements_tab_bar_view.dart';
+import 'package:planted/screens/userProfile/administratorPanel/reports_tab_bar_view.dart';
 
 class AdministatorPanelView extends StatelessWidget {
   const AdministatorPanelView({required this.initialIndex, super.key});

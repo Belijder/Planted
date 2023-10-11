@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:planted/constants/colors.dart';
-import 'package:planted/helpers/create_input_decoration.dart';
+import 'package:planted/styles/create_input_decoration.dart';
 import 'package:planted/models/announcement.dart';
 import 'package:planted/models/conversation.dart';
 import 'package:planted/styles/buttons_styles.dart';

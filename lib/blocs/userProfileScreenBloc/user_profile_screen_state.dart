@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart' show immutable;
-import 'package:planted/database_error.dart';
+import 'package:planted/blocs/database_error.dart';
 import 'package:planted/models/announcement.dart';
 import 'package:planted/models/report.dart';
 

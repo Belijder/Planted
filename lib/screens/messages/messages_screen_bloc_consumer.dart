@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:planted/blocs/app_bloc.dart/app_bloc.dart';
-import 'package:planted/blocs/app_bloc.dart/app_event.dart';
+import 'package:planted/blocs/authBloc/auth_bloc.dart';
+import 'package:planted/blocs/authBloc/auth_event.dart';
 import 'package:planted/blocs/messagesScreenBloc/messages_screen_bloc.dart';
 import 'package:planted/blocs/messagesScreenBloc/messages_screen_event.dart';
 import 'package:planted/blocs/messagesScreenBloc/messages_screen_state.dart';
@@ -57,12 +57,12 @@ class MessagesScreenBlocConsumer extends HookWidget {
       builder: (context, messagesScreenState) {
         Widget child;
 
-        if (messagesScreenState is InConversationsListMessagesScreenState) {
+        if (messagesScreenState is MessagesScreenStateInConversationsList) {
           child = StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
               stream: userProfileStream,
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
-                  context.read<AppBloc>().add(const AppEventLogOut());
+                  context.read<AuthBloc>().add(const AuthEventLogOut());
                 }
 
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -74,7 +74,7 @@ class MessagesScreenBlocConsumer extends HookWidget {
                   blockedUsers: userProfile.blockedUsers,
                 );
               });
-        } else if (messagesScreenState is InConversationMessagesScreenState) {
+        } else if (messagesScreenState is MessagesScreenStateInConversation) {
           child = ConversationView(
             currentUserID: messagesScreenState.userProfile.userID,
             announcement: messagesScreenState.announcement,
@@ -85,7 +85,7 @@ class MessagesScreenBlocConsumer extends HookWidget {
                 required message}) {
               context
                   .read<MessagesScreenBloc>()
-                  .add(SendMessageMessagesScreenEvent(
+                  .add(MessagesScreenEventSendMessage(
                     announcement: announcement,
                     conversationID: conversationID,
                     message: message,
@@ -98,7 +98,7 @@ class MessagesScreenBlocConsumer extends HookWidget {
             }) {
               context
                   .read<MessagesScreenBloc>()
-                  .add(GoToListOfConvesationsMessagesScreenEvent(
+                  .add(MessagesScreenEventGoToListOfConvesations(
                     announcement: announcement,
                   ));
             },
@@ -110,7 +110,7 @@ class MessagesScreenBlocConsumer extends HookWidget {
             }) {
               context
                   .read<MessagesScreenBloc>()
-                  .add(BlockUserMessagesScreenEvent(
+                  .add(MessagesScreenEventBlockUser(
                     currentUserID: currentUserID,
                     userToBlockID: userToBlockID,
                   ));
@@ -121,13 +121,13 @@ class MessagesScreenBlocConsumer extends HookWidget {
               required currentUserID,
             }) {
               context.read<MessagesScreenBloc>().add(
-                  GoToReportViewMessagesScreenEvent(
+                  MessagesScreenEventGoToReportView(
                       announcement: announcement,
                       conversation: conversation,
                       userID: currentUserID));
             },
           );
-        } else if (messagesScreenState is InReportViewMessagesScreenState) {
+        } else if (messagesScreenState is MessagesScreenStateInReportView) {
           child = ReportView(
             announcement: messagesScreenState.announcement,
             conversation: messagesScreenState.conversation,
@@ -138,11 +138,11 @@ class MessagesScreenBlocConsumer extends HookWidget {
                 required userID}) {
               if (conversation != null) {
                 context.read<MessagesScreenBloc>().add(
-                    GoToConversationMessagesScreenEvent(
+                    MessagesScreenEventGoToConversation(
                         conversation: conversation));
               } else {
                 context.read<MessagesScreenBloc>().add(
-                    GoToListOfConvesationsMessagesScreenEvent(
+                    MessagesScreenEventGoToListOfConvesations(
                         announcement: announcement));
               }
             },
@@ -154,7 +154,7 @@ class MessagesScreenBlocConsumer extends HookWidget {
                 required userID}) {
               context
                   .read<MessagesScreenBloc>()
-                  .add(SendReportMessagesScreenEvent(
+                  .add(MessagesScreenEventSendReport(
                     announcement: announcement,
                     conversation: conversation,
                     userID: userID,

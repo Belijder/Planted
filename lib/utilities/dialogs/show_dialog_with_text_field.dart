@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:planted/constants/colors.dart';
-import 'package:planted/helpers/create_input_decoration.dart';
+import 'package:planted/styles/create_input_decoration.dart';
 import 'package:planted/styles/buttons_styles.dart';
 import 'package:planted/styles/text_styles.dart';
 

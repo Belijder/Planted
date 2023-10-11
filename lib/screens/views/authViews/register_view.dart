@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:planted/blocs/app_bloc.dart/app_bloc.dart';
-import 'package:planted/blocs/app_bloc.dart/app_event.dart';
-import 'package:planted/blocs/app_bloc.dart/app_state.dart';
+import 'package:planted/blocs/authBloc/auth_bloc.dart';
+import 'package:planted/blocs/authBloc/auth_event.dart';
+import 'package:planted/blocs/authBloc/auth_state.dart';
 import 'package:planted/constants/colors.dart';
 import 'package:planted/constants/firebase_paths.dart';
 import 'package:planted/constants/images.dart';
-import 'package:planted/helpers/create_input_decoration.dart';
+import 'package:planted/styles/create_input_decoration.dart';
 import 'package:planted/styles/buttons_styles.dart';
 import 'package:planted/styles/text_styles.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -26,15 +26,15 @@ class RegisterView extends HookWidget {
       appBar: AppBar(
         backgroundColor: colorEggsheel,
       ),
-      body: BlocListener<AppBloc, AppState>(
+      body: BlocListener<AuthBloc, AuthState>(
         listener: (context, appState) {
-          if (appState is AppStateIsInRegistrationView) {
+          if (appState is AuthStateIsInRegistrationView) {
             final path = appState.path;
             if (path != null) {
               final Uri legalTermsUrl = Uri(scheme: 'https', path: path);
               launchUrl(legalTermsUrl);
             }
-            context.read<AppBloc>().add(const AppEventGoToRegisterView());
+            context.read<AuthBloc>().add(const AuthEventGoToRegisterView());
           }
         },
         child: SingleChildScrollView(
@@ -142,9 +142,8 @@ class RegisterView extends HookWidget {
                                     WidgetSpan(
                                       child: GestureDetector(
                                         onTap: () {
-                                          context
-                                              .read<AppBloc>()
-                                              .add(const AppEventOpenLegalTerms(
+                                          context.read<AuthBloc>().add(
+                                                  const AuthEventOpenLegalTerms(
                                                 documentID: termsOfUseDoc,
                                               ));
                                         },
@@ -164,9 +163,8 @@ class RegisterView extends HookWidget {
                                     WidgetSpan(
                                       child: GestureDetector(
                                         onTap: () {
-                                          context
-                                              .read<AppBloc>()
-                                              .add(const AppEventOpenLegalTerms(
+                                          context.read<AuthBloc>().add(
+                                                  const AuthEventOpenLegalTerms(
                                                 documentID: privacyPolicyDoc,
                                               ));
                                         },
@@ -196,8 +194,8 @@ class RegisterView extends HookWidget {
                         style: createFilledButtonStyle(
                             backgroundColor: colorDarkMossGreen),
                         onPressed: () {
-                          context.read<AppBloc>().add(
-                                AppEventRegister(
+                          context.read<AuthBloc>().add(
+                                AuthEventRegister(
                                   email: emailController.text,
                                   password: passwordController.text,
                                   confirmPassword:
@@ -213,8 +211,8 @@ class RegisterView extends HookWidget {
                     const SizedBox(height: 20),
                     TextButton(
                       onPressed: () {
-                        context.read<AppBloc>().add(
-                              const AppEventGoToLoginView(),
+                        context.read<AuthBloc>().add(
+                              const AuthEventGoToLoginView(),
                             );
                       },
                       child: const Row(

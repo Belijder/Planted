@@ -1,17 +1,17 @@
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart' show immutable;
-import 'package:planted/auth_error.dart';
-import 'package:planted/database_error.dart';
+import 'package:planted/blocs/auth_error.dart';
+import 'package:planted/blocs/database_error.dart';
 
 @immutable
-abstract class AppState extends Equatable {
+abstract class AuthState extends Equatable {
   final bool isLoading;
   final AuthError? authError;
   final String? snackbarMessage;
   final DatabaseError? databaseError;
 
-  const AppState(
+  const AuthState(
       {required this.isLoading,
       this.authError,
       this.snackbarMessage,
@@ -19,8 +19,8 @@ abstract class AppState extends Equatable {
 }
 
 @immutable
-class AppStateInitialState extends AppState {
-  const AppStateInitialState({
+class AuthStateInitialState extends AuthState {
+  const AuthStateInitialState({
     required super.isLoading,
   });
 
@@ -29,8 +29,8 @@ class AppStateInitialState extends AppState {
 }
 
 @immutable
-class AppStateLoggedOut extends AppState {
-  const AppStateLoggedOut({
+class AuthStateLoggedOut extends AuthState {
+  const AuthStateLoggedOut({
     required super.isLoading,
     super.authError,
     super.snackbarMessage,
@@ -46,10 +46,10 @@ class AppStateLoggedOut extends AppState {
 }
 
 @immutable
-class AppStateLoggedIn extends AppState {
+class AuthStateLoggedIn extends AuthState {
   final User user;
 
-  const AppStateLoggedIn({
+  const AuthStateLoggedIn({
     required super.isLoading,
     super.authError,
     super.databaseError,
@@ -68,9 +68,9 @@ class AppStateLoggedIn extends AppState {
 }
 
 @immutable
-class AppStateIsInRegistrationView extends AppState {
+class AuthStateIsInRegistrationView extends AuthState {
   final String? path;
-  const AppStateIsInRegistrationView({
+  const AuthStateIsInRegistrationView({
     required super.isLoading,
     super.authError,
     super.databaseError,
@@ -82,8 +82,8 @@ class AppStateIsInRegistrationView extends AppState {
 }
 
 @immutable
-class AppStateIsInConfirmationEmailView extends AppState {
-  const AppStateIsInConfirmationEmailView({
+class AuthStateIsInConfirmationEmailView extends AuthState {
+  const AuthStateIsInConfirmationEmailView({
     required super.isLoading,
     super.authError,
     super.snackbarMessage,
@@ -94,10 +94,10 @@ class AppStateIsInConfirmationEmailView extends AppState {
 }
 
 @immutable
-class AppStateIsInCompleteProfileView extends AppState {
+class AuthStateIsInCompleteProfileView extends AuthState {
   final User user;
 
-  const AppStateIsInCompleteProfileView({
+  const AuthStateIsInCompleteProfileView({
     required super.isLoading,
     super.authError,
     super.snackbarMessage,
@@ -110,10 +110,10 @@ class AppStateIsInCompleteProfileView extends AppState {
       [user, isLoading, authError, snackbarMessage, databaseError];
 }
 
-extension GetUser on AppState {
+extension GetUser on AuthState {
   User? get user {
     final cls = this;
-    if (cls is AppStateLoggedIn) {
+    if (cls is AuthStateLoggedIn) {
       return cls.user;
     } else {
       return null;

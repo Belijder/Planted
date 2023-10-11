@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:planted/blocs/app_bloc.dart/app_bloc.dart';
-import 'package:planted/blocs/app_bloc.dart/app_event.dart';
+import 'package:planted/blocs/authBloc/auth_bloc.dart';
+import 'package:planted/blocs/authBloc/auth_event.dart';
 import 'package:planted/constants/colors.dart';
 import 'package:planted/constants/images.dart';
 import 'package:planted/constants/strings.dart';
@@ -79,7 +79,7 @@ class ConfrimEmailView extends StatelessWidget {
                       width: double.infinity,
                       child: OutlinedButton.icon(
                         onPressed: () {
-                          context.read<AppBloc>().add(const AppEventLogOut());
+                          context.read<AuthBloc>().add(const AuthEventLogOut());
                         },
                         style: outlinedButtonStyle,
                         icon: const Icon(Icons.refresh_rounded),
@@ -106,8 +106,8 @@ class ConfrimEmailView extends StatelessWidget {
                   child: OutlinedButton(
                     onPressed: () {
                       context
-                          .read<AppBloc>()
-                          .add(const AppEventResentVerificationMail());
+                          .read<AuthBloc>()
+                          .add(const AuthEventResentVerificationMail());
                     },
                     style: outlinedButtonStyle,
                     child: const Text('Wyślij link ponownie'),

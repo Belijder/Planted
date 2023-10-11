@@ -30,7 +30,7 @@ class ConversationTile extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         context.read<MessagesScreenBloc>().add(
-            GoToConversationMessagesScreenEvent(conversation: conversation));
+            MessagesScreenEventGoToConversation(conversation: conversation));
       },
       child: Padding(
         padding: const EdgeInsets.all(5.0),

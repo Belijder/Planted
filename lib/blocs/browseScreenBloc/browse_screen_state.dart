@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart' show immutable;
-import 'package:planted/database_error.dart';
+import 'package:planted/blocs/database_error.dart';
 import 'package:planted/models/announcement.dart';
 import 'package:planted/models/conversation.dart';
 

@@ -173,7 +173,7 @@ class ConversationView extends HookWidget {
           ),
           BlocListener<MessagesScreenBloc, MessagesScreenState>(
             listener: (context, messageScreenState) {
-              if (messageScreenState is InConversationMessagesScreenState) {
+              if (messageScreenState is MessagesScreenStateInConversation) {
                 if (messageScreenState.messageSended == true) {
                   messageController.clear();
                   scrollController

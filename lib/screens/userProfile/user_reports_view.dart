@@ -4,7 +4,7 @@ import 'package:planted/blocs/userProfileScreenBloc/user_profile_screen_bloc.dar
 import 'package:planted/blocs/userProfileScreenBloc/user_profile_screen_event.dart';
 import 'package:planted/constants/colors.dart';
 import 'package:planted/models/report.dart';
-import 'package:planted/screens/user_profile/report_item_list_tile.dart';
+import 'package:planted/screens/userProfile/report_item_list_tile.dart';
 import 'package:planted/screens/views/empty_state_view.dart';
 
 class UserReportsView extends StatelessWidget {

@@ -5,7 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:planted/blocs/addScreenBloc/add_screen_event.dart';
 import 'package:planted/blocs/addScreenBloc/add_screen_state.dart';
-import 'package:planted/database_error.dart';
+import 'package:planted/blocs/database_error.dart';
 import 'package:planted/helpers/compress_image.dart';
 import 'package:planted/managers/conectivity_manager.dart';
 import 'package:planted/managers/firebase_database_manager.dart';

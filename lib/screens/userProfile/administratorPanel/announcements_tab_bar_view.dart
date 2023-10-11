@@ -4,7 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:planted/blocs/userProfileScreenBloc/user_profile_screen_bloc.dart';
 import 'package:planted/blocs/userProfileScreenBloc/user_profile_screen_event.dart';
 import 'package:planted/constants/colors.dart';
-import 'package:planted/enums/admin_announcement_action.dart';
+import 'package:planted/constants/enums/admin_announcement_action.dart';
 import 'package:planted/models/announcement.dart';
 import 'package:planted/screens/browse/announcements_list_tile.dart';
 import 'package:planted/screens/views/empty_state_view.dart';

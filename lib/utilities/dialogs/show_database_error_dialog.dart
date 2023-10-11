@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:planted/database_error.dart';
+import 'package:planted/blocs/database_error.dart';
 import 'package:planted/utilities/dialogs/show_generic_dialog.dart';
 
 Future<void> showDatabaseErrorDialog({

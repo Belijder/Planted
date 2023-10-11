@@ -5,25 +5,25 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:planted/auth_error.dart';
-import 'package:planted/blocs/app_bloc.dart/app_event.dart';
-import 'package:planted/blocs/app_bloc.dart/app_state.dart';
+import 'package:planted/blocs/authBloc/auth_event.dart';
+import 'package:planted/blocs/authBloc/auth_state.dart';
+import 'package:planted/blocs/auth_error.dart';
+import 'package:planted/blocs/database_error.dart';
 import 'package:planted/constants/firebase_paths.dart';
 import 'package:planted/constants/strings.dart';
-import 'package:planted/database_error.dart';
 import 'package:planted/helpers/compress_image.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:planted/managers/conectivity_manager.dart';
 import 'package:planted/managers/firebase_database_manager.dart';
 import 'package:planted/models/announcement.dart';
 
-class AppBloc extends Bloc<AppEvent, AppState> {
+class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final connectivityManager = ConnectivityManager();
   final databaseManager = FirebaseDatabaseManager();
 
-  AppBloc()
+  AuthBloc()
       : super(
-          const AppStateInitialState(
+          const AuthStateInitialState(
             isLoading: false,
           ),
         ) {
@@ -33,7 +33,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
         if (user == null) {
           emit(
-            const AppStateLoggedOut(
+            const AuthStateLoggedOut(
               isLoading: false,
             ),
           );
@@ -42,7 +42,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
         if (user.emailVerified == false) {
           emit(
-            const AppStateIsInConfirmationEmailView(
+            const AuthStateIsInConfirmationEmailView(
               isLoading: false,
             ),
           );
@@ -56,7 +56,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
         if (query.docs.isEmpty) {
           emit(
-            AppStateIsInCompleteProfileView(
+            AuthStateIsInCompleteProfileView(
               isLoading: false,
               user: user,
             ),
@@ -64,44 +64,44 @@ class AppBloc extends Bloc<AppEvent, AppState> {
           return;
         }
 
-        emit(AppStateLoggedIn(
+        emit(AuthStateLoggedIn(
           isLoading: false,
           user: user,
         ));
       },
     );
 
-    on<AppEventGoToRegisterView>(
+    on<AuthEventGoToRegisterView>(
       (event, emit) {
         emit(
-          const AppStateIsInRegistrationView(
+          const AuthStateIsInRegistrationView(
             isLoading: false,
           ),
         );
       },
     );
 
-    on<AppEventGoToLoginView>(
+    on<AuthEventGoToLoginView>(
       (event, emit) {
         emit(
-          const AppStateLoggedOut(
+          const AuthStateLoggedOut(
             isLoading: false,
           ),
         );
       },
     );
 
-    on<AppEventRegister>(
+    on<AuthEventRegister>(
       (event, emit) async {
         if (connectivityManager.status == ConnectivityResult.none) {
-          emit(const AppStateIsInRegistrationView(
+          emit(const AuthStateIsInRegistrationView(
             isLoading: false,
             authError: AuthErrorNetworkRequestFailed(),
           ));
           return;
         }
 
-        emit(const AppStateIsInRegistrationView(isLoading: true));
+        emit(const AuthStateIsInRegistrationView(isLoading: true));
 
         final email = event.email;
         final password = event.password;
@@ -111,7 +111,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
         // check if the fields are not empty
         if (email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
           emit(
-            const AppStateIsInRegistrationView(
+            const AuthStateIsInRegistrationView(
               isLoading: false,
               authError: AuthErrorFieldsAreEmpty(),
             ),
@@ -121,7 +121,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
         if (areLegalTermsAccepted == false) {
           emit(
-            const AppStateIsInRegistrationView(
+            const AuthStateIsInRegistrationView(
               isLoading: false,
               authError: AuthErrorLegalTermsNotAccepted(),
             ),
@@ -132,7 +132,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
         // check passwords identicality
         if (password != confirmPassword) {
           emit(
-            const AppStateIsInRegistrationView(
+            const AuthStateIsInRegistrationView(
               isLoading: false,
               authError: AuthErrorPasswordAreNotIdentical(),
             ),
@@ -151,12 +151,12 @@ class AppBloc extends Bloc<AppEvent, AppState> {
           await user.sendEmailVerification();
 
           emit(
-            const AppStateIsInConfirmationEmailView(
+            const AuthStateIsInConfirmationEmailView(
               isLoading: false,
             ),
           );
         } on FirebaseAuthException catch (e) {
-          emit(AppStateIsInRegistrationView(
+          emit(AuthStateIsInRegistrationView(
             isLoading: false,
             authError: AuthError.from(e),
           ));
@@ -164,30 +164,30 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       },
     );
 
-    on<AppEventResentVerificationMail>(
+    on<AuthEventResentVerificationMail>(
       (event, emit) async {
         if (connectivityManager.status == ConnectivityResult.none) {
-          emit(const AppStateIsInConfirmationEmailView(
+          emit(const AuthStateIsInConfirmationEmailView(
             isLoading: false,
             authError: AuthErrorNetworkRequestFailed(),
           ));
           return;
         }
 
-        emit(const AppStateIsInConfirmationEmailView(isLoading: true));
+        emit(const AuthStateIsInConfirmationEmailView(isLoading: true));
 
         try {
           await FirebaseAuth.instance.currentUser!.sendEmailVerification();
 
           emit(
-            const AppStateIsInConfirmationEmailView(
+            const AuthStateIsInConfirmationEmailView(
               isLoading: false,
               snackbarMessage: 'Mail został wysłany. sprawdź poczę!',
             ),
           );
         } on FirebaseAuthException catch (e) {
           emit(
-            AppStateIsInConfirmationEmailView(
+            AuthStateIsInConfirmationEmailView(
               isLoading: false,
               authError: AuthError.from(e),
             ),
@@ -196,17 +196,17 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       },
     );
 
-    on<AppEventCompletingUserProfile>(
+    on<AuthEventCompletingUserProfile>(
       (event, emit) async {
         final user = FirebaseAuth.instance.currentUser;
 
         if (user == null) {
-          emit(const AppStateLoggedOut(isLoading: false));
+          emit(const AuthStateLoggedOut(isLoading: false));
           return;
         }
 
         if (connectivityManager.status == ConnectivityResult.none) {
-          emit(AppStateIsInCompleteProfileView(
+          emit(AuthStateIsInCompleteProfileView(
             user: user,
             isLoading: false,
             authError: const AuthErrorNetworkRequestFailed(),
@@ -215,7 +215,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
         }
 
         if (event.displayName.length > 20) {
-          emit(AppStateIsInCompleteProfileView(
+          emit(AuthStateIsInCompleteProfileView(
             user: user,
             isLoading: false,
             authError: const AuthErrorDisplayNameToLong(),
@@ -223,7 +223,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
           return;
         }
 
-        emit(AppStateIsInCompleteProfileView(user: user, isLoading: true));
+        emit(AuthStateIsInCompleteProfileView(user: user, isLoading: true));
 
         try {
           final displayNameIsAvaileble =
@@ -232,7 +232,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
           );
 
           if (!displayNameIsAvaileble) {
-            emit(AppStateIsInCompleteProfileView(
+            emit(AuthStateIsInCompleteProfileView(
               user: user,
               isLoading: false,
               authError: const AuthErrorDisplayNameTaken(),
@@ -280,9 +280,9 @@ class AppBloc extends Bloc<AppEvent, AppState> {
               .doc(user.uid)
               .set(userProfileData);
 
-          emit(AppStateLoggedIn(isLoading: false, user: user));
+          emit(AuthStateLoggedIn(isLoading: false, user: user));
         } on FirebaseException catch (e) {
-          emit(AppStateIsInCompleteProfileView(
+          emit(AuthStateIsInCompleteProfileView(
             isLoading: false,
             user: user,
             databaseError: DatabaseError.from(e),
@@ -291,17 +291,17 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       },
     );
 
-    on<AppEventLogOut>(
+    on<AuthEventLogOut>(
       (event, emit) async {
         final user = FirebaseAuth.instance.currentUser;
 
         if (user == null) {
-          emit(const AppStateLoggedOut(isLoading: false));
+          emit(const AuthStateLoggedOut(isLoading: false));
           return;
         }
 
         if (connectivityManager.status == ConnectivityResult.none) {
-          emit(AppStateLoggedIn(
+          emit(AuthStateLoggedIn(
             isLoading: false,
             user: user,
             authError: const AuthErrorNetworkRequestFailed(),
@@ -309,14 +309,14 @@ class AppBloc extends Bloc<AppEvent, AppState> {
           return;
         }
 
-        emit(const AppStateLoggedOut(isLoading: true));
+        emit(const AuthStateLoggedOut(isLoading: true));
         await databaseManager.removeFcmToken(userID: user.uid);
 
         try {
           await FirebaseAuth.instance.signOut();
-          emit(const AppStateLoggedOut(isLoading: false));
+          emit(const AuthStateLoggedOut(isLoading: false));
         } on FirebaseAuthException catch (e) {
-          emit(AppStateLoggedOut(
+          emit(AuthStateLoggedOut(
             isLoading: false,
             authError: AuthError.from(e),
           ));
@@ -324,17 +324,17 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       },
     );
 
-    on<AppEventLogIn>(
+    on<AuthEventLogIn>(
       (event, emit) async {
         if (connectivityManager.status == ConnectivityResult.none) {
-          emit(const AppStateLoggedOut(
+          emit(const AuthStateLoggedOut(
             isLoading: false,
             authError: AuthErrorNetworkRequestFailed(),
           ));
           return;
         }
 
-        emit(const AppStateLoggedOut(isLoading: true));
+        emit(const AuthStateLoggedOut(isLoading: true));
 
         final email = event.email;
         final password = event.password;
@@ -342,7 +342,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
         // check if the fields are not empty
         if (email.isEmpty || password.isEmpty) {
           emit(
-            const AppStateLoggedOut(
+            const AuthStateLoggedOut(
               isLoading: false,
               authError: AuthErrorFieldsAreEmpty(),
             ),
@@ -359,7 +359,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
           final user = credentials.user;
           if (user == null) {
-            emit(const AppStateLoggedOut(
+            emit(const AuthStateLoggedOut(
               isLoading: false,
             ));
             return;
@@ -367,7 +367,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
           if (user.emailVerified == false) {
             emit(
-              const AppStateIsInConfirmationEmailView(
+              const AuthStateIsInConfirmationEmailView(
                 isLoading: false,
               ),
             );
@@ -399,7 +399,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
                   .set(userProfileData);
             } else {
               emit(
-                AppStateIsInCompleteProfileView(
+                AuthStateIsInCompleteProfileView(
                   isLoading: false,
                   user: user,
                 ),
@@ -413,12 +413,12 @@ class AppBloc extends Bloc<AppEvent, AppState> {
             userID: user.uid,
           );
 
-          emit(AppStateLoggedIn(
+          emit(AuthStateLoggedIn(
             isLoading: false,
             user: user,
           ));
         } on FirebaseAuthException catch (e) {
-          emit(AppStateLoggedOut(
+          emit(AuthStateLoggedOut(
             isLoading: false,
             authError: AuthError.from(e),
           ));
@@ -426,28 +426,28 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       },
     );
 
-    on<AppEventSendResetPassword>(
+    on<AuthEventSendResetPassword>(
       (event, emit) async {
         if (connectivityManager.status == ConnectivityResult.none) {
-          emit(const AppStateLoggedOut(
+          emit(const AuthStateLoggedOut(
             isLoading: false,
             authError: AuthErrorNetworkRequestFailed(),
           ));
           return;
         }
 
-        emit(const AppStateLoggedOut(isLoading: true));
+        emit(const AuthStateLoggedOut(isLoading: true));
 
         final email = event.email;
 
         try {
           await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
-          emit(const AppStateLoggedOut(
+          emit(const AuthStateLoggedOut(
             isLoading: false,
             snackbarMessage: resetPasswordSended,
           ));
         } on FirebaseAuthException catch (e) {
-          emit(AppStateLoggedOut(
+          emit(AuthStateLoggedOut(
             isLoading: false,
             authError: AuthError.from(e),
           ));
@@ -455,16 +455,16 @@ class AppBloc extends Bloc<AppEvent, AppState> {
       },
     );
 
-    on<AppEventDeleteAccount>(
+    on<AuthEventDeleteAccount>(
       (event, emit) async {
         final user = FirebaseAuth.instance.currentUser;
         if (user == null) {
-          emit(const AppStateLoggedOut(isLoading: true));
+          emit(const AuthStateLoggedOut(isLoading: true));
           return;
         }
 
         if (connectivityManager.status == ConnectivityResult.none) {
-          emit(AppStateLoggedIn(
+          emit(AuthStateLoggedIn(
             user: user,
             isLoading: false,
             authError: const AuthErrorNetworkRequestFailed(),
@@ -472,7 +472,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
           return;
         }
 
-        emit(AppStateLoggedIn(isLoading: true, user: user));
+        emit(AuthStateLoggedIn(isLoading: true, user: user));
 
         try {
           await FirebaseAuth.instance.signInWithEmailAndPassword(
@@ -480,7 +480,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
             password: event.password,
           );
         } on FirebaseAuthException catch (e) {
-          emit(AppStateLoggedIn(
+          emit(AuthStateLoggedIn(
             isLoading: false,
             user: user,
             authError: AuthError.from(e),
@@ -488,7 +488,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
           return;
         }
 
-        emit(const AppStateLoggedOut(isLoading: true));
+        emit(const AuthStateLoggedOut(isLoading: true));
 
         //change All user announcement to Archived
         final announcements = await FirebaseFirestore.instance
@@ -526,19 +526,19 @@ class AppBloc extends Bloc<AppEvent, AppState> {
         //DeleteAccount
         try {
           await FirebaseAuth.instance.currentUser?.delete();
-          emit(const AppStateLoggedOut(
+          emit(const AuthStateLoggedOut(
             isLoading: false,
             snackbarMessage: 'Konto zostało usunięte!',
           ));
         } on FirebaseAuthException catch (e) {
           emit(
-            AppStateLoggedOut(isLoading: false, authError: AuthError.from(e)),
+            AuthStateLoggedOut(isLoading: false, authError: AuthError.from(e)),
           );
         }
       },
     );
 
-    on<AppEventOpenLegalTerms>(
+    on<AuthEventOpenLegalTerms>(
       (event, emit) async {
         try {
           final path = await FirebaseFirestore.instance
@@ -547,12 +547,12 @@ class AppBloc extends Bloc<AppEvent, AppState> {
               .get()
               .then((snapshot) => snapshot.data()?['path'] as String);
 
-          emit(AppStateIsInRegistrationView(
+          emit(AuthStateIsInRegistrationView(
             isLoading: false,
             path: path,
           ));
         } on FirebaseException catch (e) {
-          emit(AppStateIsInRegistrationView(
+          emit(AuthStateIsInRegistrationView(
             isLoading: false,
             databaseError: DatabaseError.from(e),
           ));

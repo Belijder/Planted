@@ -7,11 +7,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:planted/blocs/addScreenBloc/add_screen_bloc.dart';
 import 'package:planted/blocs/addScreenBloc/add_screen_event.dart';
 import 'package:planted/blocs/addScreenBloc/add_screen_state.dart';
-import 'package:planted/blocs/app_bloc.dart/app_bloc.dart';
-import 'package:planted/blocs/app_bloc.dart/app_event.dart';
-import 'package:planted/blocs/app_bloc.dart/app_state.dart';
+import 'package:planted/blocs/authBloc/auth_bloc.dart';
+import 'package:planted/blocs/authBloc/auth_event.dart';
+import 'package:planted/blocs/authBloc/auth_state.dart';
 import 'package:planted/constants/colors.dart';
-import 'package:planted/helpers/create_input_decoration.dart';
+import 'package:planted/styles/create_input_decoration.dart';
 import 'package:planted/styles/box_decoration_styles.dart';
 import 'package:planted/styles/buttons_styles.dart';
 import 'package:planted/styles/text_styles.dart';
@@ -185,11 +185,11 @@ class AddAnnouncementView extends HookWidget {
                           return;
                         }
 
-                        final user = context.read<AppBloc>().state.user;
+                        final user = context.read<AuthBloc>().state.user;
                         if (user == null) {
                           context
-                              .read<AppBloc>()
-                              .add(const AppEventGoToLoginView());
+                              .read<AuthBloc>()
+                              .add(const AuthEventGoToLoginView());
                           return;
                         }
 

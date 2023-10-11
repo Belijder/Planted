@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:planted/auth_views/complete_profile_view.dart';
-import 'package:planted/auth_views/confirm_email_view.dart';
-import 'package:planted/auth_views/login_view.dart';
-import 'package:planted/auth_views/register_view.dart';
-import 'package:planted/blocs/app_bloc.dart/app_bloc.dart';
-import 'package:planted/blocs/app_bloc.dart/app_state.dart';
-import 'package:planted/screens/user_profile/user_profile_screen_bloc_consumer.dart';
+import 'package:planted/screens/views/authViews/complete_profile_view.dart';
+import 'package:planted/screens/views/authViews/confirm_email_view.dart';
+import 'package:planted/screens/views/authViews/login_view.dart';
+import 'package:planted/screens/views/authViews/register_view.dart';
+import 'package:planted/blocs/authBloc/auth_bloc.dart';
+import 'package:planted/blocs/authBloc/auth_state.dart';
+import 'package:planted/screens/userProfile/user_profile_screen_bloc_consumer.dart';
 import 'package:planted/utilities/dialogs/show_auth_dialog.dart';
 import 'package:planted/utilities/loading/loading_screen.dart';
 
@@ -15,7 +15,7 @@ class UserProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<AppBloc, AppState>(
+    return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, appState) {
         if (appState.isLoading) {
           LoadingScreen.instance().show(context: context, text: 'Ładuję...');
@@ -38,15 +38,15 @@ class UserProfileScreen extends StatelessWidget {
         }
       },
       builder: (context, appState) {
-        if (appState is AppStateLoggedIn) {
+        if (appState is AuthStateLoggedIn) {
           return UserProfileScreenBlocConsumer(userID: appState.user.uid);
-        } else if (appState is AppStateLoggedOut) {
+        } else if (appState is AuthStateLoggedOut) {
           return const LoginView();
-        } else if (appState is AppStateIsInRegistrationView) {
+        } else if (appState is AuthStateIsInRegistrationView) {
           return const RegisterView();
-        } else if (appState is AppStateIsInConfirmationEmailView) {
+        } else if (appState is AuthStateIsInConfirmationEmailView) {
           return const ConfrimEmailView();
-        } else if (appState is AppStateIsInCompleteProfileView) {
+        } else if (appState is AuthStateIsInCompleteProfileView) {
           return const CompleteProfileView();
         } else {
           return const Center(child: CircularProgressIndicator());
