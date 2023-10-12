@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:planted/blocs/messagesScreenBloc/messages_screen_bloc.dart';
+import 'package:planted/blocs/messagesScreenBloc/messages_screen_event.dart';
 import 'package:planted/screens/views/authViews/complete_profile_view.dart';
 import 'package:planted/screens/views/authViews/confirm_email_view.dart';
 import 'package:planted/screens/views/authViews/login_view.dart';
@@ -54,7 +56,11 @@ class MessagesScreen extends StatelessWidget {
         Widget child;
 
         if (appState is AuthStateLoggedIn) {
-          child = MessagesScreenBlocConsumer(userID: appState.user.uid);
+          child = BlocProvider(
+            create: (context) => MessagesScreenBloc(userID: appState.user.uid)
+              ..add(const MessagesScreenEventInitialize()),
+            child: MessagesScreenBlocConsumer(userID: appState.user.uid),
+          );
         } else if (appState is AuthStateLoggedOut) {
           child = const LoginView();
         } else if (appState is AuthStateIsInRegistrationView) {

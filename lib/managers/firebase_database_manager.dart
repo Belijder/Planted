@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -461,12 +462,109 @@ class FirebaseDatabaseManager {
   }) {
     return db
         .collection(reportsPath)
-        .where('status', isEqualTo: 0)
+        .where('status', isEqualTo: status)
         .snapshots()
         .map((querySnapshot) {
       return querySnapshot.docs.map((docSnapshot) {
         return Report.fromSnapshot(docSnapshot);
       }).toList();
+    });
+  }
+
+  Stream<List<Conversation>> createConversationsStreamFor(
+      {required String userID}) {
+    return FirebaseFirestore.instance
+        .collection(conversationsPath)
+        .where(
+          Filter.or(
+            Filter('giver', isEqualTo: userID),
+            Filter('taker', isEqualTo: userID),
+          ),
+        )
+        .orderBy('timeStamp', descending: true)
+        .snapshots()
+        .map((querySnapshot) {
+      return querySnapshot.docs.map((docSnapshot) {
+        return Conversation.fromSnapshot(docSnapshot);
+      }).toList();
+    });
+  }
+
+  Stream<Conversation> createConverationStreamFor(
+      {required String conversationID}) {
+    return db
+        .collection(conversationsPath)
+        .doc(conversationID)
+        .snapshots()
+        .map((docSnapshot) {
+      return Conversation.fromSnapshot(docSnapshot);
+    });
+  }
+
+  Stream<UserProfile>? createUserProfileStremFor({
+    required String userID,
+  }) {
+    try {
+      return db
+          .collection(profilesPath)
+          .doc(userID)
+          .snapshots()
+          .map((snapshot) => UserProfile.fromSnapshot(snapshot));
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Stream<List<Announcement>>? createUsersAnnouncementsStream({
+    required String userID,
+  }) {
+    return db
+        .collection(announcemensPath)
+        .where('giverID', isEqualTo: userID)
+        .orderBy('timeStamp', descending: true)
+        .snapshots()
+        .map((querySnapshot) {
+      return querySnapshot.docs.map((docSnapshot) {
+        return Announcement.fromSnapshot(docSnapshot);
+      }).toList();
+    });
+  }
+
+  // Check if its used
+  Stream<List<String>> createBlockedUsersIDsStream(
+      {required String currentUserID}) {
+    return db
+        .collection(profilesPath)
+        .doc(currentUserID)
+        .snapshots()
+        .map((snapshot) => UserProfile.fromSnapshot(snapshot))
+        .map((userProfile) => userProfile.blockedUsers);
+  }
+
+  Future<List<UserProfile>> getBlockedUsersProfiles(
+      {required List<String> blockedUsersIDs}) async {
+    try {
+      final profileFutures = blockedUsersIDs.map((userId) {
+        return getUserProfile(id: userId);
+      }).toList();
+
+      final profiles = await Future.wait(profileFutures);
+
+      return profiles;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Stream<List<UserProfile>> createBlockedUsersProfilesStream(
+      {required String currentUserID}) {
+    final blockedUserIdsStream =
+        createBlockedUsersIDsStream(currentUserID: currentUserID);
+
+    return blockedUserIdsStream.asyncMap((blockedUserIds) async {
+      final profiles =
+          await getBlockedUsersProfiles(blockedUsersIDs: blockedUserIds);
+      return profiles;
     });
   }
 }

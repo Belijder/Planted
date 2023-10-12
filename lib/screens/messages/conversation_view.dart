@@ -1,61 +1,36 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:planted/blocs/browseScreenBloc/browse_screen_bloc.dart';
+import 'package:planted/blocs/browseScreenBloc/browse_screen_event.dart';
 import 'package:planted/blocs/browseScreenBloc/browse_screen_state.dart';
 import 'package:planted/blocs/messagesScreenBloc/messages_screen_bloc.dart';
+import 'package:planted/blocs/messagesScreenBloc/messages_screen_event.dart';
 import 'package:planted/blocs/messagesScreenBloc/messages_screen_state.dart';
 import 'package:planted/constants/colors.dart';
-import 'package:planted/constants/firebase_paths.dart';
 import 'package:planted/models/announcement.dart';
 import 'package:planted/models/conversation.dart';
 import 'package:planted/screens/messages/incoming_message.dart';
 import 'package:planted/screens/messages/outgoing_message.dart';
+import 'package:planted/screens/views/empty_state_view.dart';
 import 'package:planted/styles/text_styles.dart';
 
-typedef SendMessageBlocEvent = void Function({
-  required Announcement announcement,
-  required String conversationID,
-  required String message,
-});
-typedef ReturnBlocEvent = void Function({
-  required Announcement announcement,
-  required int messagesCount,
-  required String conversationID,
-});
-
-typedef BlockUserBlocEvent = void Function({
-  required String userToBlockID,
-  required String currentUserID,
-  required Announcement announcement,
-  required Conversation conversation,
-});
-
-typedef GoToReportViewBlocEvent = void Function({
-  required Announcement announcement,
-  required Conversation conversation,
-  required String currentUserID,
-});
-
 enum MessagesPopUpMenuItem { blocUser, reportUser }
+
+enum ConversationParentScreen { browseScreen, messagesScreen }
 
 class ConversationView extends HookWidget {
   final String currentUserID;
   final Announcement announcement;
   final Conversation conversation;
-  final SendMessageBlocEvent sendMessageBlocEvent;
-  final ReturnBlocEvent returnBlocEvent;
-  final BlockUserBlocEvent blockUserBlocEvent;
-  final GoToReportViewBlocEvent goToReportViewBlocEvent;
+  final Stream<Conversation>? conversationStream;
+  final ConversationParentScreen parentScreen;
   const ConversationView({
     required this.currentUserID,
     required this.announcement,
     required this.conversation,
-    required this.sendMessageBlocEvent,
-    required this.returnBlocEvent,
-    required this.blockUserBlocEvent,
-    required this.goToReportViewBlocEvent,
+    required this.conversationStream,
+    required this.parentScreen,
     super.key,
   });
 
@@ -63,14 +38,6 @@ class ConversationView extends HookWidget {
   Widget build(BuildContext context) {
     final messageController = useTextEditingController();
     final scrollController = useScrollController();
-
-    final messagesStream = useMemoized(() {
-      return FirebaseFirestore.instance
-          .collection(conversationsPath)
-          .doc(conversation.conversationID)
-          .snapshots();
-    }, [key]);
-
     final messagesCount = useState(0);
 
     return Scaffold(
@@ -78,10 +45,9 @@ class ConversationView extends HookWidget {
         backgroundColor: colorEggsheel,
         leading: IconButton(
           onPressed: () {
-            returnBlocEvent(
-              announcement: announcement,
+            returnToParent(
+              context: context,
               messagesCount: messagesCount.value,
-              conversationID: conversation.conversationID,
             );
           },
           icon: const Icon(Icons.arrow_back),
@@ -126,17 +92,20 @@ class ConversationView extends HookWidget {
                           ? conversation.taker
                           : conversation.giver;
 
-                  blockUserBlocEvent(
-                    userToBlockID: userIDtoBlock,
+                  blockUser(
+                    context: context,
+                    currentUserID: currentUserID,
+                    userIDtoBlock: userIDtoBlock,
+                    conversation: conversation,
+                    announcement: announcement,
+                  );
+                case MessagesPopUpMenuItem.reportUser:
+                  goToReportView(
+                    context: context,
                     currentUserID: currentUserID,
                     announcement: announcement,
                     conversation: conversation,
                   );
-                case MessagesPopUpMenuItem.reportUser:
-                  goToReportViewBlocEvent(
-                      announcement: announcement,
-                      conversation: conversation,
-                      currentUserID: currentUserID);
               }
             },
             itemBuilder: (context) => [
@@ -160,53 +129,48 @@ class ConversationView extends HookWidget {
       ),
       body: MultiBlocListener(
         listeners: [
-          BlocListener<BrowseScreenBloc, BrowseScreenState>(
-            listener: (context, browseScreenState) {
-              if (browseScreenState is InConversationViewBrowseScreenState) {
-                if (browseScreenState.messageSended == true) {
-                  messageController.clear();
-                  scrollController
-                      .jumpTo(scrollController.position.minScrollExtent);
+          if (parentScreen == ConversationParentScreen.browseScreen)
+            BlocListener<BrowseScreenBloc, BrowseScreenState>(
+              listener: (context, browseScreenState) {
+                if (browseScreenState is BrowseScreenStateInConversationView) {
+                  if (browseScreenState.messageSended == true) {
+                    messageController.clear();
+                    scrollController
+                        .jumpTo(scrollController.position.minScrollExtent);
+                  }
                 }
-              }
-            },
-          ),
-          BlocListener<MessagesScreenBloc, MessagesScreenState>(
-            listener: (context, messageScreenState) {
-              if (messageScreenState is MessagesScreenStateInConversation) {
-                if (messageScreenState.messageSended == true) {
-                  messageController.clear();
-                  scrollController
-                      .jumpTo(scrollController.position.minScrollExtent);
+              },
+            ),
+          if (parentScreen == ConversationParentScreen.messagesScreen)
+            BlocListener<MessagesScreenBloc, MessagesScreenState>(
+              listener: (context, messageScreenState) {
+                if (messageScreenState is MessagesScreenStateInConversation) {
+                  if (messageScreenState.messageSended == true) {
+                    messageController.clear();
+                    scrollController
+                        .jumpTo(scrollController.position.minScrollExtent);
+                  }
                 }
-              }
-            },
-          ),
+              },
+            ),
         ],
         child: Column(
           children: <Widget>[
             Expanded(
-              child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-                  stream: messagesStream,
+              child: StreamBuilder<Conversation>(
+                  stream: conversationStream,
                   builder: (context, snapshot) {
-                    if (snapshot.hasError) {
-                      return const Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(20.0),
-                          child: Text(
-                            'Nie udało się pobrać Wiadomości. Sprawdz połączenie z internetem i spróbuj ponownie za chwilę.',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(color: colorSepia, fontSize: 10),
-                          ),
-                        ),
-                      );
-                    }
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Center(child: CircularProgressIndicator());
                     }
 
-                    final conversation =
-                        Conversation.fromSnapshot(snapshot.data!);
+                    if (snapshot.hasError || snapshot.data == null) {
+                      return const EmptyStateView(
+                          message:
+                              'Nie udało się pobrać Wiadomości. Sprawdz połączenie z internetem i spróbuj ponownie za chwilę.');
+                    }
+
+                    final conversation = snapshot.data!;
                     final messages = conversation.messages.reversed;
                     messagesCount.value = messages.length;
 
@@ -268,10 +232,12 @@ class ConversationView extends HookWidget {
                       ),
                       onPressed: () {
                         if (messageController.text != '') {
-                          sendMessageBlocEvent(
-                              announcement: announcement,
-                              conversationID: conversation.conversationID,
-                              message: messageController.text);
+                          sendMessage(
+                            context: context,
+                            announcement: announcement,
+                            conversation: conversation,
+                            message: messageController.text,
+                          );
                         }
                       }),
                 ],
@@ -281,5 +247,104 @@ class ConversationView extends HookWidget {
         ),
       ),
     );
+  }
+
+  void returnToParent({
+    required BuildContext context,
+    required int messagesCount,
+  }) {
+    switch (parentScreen) {
+      case ConversationParentScreen.browseScreen:
+        if (messagesCount == 0) {
+          context
+              .read<BrowseScreenBloc>()
+              .add(BrowseScreenEventCancelConversation(
+                conversationID: conversation.conversationID,
+                announcement: announcement,
+              ));
+        } else {
+          context
+              .read<BrowseScreenBloc>()
+              .add(BrowseScreenEventGoToDetailView(announcement: announcement));
+        }
+      case ConversationParentScreen.messagesScreen:
+        context
+            .read<MessagesScreenBloc>()
+            .add(MessagesScreenEventGoToListOfConvesations(
+              announcement: announcement,
+            ));
+    }
+  }
+
+  void blockUser({
+    required BuildContext context,
+    required String currentUserID,
+    required String userIDtoBlock,
+    required Conversation conversation,
+    required Announcement announcement,
+  }) {
+    switch (parentScreen) {
+      case ConversationParentScreen.browseScreen:
+        context
+            .read<BrowseScreenBloc>()
+            .add(BrowseScreenEventBlockUserFromConvesationView(
+              currentUserID: currentUserID,
+              userToBlockID: userIDtoBlock,
+              announcement: announcement,
+              conversation: conversation,
+            ));
+      case ConversationParentScreen.messagesScreen:
+        context.read<MessagesScreenBloc>().add(MessagesScreenEventBlockUser(
+              currentUserID: currentUserID,
+              userToBlockID: userIDtoBlock,
+            ));
+    }
+  }
+
+  void goToReportView({
+    required BuildContext context,
+    required String currentUserID,
+    required Announcement announcement,
+    required Conversation conversation,
+  }) {
+    switch (parentScreen) {
+      case ConversationParentScreen.browseScreen:
+        context
+            .read<BrowseScreenBloc>()
+            .add(BrowseScreenEventGoToReportViewFromConversation(
+              announcement: announcement,
+              conversation: conversation,
+            ));
+      case ConversationParentScreen.messagesScreen:
+        context
+            .read<MessagesScreenBloc>()
+            .add(MessagesScreenEventGoToReportView(
+              announcement: announcement,
+              conversation: conversation,
+              userID: currentUserID,
+            ));
+    }
+  }
+
+  void sendMessage({
+    required BuildContext context,
+    required Announcement announcement,
+    required Conversation conversation,
+    required String message,
+  }) {
+    switch (parentScreen) {
+      case ConversationParentScreen.browseScreen:
+        context.read<BrowseScreenBloc>().add(BrowseScreenEventSendMessage(
+              announcement: announcement,
+              conversation: conversation,
+              message: message,
+            ));
+      case ConversationParentScreen.messagesScreen:
+        context.read<MessagesScreenBloc>().add(MessagesScreenEventSendMessage(
+              announcement: announcement,
+              conversationID: conversation.conversationID,
+              message: message,
+            ));
+    }
   }
 }

@@ -6,8 +6,8 @@ abstract class AuthEvent {
 }
 
 @immutable
-class AppEventInitialize implements AuthEvent {
-  const AppEventInitialize();
+class AuthEventInitialize implements AuthEvent {
+  const AuthEventInitialize();
 }
 
 @immutable

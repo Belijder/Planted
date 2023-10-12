@@ -1,5 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -20,15 +19,14 @@ import 'package:url_launcher/url_launcher.dart';
 
 class UserProfileView extends HookWidget {
   const UserProfileView({
-    required this.userProfileStream,
     super.key,
   });
-
-  final Stream<DocumentSnapshot<Map<String, dynamic>>> userProfileStream;
 
   @override
   Widget build(BuildContext context) {
     final InAppReview inAppReview = InAppReview.instance;
+    final userProfileStream =
+        context.watch<UserProfileScreenBloc>().state.userProfileStream;
 
     return Scaffold(
       appBar: AppBar(
@@ -60,17 +58,18 @@ class UserProfileView extends HookWidget {
                 .add(const UserProfileScreenEventGoToUserProfileView());
           }
         },
-        child: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+        child: StreamBuilder<UserProfile>(
             stream: userProfileStream,
             builder: (context, snapshot) {
-              if (snapshot.hasError) {
-                context.read<AuthBloc>().add(const AuthEventLogOut());
-              }
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
               }
 
-              final userProfile = UserProfile.fromSnapshot(snapshot.data!);
+              if (snapshot.hasError) {
+                context.read<AuthBloc>().add(const AuthEventLogOut());
+              }
+
+              final userProfile = snapshot.data!;
 
               return SingleChildScrollView(
                 child: Padding(

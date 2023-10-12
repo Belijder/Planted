@@ -4,8 +4,7 @@ import 'package:planted/blocs/addScreenBloc/add_screen_bloc.dart';
 import 'package:planted/blocs/authBloc/auth_bloc.dart';
 import 'package:planted/blocs/authBloc/auth_event.dart';
 import 'package:planted/blocs/browseScreenBloc/browse_screen_bloc.dart';
-import 'package:planted/blocs/messagesScreenBloc/messages_screen_bloc.dart';
-import 'package:planted/blocs/userProfileScreenBloc/user_profile_screen_bloc.dart';
+import 'package:planted/blocs/browseScreenBloc/browse_screen_event.dart';
 import 'package:planted/constants/colors.dart';
 import 'package:planted/navigation_bar_view.dart';
 
@@ -39,21 +38,18 @@ class App extends StatelessWidget {
           BlocProvider<AuthBloc>(
             create: (_) => AuthBloc()
               ..add(
-                const AppEventInitialize(),
+                const AuthEventInitialize(),
               ),
           ),
           BlocProvider<BrowseScreenBloc>(
-            create: (_) => BrowseScreenBloc(),
+            create: (_) => BrowseScreenBloc()
+              ..add(
+                const BrowseScreenEventInitialize(),
+              ),
           ),
           BlocProvider<AddScreenBloc>(
             create: (_) => AddScreenBloc(),
           ),
-          BlocProvider<MessagesScreenBloc>(
-            create: (_) => MessagesScreenBloc(),
-          ),
-          BlocProvider<UserProfileScreenBloc>(
-            create: (_) => UserProfileScreenBloc(),
-          )
         ],
         child: const NavigationBarView(),
       ),

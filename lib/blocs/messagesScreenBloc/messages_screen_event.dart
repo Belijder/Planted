@@ -7,6 +7,11 @@ abstract class MessagesScreenEvent {
   const MessagesScreenEvent();
 }
 
+@immutable
+class MessagesScreenEventInitialize implements MessagesScreenEvent {
+  const MessagesScreenEventInitialize();
+}
+
 class MessagesScreenEventGoToConversation implements MessagesScreenEvent {
   final Conversation conversation;
   const MessagesScreenEventGoToConversation({
@@ -67,6 +72,16 @@ class MessagesScreenEventGoToReportView implements MessagesScreenEvent {
 }
 
 @immutable
+class MessagesScreenEventBackToConversationFromReportView
+    implements MessagesScreenEvent {
+  final Conversation conversation;
+  final Announcement announcement;
+  const MessagesScreenEventBackToConversationFromReportView({
+    required this.conversation,
+    required this.announcement,
+  });
+}
+
 @immutable
 class MessagesScreenEventSendReport implements MessagesScreenEvent {
   final Announcement announcement;

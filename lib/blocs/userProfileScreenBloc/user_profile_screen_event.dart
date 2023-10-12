@@ -8,6 +8,11 @@ abstract class UserProfileScreenEvent {
 }
 
 @immutable
+class UserProfileScreenEventInitialize implements UserProfileScreenEvent {
+  const UserProfileScreenEventInitialize();
+}
+
+@immutable
 class UserProfileScreenEventGoToUsersAnnouncementsView
     implements UserProfileScreenEvent {
   const UserProfileScreenEventGoToUsersAnnouncementsView();

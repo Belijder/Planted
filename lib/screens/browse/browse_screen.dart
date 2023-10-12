@@ -46,71 +46,26 @@ class BrowseScreen extends StatelessWidget {
       builder: (context, browseScreenState) {
         Widget child;
 
-        if (browseScreenState is InAnnouncementsListViewBrowseScreenState) {
+        if (browseScreenState is BrowseScreenStateInitial) {
+          child = Container();
+        } else if (browseScreenState
+            is BrowseScreenStateInAnnouncementsListView) {
           child = const AnnouncementListView();
         } else if (browseScreenState
-            is InAnnouncementDetailsBrowseScreenState) {
+            is BrowseScreenStateInAnnouncementDetails) {
           child = AnnouncementDetailsView(
               announcement: browseScreenState.announcement);
-        } else if (browseScreenState is InConversationViewBrowseScreenState) {
+        } else if (browseScreenState is BrowseScreenStateInConversationView) {
+          final conversationStream =
+              context.read<BrowseScreenBloc>().state.conversationDetailsStream;
           child = ConversationView(
+            parentScreen: ConversationParentScreen.browseScreen,
             currentUserID: browseScreenState.userID,
             announcement: browseScreenState.announcement,
             conversation: browseScreenState.conversation,
-            returnBlocEvent: ({
-              required announcement,
-              required int messagesCount,
-              required String conversationID,
-            }) {
-              if (messagesCount == 0) {
-                context
-                    .read<BrowseScreenBloc>()
-                    .add(CancelConversationBrowseScreenEvent(
-                      conversationID: conversationID,
-                      announcement: announcement,
-                    ));
-              } else {
-                context.read<BrowseScreenBloc>().add(
-                    GoToDetailViewBrowseScreenEvent(
-                        announcement: announcement));
-              }
-            },
-            sendMessageBlocEvent: ({
-              required announcement,
-              required conversationID,
-              required message,
-            }) {
-              context.read<BrowseScreenBloc>().add(SendMessageBrowseScreenEvent(
-                  announcement: announcement,
-                  conversation: browseScreenState.conversation,
-                  message: message));
-            },
-            blockUserBlocEvent: ({
-              required currentUserID,
-              required userToBlockID,
-              required announcement,
-              required conversation,
-            }) {
-              context.read<BrowseScreenBloc>().add(
-                  BlockUserFromConvesationViewBrowseScreenEvent(
-                      currentUserID: currentUserID,
-                      userToBlockID: userToBlockID,
-                      announcement: announcement,
-                      conversation: conversation));
-            },
-            goToReportViewBlocEvent: (
-                {required announcement,
-                required conversation,
-                required currentUserID}) {
-              context
-                  .read<BrowseScreenBloc>()
-                  .add(GoToReportViewFromConversationBrowseScreenEvent(
-                    announcement: announcement,
-                    conversation: conversation,
-                  ));
-            },
+            conversationStream: conversationStream,
           );
-        } else if (browseScreenState is InReportViewBrowseScreenState) {
+        } else if (browseScreenState is BrowseScreenStateInReportView) {
           child = ReportView(
             announcement: browseScreenState.announcement,
             conversation: browseScreenState.conversation,
@@ -122,11 +77,11 @@ class BrowseScreen extends StatelessWidget {
             }) {
               if (conversation != null) {
                 context.read<BrowseScreenBloc>().add(
-                    GoToConversationViewBrowseScreenEvent(
+                    BrowseScreenEventGoToConversationView(
                         announcement: announcement));
               } else {
                 context.read<BrowseScreenBloc>().add(
-                    GoToDetailViewBrowseScreenEvent(
+                    BrowseScreenEventGoToDetailView(
                         announcement: announcement));
               }
             },
@@ -137,7 +92,7 @@ class BrowseScreen extends StatelessWidget {
               required reasonForReporting,
               required userID,
             }) {
-              context.read<BrowseScreenBloc>().add(SendReportBrowseScreenEvent(
+              context.read<BrowseScreenBloc>().add(BrowseScreenEventSendReport(
                     announcement: announcement,
                     conversation: conversation,
                     userID: userID,

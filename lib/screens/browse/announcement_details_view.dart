@@ -27,7 +27,7 @@ class AnnouncementDetailsView extends StatelessWidget {
             onPressed: () {
               context
                   .read<BrowseScreenBloc>()
-                  .add(const GoToListViewBrowseScreenEvent());
+                  .add(const BrowseScreenEventGoToListView());
             },
             icon: const Icon(Icons.arrow_back),
             style: IconButton.styleFrom(
@@ -51,7 +51,7 @@ class AnnouncementDetailsView extends StatelessWidget {
               onPressed: () {
                 context
                     .read<BrowseScreenBloc>()
-                    .add(GoToConversationViewBrowseScreenEvent(
+                    .add(BrowseScreenEventGoToConversationView(
                       announcement: announcement,
                     ));
               },
@@ -269,12 +269,12 @@ class AnnouncementDetailsView extends StatelessWidget {
                               switch (value) {
                                 case ModalPopupAction.report:
                                   context.read<BrowseScreenBloc>().add(
-                                          GoToReportViewFromAnnouncementBrowseScreenEvent(
+                                          BrowseScreenEventGoToReportViewFromAnnouncement(
                                         announcement: announcement,
                                       ));
                                 case ModalPopupAction.block:
                                   context.read<BrowseScreenBloc>().add(
-                                      BlockUserFromDetailsViewBrowseScreenEvent(
+                                      BrowseScreenEventBlockUserFromDetailsView(
                                           announcement: announcement,
                                           userToBlockID: announcement.giverID));
                               }
@@ -324,7 +324,7 @@ class AnnouncementDetailsView extends StatelessWidget {
                   onPressed: () {
                     context
                         .read<BrowseScreenBloc>()
-                        .add(GoToConversationViewBrowseScreenEvent(
+                        .add(BrowseScreenEventGoToConversationView(
                           announcement: announcement,
                         ));
                   },

@@ -8,32 +8,37 @@ abstract class BrowseScreenEvent {
 }
 
 @immutable
-class GoToDetailViewBrowseScreenEvent implements BrowseScreenEvent {
+class BrowseScreenEventInitialize implements BrowseScreenEvent {
+  const BrowseScreenEventInitialize();
+}
+
+@immutable
+class BrowseScreenEventGoToDetailView implements BrowseScreenEvent {
   final Announcement announcement;
   final double? scrollViewOffset;
-  const GoToDetailViewBrowseScreenEvent({
+  const BrowseScreenEventGoToDetailView({
     required this.announcement,
     this.scrollViewOffset,
   });
 }
 
 @immutable
-class GoToListViewBrowseScreenEvent implements BrowseScreenEvent {
-  const GoToListViewBrowseScreenEvent();
+class BrowseScreenEventGoToListView implements BrowseScreenEvent {
+  const BrowseScreenEventGoToListView();
 }
 
 @immutable
-class GoToConversationViewBrowseScreenEvent implements BrowseScreenEvent {
+class BrowseScreenEventGoToConversationView implements BrowseScreenEvent {
   final Announcement announcement;
-  const GoToConversationViewBrowseScreenEvent({required this.announcement});
+  const BrowseScreenEventGoToConversationView({required this.announcement});
 }
 
 @immutable
-class StartNewConversationBrowseScreenEvent implements BrowseScreenEvent {
+class BrowseScreenEventStartNewConversation implements BrowseScreenEvent {
   final Announcement announcement;
   final String message;
   final String conversationID;
-  const StartNewConversationBrowseScreenEvent({
+  const BrowseScreenEventStartNewConversation({
     required this.announcement,
     required this.conversationID,
     required this.message,
@@ -41,22 +46,22 @@ class StartNewConversationBrowseScreenEvent implements BrowseScreenEvent {
 }
 
 @immutable
-class CancelConversationBrowseScreenEvent implements BrowseScreenEvent {
+class BrowseScreenEventCancelConversation implements BrowseScreenEvent {
   final String conversationID;
   final Announcement announcement;
 
-  const CancelConversationBrowseScreenEvent({
+  const BrowseScreenEventCancelConversation({
     required this.conversationID,
     required this.announcement,
   });
 }
 
 @immutable
-class SendMessageBrowseScreenEvent implements BrowseScreenEvent {
+class BrowseScreenEventSendMessage implements BrowseScreenEvent {
   final Announcement announcement;
   final String message;
   final Conversation conversation;
-  const SendMessageBrowseScreenEvent({
+  const BrowseScreenEventSendMessage({
     required this.announcement,
     required this.conversation,
     required this.message,
@@ -64,14 +69,14 @@ class SendMessageBrowseScreenEvent implements BrowseScreenEvent {
 }
 
 @immutable
-class BlockUserFromConvesationViewBrowseScreenEvent
+class BrowseScreenEventBlockUserFromConvesationView
     implements BrowseScreenEvent {
   final String currentUserID;
   final String userToBlockID;
   final Announcement announcement;
   final Conversation conversation;
 
-  const BlockUserFromConvesationViewBrowseScreenEvent({
+  const BrowseScreenEventBlockUserFromConvesationView({
     required this.currentUserID,
     required this.userToBlockID,
     required this.announcement,
@@ -80,47 +85,47 @@ class BlockUserFromConvesationViewBrowseScreenEvent
 }
 
 @immutable
-class BlockUserFromDetailsViewBrowseScreenEvent implements BrowseScreenEvent {
+class BrowseScreenEventBlockUserFromDetailsView implements BrowseScreenEvent {
   final Announcement announcement;
   final String userToBlockID;
 
-  const BlockUserFromDetailsViewBrowseScreenEvent({
+  const BrowseScreenEventBlockUserFromDetailsView({
     required this.announcement,
     required this.userToBlockID,
   });
 }
 
 @immutable
-class GoToReportViewFromAnnouncementBrowseScreenEvent
+class BrowseScreenEventGoToReportViewFromAnnouncement
     implements BrowseScreenEvent {
   final Announcement announcement;
 
-  const GoToReportViewFromAnnouncementBrowseScreenEvent({
+  const BrowseScreenEventGoToReportViewFromAnnouncement({
     required this.announcement,
   });
 }
 
 @immutable
-class GoToReportViewFromConversationBrowseScreenEvent
+class BrowseScreenEventGoToReportViewFromConversation
     implements BrowseScreenEvent {
   final Announcement announcement;
   final Conversation conversation;
 
-  const GoToReportViewFromConversationBrowseScreenEvent({
+  const BrowseScreenEventGoToReportViewFromConversation({
     required this.announcement,
     required this.conversation,
   });
 }
 
 @immutable
-class SendReportBrowseScreenEvent implements BrowseScreenEvent {
+class BrowseScreenEventSendReport implements BrowseScreenEvent {
   final Announcement announcement;
   final Conversation? conversation;
   final String userID;
   final String reasonForReporting;
   final String additionalInformation;
 
-  const SendReportBrowseScreenEvent({
+  const BrowseScreenEventSendReport({
     required this.announcement,
     required this.conversation,
     required this.userID,

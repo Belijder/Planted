@@ -56,8 +56,10 @@ class MessagesScreenBlocConsumer extends HookWidget {
       },
       builder: (context, messagesScreenState) {
         Widget child;
-
-        if (messagesScreenState is MessagesScreenStateInConversationsList) {
+        if (messagesScreenState is MessagesScreenStateInitial) {
+          return Container();
+        } else if (messagesScreenState
+            is MessagesScreenStateInConversationsList) {
           child = StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
               stream: userProfileStream,
               builder: (context, snapshot) {
@@ -75,83 +77,47 @@ class MessagesScreenBlocConsumer extends HookWidget {
                 );
               });
         } else if (messagesScreenState is MessagesScreenStateInConversation) {
+          final conversationStream = context
+              .read<MessagesScreenBloc>()
+              .state
+              .conversationDetailsStream;
           child = ConversationView(
+            parentScreen: ConversationParentScreen.messagesScreen,
             currentUserID: messagesScreenState.userProfile.userID,
             announcement: messagesScreenState.announcement,
             conversation: messagesScreenState.conversation,
-            sendMessageBlocEvent: (
-                {required announcement,
-                required conversationID,
-                required message}) {
-              context
-                  .read<MessagesScreenBloc>()
-                  .add(MessagesScreenEventSendMessage(
-                    announcement: announcement,
-                    conversationID: conversationID,
-                    message: message,
-                  ));
-            },
-            returnBlocEvent: ({
-              required announcement,
-              required int messagesCount,
-              required String conversationID,
-            }) {
-              context
-                  .read<MessagesScreenBloc>()
-                  .add(MessagesScreenEventGoToListOfConvesations(
-                    announcement: announcement,
-                  ));
-            },
-            blockUserBlocEvent: ({
-              required currentUserID,
-              required userToBlockID,
-              required announcement,
-              required conversation,
-            }) {
-              context
-                  .read<MessagesScreenBloc>()
-                  .add(MessagesScreenEventBlockUser(
-                    currentUserID: currentUserID,
-                    userToBlockID: userToBlockID,
-                  ));
-            },
-            goToReportViewBlocEvent: ({
-              required announcement,
-              required conversation,
-              required currentUserID,
-            }) {
-              context.read<MessagesScreenBloc>().add(
-                  MessagesScreenEventGoToReportView(
-                      announcement: announcement,
-                      conversation: conversation,
-                      userID: currentUserID));
-            },
+            conversationStream: conversationStream,
           );
         } else if (messagesScreenState is MessagesScreenStateInReportView) {
           child = ReportView(
             announcement: messagesScreenState.announcement,
             conversation: messagesScreenState.conversation,
             userID: userID,
-            returnAction: (
-                {required announcement,
-                required conversation,
-                required userID}) {
+            returnAction: ({
+              required announcement,
+              required conversation,
+              required userID,
+            }) {
               if (conversation != null) {
-                context.read<MessagesScreenBloc>().add(
-                    MessagesScreenEventGoToConversation(
-                        conversation: conversation));
+                context
+                    .read<MessagesScreenBloc>()
+                    .add(MessagesScreenEventBackToConversationFromReportView(
+                      conversation: conversation,
+                      announcement: announcement,
+                    ));
               } else {
                 context.read<MessagesScreenBloc>().add(
                     MessagesScreenEventGoToListOfConvesations(
                         announcement: announcement));
               }
             },
-            reportAction: (
-                {required additionalInformation,
-                required announcement,
-                required conversation,
-                required reasonForReporting,
-                required userID}) {
+            reportAction: ({
+              required additionalInformation,
+              required announcement,
+              required conversation,
+              required reasonForReporting,
+              required userID,
+            }) {
               context
                   .read<MessagesScreenBloc>()
                   .add(MessagesScreenEventSendReport(

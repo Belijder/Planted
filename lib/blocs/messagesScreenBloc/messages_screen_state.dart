@@ -9,11 +9,23 @@ abstract class MessagesScreenState {
   final bool isLoading;
   final DatabaseError? databaseError;
   final String? snackbarMessage;
+  final Stream<List<Conversation>>? conversationsListStream;
+  final Stream<Conversation>? conversationDetailsStream;
 
   const MessagesScreenState({
     required this.isLoading,
     required this.databaseError,
     this.snackbarMessage,
+    this.conversationsListStream,
+    this.conversationDetailsStream,
+  });
+}
+
+@immutable
+class MessagesScreenStateInitial extends MessagesScreenState {
+  const MessagesScreenStateInitial({
+    required super.isLoading,
+    super.databaseError,
   });
 }
 
@@ -23,6 +35,7 @@ class MessagesScreenStateInConversationsList extends MessagesScreenState {
     required super.isLoading,
     super.databaseError,
     super.snackbarMessage,
+    required super.conversationsListStream,
   });
 }
 
@@ -37,6 +50,7 @@ class MessagesScreenStateInConversation extends MessagesScreenState {
     required super.isLoading,
     super.databaseError,
     super.snackbarMessage,
+    required super.conversationDetailsStream,
     required this.conversation,
     required this.announcement,
     required this.userProfile,

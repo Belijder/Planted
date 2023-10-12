@@ -1,11 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:planted/blocs/userProfileScreenBloc/user_profile_screen_bloc.dart';
 import 'package:planted/blocs/userProfileScreenBloc/user_profile_screen_event.dart';
 import 'package:planted/constants/colors.dart';
-import 'package:planted/constants/firebase_paths.dart';
 import 'package:planted/helpers/get_status_text_from_status.dart';
 import 'package:planted/models/announcement.dart';
 import 'package:planted/screens/browse/announcements_list_tile.dart';
@@ -20,13 +18,8 @@ class UsersAnnouncementsView extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final announcementsStream = useMemoized(() {
-      return FirebaseFirestore.instance
-          .collection(announcemensPath)
-          .where('giverID', isEqualTo: userID)
-          .orderBy('timeStamp', descending: true)
-          .snapshots();
-    }, [key]);
+    final announcementsStream =
+        context.watch<UserProfileScreenBloc>().state.announcementsStream;
 
     return Scaffold(
       appBar: AppBar(
@@ -55,23 +48,19 @@ class UsersAnnouncementsView extends HookWidget {
           ),
         ),
       ),
-      body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+      body: StreamBuilder<List<Announcement>?>(
         stream: announcementsStream,
         builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return const Center(
-                child: Text(
-              'Nie udało się pobrać ogłoszeń. Sprawdz połączenie z internetem i spróbuj ponownie za chwilę.',
-              textAlign: TextAlign.center,
-              style: TextStyle(color: colorSepia, fontSize: 10),
-            ));
-          }
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
+          if (snapshot.hasError || snapshot.data == null) {
+            return const EmptyStateView(
+                message:
+                    'Nie udało się pobrać ogłoszeń. Sprawdz połączenie z internetem i spróbuj ponownie za chwilę.');
+          }
 
-          final announcements =
-              snapshot.data!.docs.map((doc) => Announcement.fromSnapshot(doc));
+          final announcements = snapshot.data!;
 
           if (announcements.isEmpty) {
             return const EmptyStateView(

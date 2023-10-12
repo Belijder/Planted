@@ -13,44 +13,66 @@ class UserProfileScreenBloc
     extends Bloc<UserProfileScreenEvent, UserProfileScreenState> {
   final connectivityManager = ConnectivityManager();
   final databaseManager = FirebaseDatabaseManager();
+  final String userID;
 
-  UserProfileScreenBloc()
+  UserProfileScreenBloc({required this.userID})
       : super(
-          const UserProfileScreenStateInUserProfileView(
+          const UserProfileScreenStateInitial(
             isLoading: false,
           ),
         ) {
+    final userProfileStream =
+        databaseManager.createUserProfileStremFor(userID: userID);
+
+    on<UserProfileScreenEventInitialize>(
+      (event, emit) {
+        emit(UserProfileScreenStateInUserProfileView(
+          isLoading: false,
+          userProfileStream: userProfileStream,
+        ));
+      },
+    );
+
     on<UserProfileScreenEventGoToUsersAnnouncementsView>(
       (event, emit) {
-        emit(const UserProfileScreenStateInUsersAnnouncementsView(
+        emit(UserProfileScreenStateInUsersAnnouncementsView(
+            announcementsStream:
+                databaseManager.createUsersAnnouncementsStream(userID: userID),
             isLoading: false));
       },
     );
 
     on<UserProfileScreenEventGoToBlockedUsersView>(
       (event, emit) {
-        emit(const UserProfileScreenStateInBlockedUsersView(isLoading: false));
+        emit(UserProfileScreenStateInBlockedUsersView(
+            isLoading: false,
+            blockedUsersStream: databaseManager
+                .createBlockedUsersProfilesStream(currentUserID: userID)));
       },
     );
 
     on<UserProfileScreenEventGoToUserProfileView>(
       (event, emit) {
-        emit(const UserProfileScreenStateInUserProfileView(isLoading: false));
+        emit(UserProfileScreenStateInUserProfileView(
+          isLoading: false,
+          userProfileStream: userProfileStream,
+        ));
       },
     );
 
     on<UserProfileScreenEventArchiveAnnouncement>(
       (event, emit) async {
         if (connectivityManager.status == ConnectivityResult.none) {
-          emit(const UserProfileScreenStateInUsersAnnouncementsView(
+          emit(UserProfileScreenStateInUsersAnnouncementsView(
+            announcementsStream: state.announcementsStream,
             isLoading: false,
-            databaseError: DatabaseErrorNetworkRequestFailed(),
+            databaseError: const DatabaseErrorNetworkRequestFailed(),
           ));
           return;
         }
 
-        emit(const UserProfileScreenStateInUsersAnnouncementsView(
-            isLoading: true));
+        emit(UserProfileScreenStateInUsersAnnouncementsView(
+            announcementsStream: state.announcementsStream, isLoading: true));
 
         try {
           final announcementStatus =
@@ -61,6 +83,7 @@ class UserProfileScreenBloc
 
           emit(
             UserProfileScreenStateInUsersAnnouncementsView(
+                announcementsStream: state.announcementsStream,
                 isLoading: false,
                 snackbarMessage:
                     announcementStatus == AnnouncementAction.deleted
@@ -70,6 +93,7 @@ class UserProfileScreenBloc
         } on FirebaseException catch (e) {
           emit(
             UserProfileScreenStateInUsersAnnouncementsView(
+              announcementsStream: state.announcementsStream,
               isLoading: false,
               databaseError: DatabaseError.from(e),
             ),
@@ -80,22 +104,24 @@ class UserProfileScreenBloc
 
     on<UserProfileScreenEventDeleteAnnouncement>((event, emit) async {
       if (connectivityManager.status == ConnectivityResult.none) {
-        emit(const UserProfileScreenStateInUsersAnnouncementsView(
+        emit(UserProfileScreenStateInUsersAnnouncementsView(
+          announcementsStream: state.announcementsStream,
           isLoading: false,
-          databaseError: DatabaseErrorNetworkRequestFailed(),
+          databaseError: const DatabaseErrorNetworkRequestFailed(),
         ));
         return;
       }
 
-      emit(const UserProfileScreenStateInUsersAnnouncementsView(
-          isLoading: true));
+      emit(UserProfileScreenStateInUsersAnnouncementsView(
+          announcementsStream: state.announcementsStream, isLoading: true));
 
       try {
         await databaseManager.deleteAnnouncement(
             announcementID: event.documentID);
 
         emit(
-          const UserProfileScreenStateInUsersAnnouncementsView(
+          UserProfileScreenStateInUsersAnnouncementsView(
+            announcementsStream: state.announcementsStream,
             isLoading: false,
             snackbarMessage: 'Ogłoszenie zostało usunięte!',
           ),
@@ -103,6 +129,7 @@ class UserProfileScreenBloc
       } on FirebaseException catch (e) {
         emit(
           UserProfileScreenStateInUsersAnnouncementsView(
+            announcementsStream: state.announcementsStream,
             isLoading: false,
             databaseError: DatabaseError.from(e),
           ),
@@ -113,14 +140,18 @@ class UserProfileScreenBloc
     on<UserProfileScreenEventUnblockUser>(
       (event, emit) async {
         if (connectivityManager.status == ConnectivityResult.none) {
-          emit(const UserProfileScreenStateInBlockedUsersView(
+          emit(UserProfileScreenStateInBlockedUsersView(
+            blockedUsersStream: state.blockedUsersStream,
             isLoading: false,
-            databaseError: DatabaseErrorNetworkRequestFailed(),
+            databaseError: const DatabaseErrorNetworkRequestFailed(),
           ));
           return;
         }
 
-        emit(const UserProfileScreenStateInBlockedUsersView(isLoading: true));
+        emit(UserProfileScreenStateInBlockedUsersView(
+          isLoading: true,
+          blockedUsersStream: state.blockedUsersStream,
+        ));
 
         try {
           await databaseManager.unblockUser(
@@ -128,12 +159,14 @@ class UserProfileScreenBloc
             userToUnblockID: event.idToUnblock,
           );
 
-          emit(const UserProfileScreenStateInBlockedUsersView(
+          emit(UserProfileScreenStateInBlockedUsersView(
+            blockedUsersStream: state.blockedUsersStream,
             isLoading: false,
             snackbarMessage: 'Użytkownik został odblokowany!',
           ));
         } on FirebaseException catch (e) {
           emit(UserProfileScreenStateInUserProfileView(
+            userProfileStream: userProfileStream,
             isLoading: false,
             databaseError: DatabaseError.from(e),
           ));
@@ -144,14 +177,18 @@ class UserProfileScreenBloc
     on<UserProfileScreenEventOpenLegalTerms>(
       (event, emit) async {
         if (connectivityManager.status == ConnectivityResult.none) {
-          emit(const UserProfileScreenStateInUserProfileView(
+          emit(UserProfileScreenStateInUserProfileView(
+            userProfileStream: userProfileStream,
             isLoading: false,
-            databaseError: DatabaseErrorNetworkRequestFailed(),
+            databaseError: const DatabaseErrorNetworkRequestFailed(),
           ));
           return;
         }
 
-        emit(const UserProfileScreenStateInUserProfileView(isLoading: false));
+        emit(UserProfileScreenStateInUserProfileView(
+          isLoading: false,
+          userProfileStream: userProfileStream,
+        ));
 
         try {
           final path = await databaseManager.getPathToLegalTerms(
@@ -159,11 +196,13 @@ class UserProfileScreenBloc
           );
 
           emit(UserProfileScreenStateInUserProfileView(
+            userProfileStream: userProfileStream,
             isLoading: false,
             path: path,
           ));
         } on FirebaseException catch (e) {
           emit(UserProfileScreenStateInUserProfileView(
+            userProfileStream: userProfileStream,
             isLoading: false,
             databaseError: DatabaseError.from(e),
           ));
@@ -173,9 +212,10 @@ class UserProfileScreenBloc
     on<UserProfileScreenEventGoToAdministratorPanelView>(
       (event, emit) {
         if (!event.userProfile.isAdmin) {
-          emit(const UserProfileScreenStateInUserProfileView(
+          emit(UserProfileScreenStateInUserProfileView(
+            userProfileStream: userProfileStream,
             isLoading: false,
-            databaseError: DatabaseErrorPermissionDenied(),
+            databaseError: const DatabaseErrorPermissionDenied(),
           ));
         }
 
@@ -191,6 +231,7 @@ class UserProfileScreenBloc
           );
         } on FirebaseException catch (e) {
           emit(UserProfileScreenStateInUserProfileView(
+            userProfileStream: userProfileStream,
             isLoading: false,
             databaseError: DatabaseError.from(e),
           ));

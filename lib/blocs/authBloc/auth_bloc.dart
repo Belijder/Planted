@@ -27,7 +27,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             isLoading: false,
           ),
         ) {
-    on<AppEventInitialize>(
+    on<AuthEventInitialize>(
       (event, emit) async {
         final user = FirebaseAuth.instance.currentUser;
 

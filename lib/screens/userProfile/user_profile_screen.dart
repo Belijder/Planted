@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:planted/blocs/userProfileScreenBloc/user_profile_screen_bloc.dart';
+import 'package:planted/blocs/userProfileScreenBloc/user_profile_screen_event.dart';
 import 'package:planted/screens/views/authViews/complete_profile_view.dart';
 import 'package:planted/screens/views/authViews/confirm_email_view.dart';
 import 'package:planted/screens/views/authViews/login_view.dart';
@@ -39,7 +41,12 @@ class UserProfileScreen extends StatelessWidget {
       },
       builder: (context, appState) {
         if (appState is AuthStateLoggedIn) {
-          return UserProfileScreenBlocConsumer(userID: appState.user.uid);
+          return BlocProvider<UserProfileScreenBloc>(
+            create: (context) =>
+                UserProfileScreenBloc(userID: appState.user.uid)
+                  ..add(const UserProfileScreenEventInitialize()),
+            child: UserProfileScreenBlocConsumer(userID: appState.user.uid),
+          );
         } else if (appState is AuthStateLoggedOut) {
           return const LoginView();
         } else if (appState is AuthStateIsInRegistrationView) {

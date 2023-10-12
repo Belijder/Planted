@@ -27,7 +27,7 @@ class OutgoingMessage extends StatelessWidget {
                 decoration: greenBackgroundBoxDecoration,
                 child: Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   child: Text(
                     message,
                     style: const TextStyle(color: Colors.white),

@@ -14,17 +14,33 @@ class MessagesScreenBloc
     extends Bloc<MessagesScreenEvent, MessagesScreenState> {
   final connectivityManager = ConnectivityManager();
   final databaseManager = FirebaseDatabaseManager();
+  final String userID;
 
-  MessagesScreenBloc()
+  MessagesScreenBloc({required this.userID})
       : super(
-          const MessagesScreenStateInConversationsList(
-            isLoading: false,
+          const MessagesScreenStateInitial(
+            isLoading: true,
           ),
         ) {
+    final conversationsListStream =
+        databaseManager.createConversationsStreamFor(userID: userID);
+
+    late Stream<Conversation> convesationStream;
+
+    on<MessagesScreenEventInitialize>(
+      (event, emit) {
+        emit(MessagesScreenStateInConversationsList(
+          isLoading: false,
+          conversationsListStream: conversationsListStream,
+        ));
+      },
+    );
+
     on<MessagesScreenEventGoToListOfConvesations>(
       (event, emit) {
-        emit(const MessagesScreenStateInConversationsList(
+        emit(MessagesScreenStateInConversationsList(
           isLoading: false,
+          conversationsListStream: conversationsListStream,
         ));
       },
     );
@@ -32,40 +48,37 @@ class MessagesScreenBloc
     on<MessagesScreenEventGoToConversation>(
       (event, emit) async {
         if (connectivityManager.status == ConnectivityResult.none) {
-          emit(const MessagesScreenStateInConversationsList(
+          emit(MessagesScreenStateInConversationsList(
             isLoading: false,
-            databaseError: DatabaseErrorNetworkRequestFailed(),
+            databaseError: const DatabaseErrorNetworkRequestFailed(),
+            conversationsListStream: conversationsListStream,
           ));
           return;
         }
 
-        emit(const MessagesScreenStateInConversationsList(isLoading: true));
-
-        final user = FirebaseAuth.instance.currentUser;
-        if (user == null) {
-          emit(
-            const MessagesScreenStateInConversationsList(
-              isLoading: false,
-              databaseError: DatabaseErrorUserNotFound(),
-            ),
-          );
-          return;
-        }
+        emit(MessagesScreenStateInConversationsList(
+          isLoading: true,
+          conversationsListStream: conversationsListStream,
+        ));
 
         try {
           final announcement = await databaseManager.getAnnouncement(
               id: event.conversation.announcementID);
 
-          final userProfile =
-              await databaseManager.getUserProfile(id: user.uid);
+          final userProfile = await databaseManager.getUserProfile(id: userID);
 
           await databaseManager.updateLastActivityInConversation(
-            currentUserID: user.uid,
+            currentUserID: userID,
             giverID: announcement.giverID,
             conversationID: event.conversation.conversationID,
           );
 
+          convesationStream = databaseManager.createConverationStreamFor(
+            conversationID: event.conversation.conversationID,
+          );
+
           emit(MessagesScreenStateInConversation(
+            conversationDetailsStream: convesationStream,
             isLoading: false,
             conversation: event.conversation,
             announcement: announcement,
@@ -76,6 +89,7 @@ class MessagesScreenBloc
             MessagesScreenStateInConversationsList(
               isLoading: false,
               databaseError: DatabaseError.from(e),
+              conversationsListStream: conversationsListStream,
             ),
           );
         }
@@ -95,6 +109,7 @@ class MessagesScreenBloc
 
           if (connectivityManager.status == ConnectivityResult.none) {
             emit(MessagesScreenStateInConversation(
+              conversationDetailsStream: convesationStream,
               isLoading: false,
               conversation: conversation,
               announcement: announcement,
@@ -111,6 +126,7 @@ class MessagesScreenBloc
             );
 
             emit(MessagesScreenStateInConversation(
+              conversationDetailsStream: convesationStream,
               isLoading: false,
               conversation: conversation,
               announcement: announcement,
@@ -119,6 +135,7 @@ class MessagesScreenBloc
             ));
           } on FirebaseException catch (e) {
             emit(MessagesScreenStateInConversation(
+              conversationDetailsStream: convesationStream,
               isLoading: false,
               conversation: conversation,
               announcement: announcement,
@@ -127,9 +144,10 @@ class MessagesScreenBloc
             ));
           }
         } catch (e) {
-          emit(const MessagesScreenStateInConversationsList(
+          emit(MessagesScreenStateInConversationsList(
             isLoading: false,
-            databaseError: DatabaseErrorUnknown(),
+            databaseError: const DatabaseErrorUnknown(),
+            conversationsListStream: conversationsListStream,
           ));
         }
       },
@@ -139,6 +157,7 @@ class MessagesScreenBloc
       (event, emit) async {
         if (connectivityManager.status == ConnectivityResult.none) {
           emit(MessagesScreenStateInConversation(
+            conversationDetailsStream: convesationStream,
             isLoading: false,
             conversation: state.conversation!,
             announcement: state.announcement!,
@@ -152,34 +171,29 @@ class MessagesScreenBloc
           userToBlockID: event.userToBlockID,
         );
 
-        emit(const MessagesScreenStateInConversationsList(
-            isLoading: false,
-            snackbarMessage: 'Użytkownik został zablokowany!'));
+        emit(MessagesScreenStateInConversationsList(
+          isLoading: false,
+          snackbarMessage: 'Użytkownik został zablokowany!',
+          conversationsListStream: conversationsListStream,
+        ));
       },
     );
 
     on<MessagesScreenEventGoToConversationFromPushMessage>(
       (event, emit) async {
         if (connectivityManager.status == ConnectivityResult.none) {
-          emit(const MessagesScreenStateInConversationsList(
+          emit(MessagesScreenStateInConversationsList(
             isLoading: false,
-            databaseError: DatabaseErrorNetworkRequestFailed(),
+            databaseError: const DatabaseErrorNetworkRequestFailed(),
+            conversationsListStream: conversationsListStream,
           ));
           return;
         }
 
-        emit(const MessagesScreenStateInConversationsList(isLoading: true));
-
-        final user = FirebaseAuth.instance.currentUser;
-        if (user == null) {
-          emit(
-            const MessagesScreenStateInConversationsList(
-              isLoading: false,
-              databaseError: DatabaseErrorUserNotFound(),
-            ),
-          );
-          return;
-        }
+        emit(MessagesScreenStateInConversationsList(
+          isLoading: true,
+          conversationsListStream: conversationsListStream,
+        ));
 
         try {
           final conversation = await databaseManager.getConversation(
@@ -188,16 +202,16 @@ class MessagesScreenBloc
           final announcement = await databaseManager.getAnnouncement(
               id: conversation.announcementID);
 
-          final userProfile =
-              await databaseManager.getUserProfile(id: user.uid);
+          final userProfile = await databaseManager.getUserProfile(id: userID);
 
           await databaseManager.updateLastActivityInConversation(
-            currentUserID: user.uid,
+            currentUserID: userID,
             giverID: announcement.giverID,
             conversationID: conversation.conversationID,
           );
 
           emit(MessagesScreenStateInConversation(
+            conversationDetailsStream: convesationStream,
             isLoading: false,
             conversation: conversation,
             announcement: announcement,
@@ -208,6 +222,7 @@ class MessagesScreenBloc
             MessagesScreenStateInConversationsList(
               isLoading: false,
               databaseError: DatabaseError.from(e),
+              conversationsListStream: conversationsListStream,
             ),
           );
         }
@@ -221,6 +236,20 @@ class MessagesScreenBloc
           userID: event.userID,
           announcement: event.announcement,
           conversation: event.conversation,
+        ));
+      },
+    );
+
+    on<MessagesScreenEventBackToConversationFromReportView>(
+      (event, emit) async {
+        final userProfile = await databaseManager.getUserProfile(id: userID);
+
+        emit(MessagesScreenStateInConversation(
+          conversationDetailsStream: convesationStream,
+          isLoading: false,
+          conversation: event.conversation,
+          announcement: event.announcement,
+          userProfile: userProfile,
         ));
       },
     );
@@ -251,6 +280,7 @@ class MessagesScreenBloc
 
           if (event.conversation != null) {
             emit(MessagesScreenStateInConversation(
+              conversationDetailsStream: convesationStream,
               isLoading: false,
               conversation: event.conversation!,
               announcement: event.announcement,
@@ -258,9 +288,10 @@ class MessagesScreenBloc
               snackbarMessage: 'Zgłoszenie zostało wysłane!',
             ));
           } else {
-            emit(const MessagesScreenStateInConversationsList(
+            emit(MessagesScreenStateInConversationsList(
               isLoading: false,
               snackbarMessage: 'Zgłoszenie zostało wysłane!',
+              conversationsListStream: conversationsListStream,
             ));
           }
         } on FirebaseException catch (e) {
