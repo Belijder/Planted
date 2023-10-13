@@ -10,6 +10,8 @@ import 'package:planted/blocs/userProfileScreenBloc/user_profile_screen_event.da
 import 'package:planted/blocs/userProfileScreenBloc/user_profile_screen_state.dart';
 import 'package:planted/constants/colors.dart';
 import 'package:planted/constants/firebase_paths.dart';
+import 'package:planted/constants/images.dart';
+import 'package:planted/constants/strings.dart';
 import 'package:planted/helpers/send_email_to_owner.dart';
 import 'package:planted/models/user_profile.dart';
 import 'package:planted/styles/buttons_styles.dart';
@@ -33,7 +35,7 @@ class UserProfileView extends HookWidget {
         title: const Row(
           children: [
             Text(
-              'Twoje konto',
+              AppBarTitleText.yoursAccount,
               style: TextStyle(
                   color: colorSepia,
                   fontSize: 30.0,
@@ -50,7 +52,7 @@ class UserProfileView extends HookWidget {
               is UserProfileScreenStateInUserProfileView) {
             final path = userProfileScreenState.path;
             if (path != null) {
-              final Uri legalTermsUrl = Uri(scheme: 'https', path: path);
+              final Uri legalTermsUrl = Uri(scheme: httpsScheme, path: path);
               launchUrl(legalTermsUrl);
             }
             context
@@ -87,9 +89,9 @@ class UserProfileView extends HookWidget {
                               width: 80,
                               fit: BoxFit.cover,
                               errorWidget: (context, _, __) =>
-                                  Image.asset('assets/images/person.png'),
+                                  Image.asset(ImageName.personPlaceholder),
                               placeholder: (context, _) =>
-                                  Image.asset('assets/images/person.png'),
+                                  Image.asset(ImageName.personPlaceholder),
                             ),
                           ),
                           const SizedBox(width: 20),
@@ -98,7 +100,7 @@ class UserProfileView extends HookWidget {
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               text: TextSpan(
-                                text: 'Witaj, ',
+                                text: CustomText.hello,
                                 style: const TextStyle(
                                     fontWeight: FontWeight.w300,
                                     color: colorDarkMossGreen,
@@ -122,7 +124,7 @@ class UserProfileView extends HookWidget {
                             Column(
                               children: [
                                 UserProfileActionButton(
-                                    title: 'Panel Administratora',
+                                    title: ButtonLabelText.adminPanel,
                                     onPressed: () {
                                       context.read<UserProfileScreenBloc>().add(
                                           UserProfileScreenEventGoToAdministratorPanelView(
@@ -133,7 +135,7 @@ class UserProfileView extends HookWidget {
                               ],
                             ),
                           UserProfileActionButton(
-                              title: 'Twoje ogłoszenia',
+                              title: ButtonLabelText.yoursAnnouncements,
                               onPressed: () {
                                 context.read<UserProfileScreenBloc>().add(
                                     const UserProfileScreenEventGoToUsersAnnouncementsView());
@@ -143,7 +145,7 @@ class UserProfileView extends HookWidget {
                             Column(
                               children: [
                                 UserProfileActionButton(
-                                    title: 'Zablokowani użytkownicy',
+                                    title: ButtonLabelText.blockedUsers,
                                     onPressed: () {
                                       context.read<UserProfileScreenBloc>().add(
                                           const UserProfileScreenEventGoToBlockedUsersView());
@@ -155,7 +157,7 @@ class UserProfileView extends HookWidget {
                             Column(
                               children: [
                                 UserProfileActionButton(
-                                    title: 'Twoje zgłoszenia',
+                                    title: ButtonLabelText.yoursReports,
                                     onPressed: () {
                                       context.read<UserProfileScreenBloc>().add(
                                           UserProfileScreenEventGoToUserReportsView(
@@ -166,20 +168,20 @@ class UserProfileView extends HookWidget {
                             ),
                           const SizedBox(height: 10),
                           UserProfileActionButton(
-                              title: 'Oceń aplikację',
+                              title: ButtonLabelText.rateApp,
                               onPressed: () {
                                 inAppReview.openStoreListing(
-                                    appStoreId: 'com.jakubzajda.planted');
+                                    appStoreId: appStoreID);
                               }),
                           const SizedBox(height: 10),
                           UserProfileActionButton(
-                              title: 'Skontaktuj się z nami',
+                              title: ButtonLabelText.contactUs,
                               onPressed: () {
                                 sendEmailToOwner();
                               }),
                           const SizedBox(height: 20),
                           UserProfileActionButton(
-                            title: 'Polityka Prywatności',
+                            title: ButtonLabelText.policyPrivacy,
                             onPressed: () {
                               context.read<UserProfileScreenBloc>().add(
                                     const UserProfileScreenEventOpenLegalTerms(
@@ -190,7 +192,7 @@ class UserProfileView extends HookWidget {
                           ),
                           const SizedBox(height: 10),
                           UserProfileActionButton(
-                            title: 'Regulamin',
+                            title: ButtonLabelText.termOfUse,
                             onPressed: () {
                               context.read<UserProfileScreenBloc>().add(
                                     const UserProfileScreenEventOpenLegalTerms(
@@ -211,7 +213,7 @@ class UserProfileView extends HookWidget {
                               },
                               style: createFilledButtonStyle(
                                   backgroundColor: colorRedKenyanCopper),
-                              child: const Text('Wyloguj się'),
+                              child: const Text(ButtonLabelText.logOut),
                             ),
                           ),
                           const SizedBox(height: 10),
@@ -232,9 +234,8 @@ class UserProfileView extends HookWidget {
                               onPressed: () {
                                 showDialogWithTextField(
                                   context: context,
-                                  title: 'Usuwanie konta',
-                                  content:
-                                      'Aby usunąć konto, musisz podać hasło ustalone podczas zakładania konta. Pamiętaj, że usunięcie konta wiąże się z zarchiwizowaniem wszystkich twoich ogłoszeń oraz konwersacji. Tej operacji nie będzie można cofnąć. Po usunięciu konta nie będziesz w stanie odzyskać dostępu do swoich konwersacji oraz ogłoszeń.',
+                                  title: DialogTitleText.accountDeleting,
+                                  content: DialogContentText.accountDeleting,
                                   dialogType: ConfirmationDialogType.password,
                                 ).then((password) {
                                   if (password != null && password.isNotEmpty) {
@@ -244,7 +245,7 @@ class UserProfileView extends HookWidget {
                                   }
                                 });
                               },
-                              child: const Text('Usuń konto'),
+                              child: const Text(ButtonLabelText.deleteAccount),
                             ),
                           ),
                         ],

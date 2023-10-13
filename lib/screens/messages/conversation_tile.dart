@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:planted/blocs/messagesScreenBloc/messages_screen_bloc.dart';
 import 'package:planted/blocs/messagesScreenBloc/messages_screen_event.dart';
 import 'package:planted/constants/colors.dart';
+import 'package:planted/constants/images.dart';
 import 'package:planted/extensions/time_stamp_extensions.dart';
 import 'package:planted/helpers/format_timestamp.dart';
 import 'package:planted/models/conversation.dart';
@@ -50,9 +51,9 @@ class ConversationTile extends StatelessWidget {
                   width: 40,
                   fit: BoxFit.cover,
                   errorWidget: (context, _, __) =>
-                      Image.asset('assets/images/person.png'),
+                      Image.asset(ImageName.personPlaceholder),
                   placeholder: (context, _) =>
-                      Image.asset('assets/images/person.png'),
+                      Image.asset(ImageName.personPlaceholder),
                 ),
               ),
               const SizedBox(width: 10),

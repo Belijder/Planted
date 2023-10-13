@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:planted/blocs/messagesScreenBloc/messages_screen_bloc.dart';
 import 'package:planted/constants/colors.dart';
+import 'package:planted/constants/strings.dart';
 import 'package:planted/helpers/request_permission_for_push.dart';
 import 'package:planted/screens/messages/conversation_tile.dart';
 import 'package:planted/screens/views/empty_state_view.dart';
@@ -23,7 +24,7 @@ class MessagesListView extends HookWidget {
         title: const Row(
           children: [
             Text(
-              'Wiadomości',
+              AppBarTitleText.messages,
               style: TextStyle(
                   color: colorSepia,
                   fontSize: 30.0,
@@ -44,8 +45,7 @@ class MessagesListView extends HookWidget {
             }
             if (snapshot.hasError || snapshot.data == null) {
               return const EmptyStateView(
-                  message:
-                      'Nie udało się pobrać wiadomości. Sprawdz połączenie z internetem i spróbuj ponownie za chwilę.');
+                  message: StreamMessageText.messagesError);
             }
 
             final conversations = snapshot.data!;
@@ -55,7 +55,7 @@ class MessagesListView extends HookWidget {
 
             if (filteredConversations.isEmpty) {
               return const EmptyStateView(
-                message: 'Nie masz żadnych wiadomości w skrzynce.',
+                message: StreamMessageText.messagesEmpty,
               );
             } else {
               return ListView.builder(

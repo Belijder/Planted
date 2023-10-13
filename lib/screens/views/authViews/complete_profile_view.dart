@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,6 +8,7 @@ import 'package:planted/blocs/authBloc/auth_bloc.dart';
 import 'package:planted/blocs/authBloc/auth_event.dart';
 import 'package:planted/constants/colors.dart';
 import 'package:planted/constants/images.dart';
+import 'package:planted/constants/strings.dart';
 import 'package:planted/styles/create_input_decoration.dart';
 import 'package:planted/styles/buttons_styles.dart';
 import 'package:planted/styles/text_styles.dart';
@@ -39,10 +39,10 @@ class CompleteProfileView extends HookWidget {
                   children: [
                     SizedBox(
                       height: 40,
-                      child: Image.asset(plantedLogo),
+                      child: Image.asset(ImageName.plantedLogo),
                     ),
                     const Text(
-                      'share nature',
+                      CustomText.shareNature,
                       style: TextStyle(
                           color: colorSepia,
                           fontWeight: FontWeight.w300,
@@ -51,7 +51,10 @@ class CompleteProfileView extends HookWidget {
                   ],
                 ),
                 const SizedBox(height: 30),
-                const Text('Uzupełnij profil', style: titleTextStyle),
+                const Text(
+                  CustomText.completeProfile,
+                  style: titleTextStyle,
+                ),
                 const SizedBox(height: 20),
 
                 //Image here
@@ -63,7 +66,8 @@ class CompleteProfileView extends HookWidget {
                 const SizedBox(height: 20),
                 TextFormField(
                   controller: nameController,
-                  decoration: createInputDecoration(label: 'Nazwa użytkownika'),
+                  decoration:
+                      createInputDecoration(label: CustomText.userNameLabel),
                   style: textStyle15BoldSepia,
                   onFieldSubmitted: (_) => FocusScope.of(context).unfocus(),
                   onTapOutside: (_) => FocusScope.of(context).unfocus(),
@@ -85,7 +89,7 @@ class CompleteProfileView extends HookWidget {
                           );
                     },
                     style: filledButtonStyle,
-                    child: const Text('Zapisz'),
+                    child: const Text(ButtonLabelText.save),
                   ),
                 ),
               ],
@@ -131,11 +135,11 @@ class ProfileImagePickerView extends StatelessWidget {
               children: [
                 SizedBox(
                   height: 100,
-                  child: Image.asset('assets/images/person.png'),
+                  child: Image.asset(ImageName.personPlaceholder),
                 ),
                 SizedBox(
                   height: 30,
-                  child: Image.asset('assets/images/add.png'),
+                  child: Image.asset(ImageName.add),
                 ),
               ],
             ),
@@ -174,7 +178,7 @@ class ProfileImagePickerView extends StatelessWidget {
                               imagePath.value = null;
                               Navigator.pop(context);
                             },
-                            child: const Text('Usuń zdjęcie'),
+                            child: const Text(ButtonLabelText.removeImage),
                           ),
                         ),
                         SizedBox(
@@ -183,7 +187,7 @@ class ProfileImagePickerView extends StatelessWidget {
                             onPressed: () {
                               Navigator.pop(context);
                             },
-                            child: const Text('Anuluj'),
+                            child: const Text(ButtonLabelText.cancel),
                           ),
                         ),
                       ],

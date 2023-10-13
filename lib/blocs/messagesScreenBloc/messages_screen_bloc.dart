@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:planted/blocs/database_error.dart';
 import 'package:planted/blocs/messagesScreenBloc/messages_screen_event.dart';
 import 'package:planted/blocs/messagesScreenBloc/messages_screen_state.dart';
+import 'package:planted/constants/strings.dart';
 import 'package:planted/managers/conectivity_manager.dart';
 import 'package:planted/managers/firebase_database_manager.dart';
 import 'package:planted/models/announcement.dart';
@@ -173,7 +174,7 @@ class MessagesScreenBloc
 
         emit(MessagesScreenStateInConversationsList(
           isLoading: false,
-          snackbarMessage: 'Użytkownik został zablokowany!',
+          snackbarMessage: SnackbarMessageContent.userBlocked,
           conversationsListStream: conversationsListStream,
         ));
       },
@@ -285,12 +286,12 @@ class MessagesScreenBloc
               conversation: event.conversation!,
               announcement: event.announcement,
               userProfile: userProfile,
-              snackbarMessage: 'Zgłoszenie zostało wysłane!',
+              snackbarMessage: SnackbarMessageContent.reportSended,
             ));
           } else {
             emit(MessagesScreenStateInConversationsList(
               isLoading: false,
-              snackbarMessage: 'Zgłoszenie zostało wysłane!',
+              snackbarMessage: SnackbarMessageContent.reportSended,
               conversationsListStream: conversationsListStream,
             ));
           }

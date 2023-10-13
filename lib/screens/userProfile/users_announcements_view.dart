@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:planted/blocs/userProfileScreenBloc/user_profile_screen_bloc.dart';
 import 'package:planted/blocs/userProfileScreenBloc/user_profile_screen_event.dart';
 import 'package:planted/constants/colors.dart';
+import 'package:planted/constants/strings.dart';
 import 'package:planted/helpers/get_status_text_from_status.dart';
 import 'package:planted/models/announcement.dart';
 import 'package:planted/screens/browse/announcements_list_tile.dart';
@@ -39,7 +40,7 @@ class UsersAnnouncementsView extends HookWidget {
         title: const Align(
           alignment: Alignment.centerLeft,
           child: Text(
-            'Twoje ogłoszenia',
+            AppBarTitleText.yoursAnnouncements,
             style: TextStyle(
               color: colorSepia,
               fontSize: 20,
@@ -56,15 +57,14 @@ class UsersAnnouncementsView extends HookWidget {
           }
           if (snapshot.hasError || snapshot.data == null) {
             return const EmptyStateView(
-                message:
-                    'Nie udało się pobrać ogłoszeń. Sprawdz połączenie z internetem i spróbuj ponownie za chwilę.');
+                message: StreamMessageText.announcementsError);
           }
 
           final announcements = snapshot.data!;
 
           if (announcements.isEmpty) {
             return const EmptyStateView(
-                message: 'Nie dodałeś jeszcze żadnych ogłoszeń.');
+                message: StreamMessageText.announcemensEmpty);
           } else {
             return ListOfUsersAnnoucements(
                 announcements: announcements, userID: userID);
@@ -119,11 +119,10 @@ class ListOfUsersAnnoucements extends StatelessWidget {
                           TextButton(
                             onPressed: () {
                               showConfirmationDialog(
-                                      context: context,
-                                      title: 'Jesteś pewien?',
-                                      content:
-                                          'Tej operacji nie będzie można cofnąć.')
-                                  .then((value) {
+                                context: context,
+                                title: DialogTitleText.operationConfiration,
+                                content: DialogContentText.operationConfiration,
+                              ).then((value) {
                                 if (value != null) {
                                   if (announcement.status == 0 ||
                                       announcement.status == 2) {
@@ -153,7 +152,7 @@ class ListOfUsersAnnoucements extends StatelessWidget {
                             child: const Padding(
                               padding: EdgeInsets.symmetric(horizontal: 16.0),
                               child: Text(
-                                'Usuń',
+                                ButtonLabelText.delete,
                                 style: TextStyle(
                                   fontSize: 10,
                                   fontWeight: FontWeight.bold,

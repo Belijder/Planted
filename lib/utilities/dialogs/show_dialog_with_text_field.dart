@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:planted/constants/colors.dart';
+import 'package:planted/constants/strings.dart';
 import 'package:planted/styles/create_input_decoration.dart';
 import 'package:planted/styles/buttons_styles.dart';
 import 'package:planted/styles/text_styles.dart';
@@ -42,9 +43,10 @@ Future<String?> showDialogWithTextField({
             TextFormField(
               controller: emailController,
               decoration: createInputDecoration(
-                  label: dialogType == ConfirmationDialogType.email
-                      ? 'Email'
-                      : 'Hasło'),
+                label: dialogType == ConfirmationDialogType.email
+                    ? CustomText.emailLabel
+                    : CustomText.passwordLabel,
+              ),
               style: textStyle15BoldSepia,
               onFieldSubmitted: (_) => FocusScope.of(context).unfocus(),
               onTapOutside: (_) => FocusScope.of(context).unfocus(),
@@ -55,7 +57,7 @@ Future<String?> showDialogWithTextField({
               enableSuggestions: false,
               obscureText:
                   dialogType == ConfirmationDialogType.email ? false : true,
-              obscuringCharacter: '⦿',
+              obscuringCharacter: obscuringCharacter,
             ),
           ],
         ),
@@ -69,7 +71,7 @@ Future<String?> showDialogWithTextField({
                 Navigator.of(context).pop(emailController.text);
               },
               child: const Text(
-                'Potwierdź',
+                ButtonLabelText.confirm,
               ),
             ),
           ),
@@ -84,7 +86,7 @@ Future<String?> showDialogWithTextField({
                 Navigator.of(context).pop();
               },
               child: const Text(
-                'Anuluj',
+                ButtonLabelText.cancel,
               ),
             ),
           ),

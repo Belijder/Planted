@@ -8,6 +8,7 @@ import 'package:planted/blocs/messagesScreenBloc/messages_screen_bloc.dart';
 import 'package:planted/blocs/messagesScreenBloc/messages_screen_event.dart';
 import 'package:planted/blocs/messagesScreenBloc/messages_screen_state.dart';
 import 'package:planted/constants/colors.dart';
+import 'package:planted/constants/strings.dart';
 import 'package:planted/models/announcement.dart';
 import 'package:planted/models/conversation.dart';
 import 'package:planted/screens/messages/incoming_message.dart';
@@ -112,14 +113,14 @@ class ConversationView extends HookWidget {
               const PopupMenuItem<MessagesPopUpMenuItem>(
                 value: MessagesPopUpMenuItem.blocUser,
                 child: Text(
-                  'Zablokuj użytkownika',
+                  ButtonLabelText.blockUser,
                   style: TextStyle(color: colorRedKenyanCopper),
                 ),
               ),
               const PopupMenuItem<MessagesPopUpMenuItem>(
                 value: MessagesPopUpMenuItem.reportUser,
                 child: Text(
-                  'Zgłoś użytkownika',
+                  ButtonLabelText.reportUser,
                   style: TextStyle(color: colorRedKenyanCopper),
                 ),
               ),
@@ -166,8 +167,8 @@ class ConversationView extends HookWidget {
 
                     if (snapshot.hasError || snapshot.data == null) {
                       return const EmptyStateView(
-                          message:
-                              'Nie udało się pobrać Wiadomości. Sprawdz połączenie z internetem i spróbuj ponownie za chwilę.');
+                        message: StreamMessageText.messagesError,
+                      );
                     }
 
                     final conversation = snapshot.data!;
@@ -201,7 +202,7 @@ class ConversationView extends HookWidget {
                     child: TextField(
                         controller: messageController,
                         decoration: InputDecoration(
-                          hintText: 'Napisz wiadomość...',
+                          hintText: CustomText.writeMessage,
                           hintStyle: formLabelTextStyle,
                           contentPadding: const EdgeInsets.symmetric(
                               vertical: 8, horizontal: 16),

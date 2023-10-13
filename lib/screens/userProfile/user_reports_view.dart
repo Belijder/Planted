@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:planted/blocs/userProfileScreenBloc/user_profile_screen_bloc.dart';
 import 'package:planted/blocs/userProfileScreenBloc/user_profile_screen_event.dart';
 import 'package:planted/constants/colors.dart';
+import 'package:planted/constants/strings.dart';
 import 'package:planted/models/report.dart';
 import 'package:planted/screens/userProfile/report_item_list_tile.dart';
 import 'package:planted/screens/views/empty_state_view.dart';
@@ -33,7 +34,7 @@ class UserReportsView extends StatelessWidget {
         title: const Align(
           alignment: Alignment.centerLeft,
           child: Text(
-            'Twoje zgłoszenia',
+            AppBarTitleText.yoursAccount,
             style: TextStyle(
               color: colorSepia,
               fontSize: 20,
@@ -47,19 +48,19 @@ class UserReportsView extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return const EmptyStateView(
-              message:
-                  'Nie udało się pobrać twoich zgłoszeń. Sprawdz połączenie z internetem i spróbuj ponownie za chwilę.',
+              message: StreamMessageText.reportsError,
             );
           }
+
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
 
           final reports = snapshot.data!;
-
           if (reports.isEmpty) {
             return const EmptyStateView(
-                message: 'Nie masz żadnych zgłoszeń do wyświetlenia.');
+              message: StreamMessageText.reportsEmpty,
+            );
           }
 
           return Padding(

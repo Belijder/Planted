@@ -50,7 +50,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         }
 
         final QuerySnapshot query = await FirebaseFirestore.instance
-            .collection('profiles')
+            .collection(profilesPath)
             .where('userID', isEqualTo: user.uid)
             .get();
 
@@ -182,7 +182,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           emit(
             const AuthStateIsInConfirmationEmailView(
               isLoading: false,
-              snackbarMessage: 'Mail został wysłany. sprawdź poczę!',
+              snackbarMessage: SnackbarMessageContent.mailSended,
             ),
           );
         } on FirebaseAuthException catch (e) {
@@ -375,7 +375,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           }
 
           final QuerySnapshot query = await FirebaseFirestore.instance
-              .collection('profiles')
+              .collection(profilesPath)
               .where('userID', isEqualTo: user.uid)
               .get();
 
@@ -394,7 +394,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
               };
 
               await FirebaseFirestore.instance
-                  .collection('profiles')
+                  .collection(profilesPath)
                   .doc(user.uid)
                   .set(userProfileData);
             } else {
@@ -444,7 +444,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
           emit(const AuthStateLoggedOut(
             isLoading: false,
-            snackbarMessage: resetPasswordSended,
+            snackbarMessage: SnackbarMessageContent.resetPasswordSended,
           ));
         } on FirebaseAuthException catch (e) {
           emit(AuthStateLoggedOut(
@@ -528,7 +528,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           await FirebaseAuth.instance.currentUser?.delete();
           emit(const AuthStateLoggedOut(
             isLoading: false,
-            snackbarMessage: 'Konto zostało usunięte!',
+            snackbarMessage: SnackbarMessageContent.accountDeleted,
           ));
         } on FirebaseAuthException catch (e) {
           emit(

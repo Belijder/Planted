@@ -11,6 +11,7 @@ import 'package:planted/blocs/authBloc/auth_bloc.dart';
 import 'package:planted/blocs/authBloc/auth_event.dart';
 import 'package:planted/blocs/authBloc/auth_state.dart';
 import 'package:planted/constants/colors.dart';
+import 'package:planted/constants/strings.dart';
 import 'package:planted/styles/create_input_decoration.dart';
 import 'package:planted/styles/box_decoration_styles.dart';
 import 'package:planted/styles/buttons_styles.dart';
@@ -38,7 +39,7 @@ class AddAnnouncementView extends HookWidget {
         title: const Row(
           children: [
             Text(
-              'Dodaj',
+              AppBarTitleText.add,
               style: TextStyle(
                   color: colorSepia,
                   fontSize: 30.0,
@@ -52,7 +53,10 @@ class AddAnnouncementView extends HookWidget {
       body: BlocListener<AddScreenBloc, AddScreenState>(
         listener: (context, addScreenState) {
           if (addScreenState.isLoading) {
-            LoadingScreen.instance().show(context: context, text: 'Ładuję...');
+            LoadingScreen.instance().show(
+              context: context,
+              text: LoadingScreenText.adding,
+            );
           } else {
             LoadingScreen.instance().hide();
           }
@@ -94,7 +98,9 @@ class AddAnnouncementView extends HookWidget {
                   const SizedBox(height: 5),
                   TextField(
                     controller: nameController,
-                    decoration: createInputDecoration(label: 'Nazwa'),
+                    decoration: createInputDecoration(
+                      label: CustomText.nameLabel,
+                    ),
                     style: textStyle15BoldSepia,
                     onSubmitted: (_) => FocusScope.of(context).unfocus(),
                     onTapOutside: (_) => FocusScope.of(context).unfocus(),
@@ -104,7 +110,9 @@ class AddAnnouncementView extends HookWidget {
                   const SizedBox(height: 20),
                   TextField(
                     controller: latinNameController,
-                    decoration: createInputDecoration(label: 'Nazwa łacińska'),
+                    decoration: createInputDecoration(
+                      label: CustomText.latinNameLabel,
+                    ),
                     style: textStyle15BoldSepia,
                     onSubmitted: (_) => FocusScope.of(context).unfocus(),
                     onTapOutside: (_) => FocusScope.of(context).unfocus(),
@@ -125,8 +133,8 @@ class AddAnnouncementView extends HookWidget {
                             const SizedBox(height: 20),
                             TextField(
                               controller: cityNameController,
-                              decoration:
-                                  createInputDecoration(label: 'Miasto'),
+                              decoration: createInputDecoration(
+                                  label: CustomText.cityLabel),
                               style: textStyle15BoldSepia,
                               onSubmitted: (_) =>
                                   FocusScope.of(context).unfocus(),
@@ -145,7 +153,9 @@ class AddAnnouncementView extends HookWidget {
                     height: 150,
                     child: TextField(
                       controller: descriptionController,
-                      decoration: createInputDecoration(label: 'Opis'),
+                      decoration: createInputDecoration(
+                        label: CustomText.descriptionLabel,
+                      ),
                       style: textStyle15BoldSepia,
                       onSubmitted: (_) => FocusScope.of(context).unfocus(),
                       onTapOutside: (_) => FocusScope.of(context).unfocus(),
@@ -167,9 +177,8 @@ class AddAnnouncementView extends HookWidget {
                         if (imagePath.value == null) {
                           showInformationDialog(
                             context: context,
-                            title: 'Zdjęcie jest wymagane',
-                            content:
-                                'Aby dodać ogłoszenie musisz dodać zdjęcie oferowanych przez ciebie roślin.',
+                            title: DialogTitleText.photoRequired,
+                            content: DialogContentText.photoRequired,
                           );
                           return;
                         }
@@ -178,9 +187,8 @@ class AddAnnouncementView extends HookWidget {
                             cityNameController.text.isEmpty) {
                           showInformationDialog(
                             context: context,
-                            title: 'Uzupełnij wymagane pola',
-                            content:
-                                'Aby dodać ogłoszenie musisz podać przynajmniej nazwę oraz miasto w którym można odebrać rośliny.',
+                            title: DialogTitleText.completeFields,
+                            content: DialogContentText.completeFields,
                           );
                           return;
                         }
@@ -205,7 +213,7 @@ class AddAnnouncementView extends HookWidget {
                               ),
                             );
                       },
-                      child: const Text('Dodaj ogłoszenie'),
+                      child: const Text(ButtonLabelText.addAnnouncement),
                     ),
                   ),
                 ],
@@ -299,7 +307,8 @@ class ImageView extends StatelessWidget {
                                     imagePath.value = null;
                                     Navigator.pop(context);
                                   },
-                                  child: const Text('Usuń zdjęcie'),
+                                  child:
+                                      const Text(ButtonLabelText.removeImage),
                                 ),
                               ),
                               SizedBox(
@@ -308,7 +317,7 @@ class ImageView extends StatelessWidget {
                                   onPressed: () {
                                     Navigator.pop(context);
                                   },
-                                  child: const Text('Anuluj'),
+                                  child: const Text(ButtonLabelText.cancel),
                                 ),
                               ),
                             ],

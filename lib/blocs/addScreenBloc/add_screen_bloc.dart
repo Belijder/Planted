@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:planted/blocs/addScreenBloc/add_screen_event.dart';
 import 'package:planted/blocs/addScreenBloc/add_screen_state.dart';
 import 'package:planted/blocs/database_error.dart';
+import 'package:planted/constants/strings.dart';
 import 'package:planted/helpers/compress_image.dart';
 import 'package:planted/managers/conectivity_manager.dart';
 import 'package:planted/managers/firebase_database_manager.dart';
@@ -59,7 +60,7 @@ class AddScreenBloc extends Bloc<AddScreenEvent, AddScreenState> {
             const AddScreenState(
                 isLoading: false,
                 shouldCleanFields: true,
-                snackbarMessage: 'Ogłoszenie zostało dodane!'),
+                snackbarMessage: SnackbarMessageContent.announcementAdded),
           );
         } on FirebaseException catch (e) {
           emit(

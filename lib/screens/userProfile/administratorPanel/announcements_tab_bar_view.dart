@@ -5,6 +5,7 @@ import 'package:planted/blocs/userProfileScreenBloc/user_profile_screen_bloc.dar
 import 'package:planted/blocs/userProfileScreenBloc/user_profile_screen_event.dart';
 import 'package:planted/constants/colors.dart';
 import 'package:planted/constants/enums/admin_announcement_action.dart';
+import 'package:planted/constants/strings.dart';
 import 'package:planted/models/announcement.dart';
 import 'package:planted/screens/browse/announcements_list_tile.dart';
 import 'package:planted/screens/views/empty_state_view.dart';
@@ -19,19 +20,12 @@ class AnnounementsTabBarView extends HookWidget {
     final announcementsStream =
         context.watch<UserProfileScreenBloc>().state.announcementsStream;
 
-    if (announcementsStream == null) {
-      return const EmptyStateView(
-        message: 'Nie możemy wykonać tego rządania. Brak odpowiednich danych.',
-      );
-    }
-
     return StreamBuilder<List<Announcement>>(
       stream: announcementsStream,
       builder: (context, snapshot) {
-        if (snapshot.hasError) {
+        if (snapshot.hasError || snapshot.data == null) {
           return const EmptyStateView(
-            message:
-                'Nie udało się pobrać ogłoszeń. Sprawdz połączenie z internetem i spróbuj ponownie za chwilę.',
+            message: StreamMessageText.announcementsError,
           );
         }
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -42,7 +36,7 @@ class AnnounementsTabBarView extends HookWidget {
 
         if (announcements.isEmpty) {
           return const EmptyStateView(
-              message: 'Brak nowych ogłoszeń do zaakceptowania.');
+              message: StreamMessageText.noAnnouncementsToAccept);
         }
 
         return Padding(
@@ -80,7 +74,7 @@ class AnnounementsTabBarView extends HookWidget {
                                       bottomLeft: Radius.circular(20),
                                     ),
                                   ),
-                                  child: const Text('Zaakceptuj')),
+                                  child: const Text(ButtonLabelText.accept)),
                             ),
                           ),
                           Expanded(
@@ -103,7 +97,7 @@ class AnnounementsTabBarView extends HookWidget {
                                       bottomRight: Radius.circular(20),
                                     ),
                                   ),
-                                  child: const Text('Odrzuć')),
+                                  child: const Text(ButtonLabelText.reject)),
                             ),
                           ),
                         ],

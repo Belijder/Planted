@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:planted/blocs/userProfileScreenBloc/user_profile_screen_bloc.dart';
 import 'package:planted/blocs/userProfileScreenBloc/user_profile_screen_event.dart';
 import 'package:planted/constants/colors.dart';
+import 'package:planted/constants/strings.dart';
 import 'package:planted/screens/userProfile/administratorPanel/announcements_tab_bar_view.dart';
 import 'package:planted/screens/userProfile/administratorPanel/reports_tab_bar_view.dart';
 
@@ -30,7 +31,7 @@ class AdministatorPanelView extends StatelessWidget {
           title: const Align(
             alignment: Alignment.centerLeft,
             child: Text(
-              'Panel Administratora',
+              AppBarTitleText.adminPanel,
               style: TextStyle(
                 color: colorSepia,
                 fontSize: 20,
@@ -39,8 +40,8 @@ class AdministatorPanelView extends StatelessWidget {
             ),
           ),
           bottom: const TabBar(tabs: [
-            Tab(text: 'Ogłoszenia'),
-            Tab(text: 'Zgłoszenia'),
+            Tab(text: CustomText.announcements),
+            Tab(text: CustomText.reports),
           ]),
         ),
         body: const TabBarView(

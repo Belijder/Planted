@@ -30,10 +30,10 @@ class ConfrimEmailView extends StatelessWidget {
                   children: [
                     SizedBox(
                       height: 40,
-                      child: Image.asset(plantedLogo),
+                      child: Image.asset(ImageName.plantedLogo),
                     ),
                     const Text(
-                      'share nature',
+                      CustomText.shareNature,
                       style: TextStyle(
                           color: colorSepia,
                           fontWeight: FontWeight.w300,
@@ -42,10 +42,10 @@ class ConfrimEmailView extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 30),
-                const Text('Potwierdź email', style: titleTextStyle),
+                const Text(CustomText.confirmEmail, style: titleTextStyle),
                 const SizedBox(height: 20),
                 const Text(
-                  confirmEmailSentence1,
+                  CustomText.confirmEmailSentence1,
                   style: TextStyle(
                     color: colorSepia,
                     fontSize: 14,
@@ -55,7 +55,7 @@ class ConfrimEmailView extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 const Text(
-                  confirmEmailSentence2,
+                  CustomText.confirmEmailSentence2,
                   style: TextStyle(
                     color: colorSepia,
                     fontSize: 14,
@@ -68,7 +68,7 @@ class ConfrimEmailView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Potwierdzone?',
+                      CustomText.isConfirmed,
                       style: TextStyle(
                         color: colorSepia.withAlpha(100),
                       ),
@@ -83,7 +83,7 @@ class ConfrimEmailView extends StatelessWidget {
                         },
                         style: outlinedButtonStyle,
                         icon: const Icon(Icons.refresh_rounded),
-                        label: const Text('Zaloguj się'),
+                        label: const Text(ButtonLabelText.logIn),
                       ),
                     ),
                   ],
@@ -94,7 +94,7 @@ class ConfrimEmailView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Link nie dotarł?',
+                  CustomText.linkDidntRecivedQuestion,
                   style: TextStyle(
                     color: colorSepia.withAlpha(100),
                   ),
@@ -110,7 +110,7 @@ class ConfrimEmailView extends StatelessWidget {
                           .add(const AuthEventResentVerificationMail());
                     },
                     style: outlinedButtonStyle,
-                    child: const Text('Wyślij link ponownie'),
+                    child: const Text(ButtonLabelText.resendLink),
                   ),
                 ),
               ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:planted/constants/colors.dart';
+import 'package:planted/constants/strings.dart';
 import 'package:planted/styles/buttons_styles.dart';
 
 Future<bool?> showConfirmationDialog({
@@ -38,7 +39,7 @@ Future<bool?> showConfirmationDialog({
                 Navigator.of(context).pop(true);
               },
               child: const Text(
-                'Potwierdź',
+                ButtonLabelText.confirm,
               ),
             ),
           ),
@@ -50,7 +51,7 @@ Future<bool?> showConfirmationDialog({
                 Navigator.of(context).pop(true);
               },
               child: const Text(
-                'Anuluj',
+                ButtonLabelText.cancel,
               ),
             ),
           ),

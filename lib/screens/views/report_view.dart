@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:planted/constants/colors.dart';
+import 'package:planted/constants/strings.dart';
 import 'package:planted/styles/create_input_decoration.dart';
 import 'package:planted/models/announcement.dart';
 import 'package:planted/models/conversation.dart';
@@ -23,10 +24,10 @@ typedef ReportAction = void Function({
 });
 
 final listOfReportReasons = [
-  'Niewłaściwe treści',
-  'Obraźliwy kontent',
-  'Niekulturalne wypowiedzi',
-  'Inny'
+  ReportReason.inappropriateContent,
+  ReportReason.offensiveContent,
+  ReportReason.immoralStatements,
+  ReportReason.other,
 ];
 
 class ReportView extends HookWidget {
@@ -82,7 +83,7 @@ class ReportView extends HookWidget {
         title: const Align(
           alignment: Alignment.centerLeft,
           child: Text(
-            'Zgłoś użytkownika',
+            CustomText.reportUser,
             style: TextStyle(
                 color: colorSepia, fontSize: 20, fontWeight: FontWeight.bold),
           ),
@@ -95,7 +96,7 @@ class ReportView extends HookWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'Zgłoszenie dotyczące użytkownika:',
+                CustomText.appliesToUser,
                 style: textStyle15BoldSepia,
               ),
               const SizedBox(height: 5),
@@ -113,7 +114,7 @@ class ReportView extends HookWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text(
-                    'Powód:',
+                    CustomText.reportReason,
                     style: textStyle15BoldSepia,
                   ),
                   DropdownButton<String>(
@@ -145,12 +146,13 @@ class ReportView extends HookWidget {
                 ],
               ),
               const SizedBox(height: 20),
-              if (dropdownValueState.value == 'Inny')
+              if (dropdownValueState.value == ReportReason.other)
                 Column(
                   children: [
                     TextField(
                       controller: otherReasonTextController,
-                      decoration: createInputDecoration(label: 'Podaj powód'),
+                      decoration:
+                          createInputDecoration(label: CustomText.giveReason),
                       style: textStyle15BoldSepia,
                       onSubmitted: (_) => FocusScope.of(context).unfocus(),
                       onTapOutside: (_) => FocusScope.of(context).unfocus(),
@@ -165,7 +167,7 @@ class ReportView extends HookWidget {
                 child: TextField(
                   controller: additionalInformationTextController,
                   decoration:
-                      createInputDecoration(label: 'Dodatkowe informacje'),
+                      createInputDecoration(label: CustomText.additionalInfo),
                   style: textStyle15BoldSepia,
                   onSubmitted: (_) => FocusScope.of(context).unfocus(),
                   onTapOutside: (_) => FocusScope.of(context).unfocus(),
@@ -185,13 +187,12 @@ class ReportView extends HookWidget {
                   style: createFilledButtonStyle(
                       backgroundColor: colorRedKenyanCopper),
                   onPressed: () {
-                    if (dropdownValueState.value == 'Inny' &&
+                    if (dropdownValueState.value == ReportReason.other &&
                         otherReasonTextController.text.trim().isEmpty) {
                       showInformationDialog(
                         context: context,
-                        title: 'Podaj powód zgłoszenia',
-                        content:
-                            'Aby wysłać zgłoszenie musisz podać powód zgłoszenia.',
+                        title: DialogTitleText.reportReasonRequired,
+                        content: DialogContentText.reportReasonRequired,
                       );
                       return;
                     }
@@ -203,7 +204,7 @@ class ReportView extends HookWidget {
                         additionalInformation:
                             additionalInformationTextController.text);
                   },
-                  child: const Text('Dodaj Zgłoszenie'),
+                  child: const Text(ButtonLabelText.addReport),
                 ),
               ),
             ],

@@ -5,6 +5,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:planted/blocs/messagesScreenBloc/messages_screen_bloc.dart';
 import 'package:planted/blocs/messagesScreenBloc/messages_screen_event.dart';
 import 'package:planted/constants/colors.dart';
+import 'package:planted/constants/firebase_paths.dart';
+import 'package:planted/constants/strings.dart';
 import 'package:planted/managers/push_notifications_manager.dart';
 import 'package:planted/screens/addAnnouncement/add_announcement_screen.dart';
 import 'package:planted/screens/browse/browse_screen.dart';
@@ -21,7 +23,7 @@ class NavigationBarView extends HookWidget {
     FirebaseMessaging.instance.getInitialMessage().then((message) {
       if (message != null) {
         currentPageIndex.value = 2;
-        final conversationID = message.data['conversationID'];
+        final conversationID = message.data[conversationIDField];
         context.read<MessagesScreenBloc>().add(
             MessagesScreenEventGoToConversationFromPushMessage(
                 conversationID: conversationID));
@@ -33,7 +35,7 @@ class NavigationBarView extends HookWidget {
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       currentPageIndex.value = 2;
-      final conversationID = message.data['conversationID'];
+      final conversationID = message.data[conversationIDField];
       context.read<MessagesScreenBloc>().add(
           MessagesScreenEventGoToConversationFromPushMessage(
               conversationID: conversationID));
@@ -58,7 +60,7 @@ class NavigationBarView extends HookWidget {
               Icons.search,
               color: colorSepia,
             ),
-            label: 'Przeglądaj',
+            label: AppBarTitleText.browse,
           ),
           NavigationDestination(
             selectedIcon: Icon(
@@ -69,7 +71,7 @@ class NavigationBarView extends HookWidget {
               Icons.add,
               color: colorSepia,
             ),
-            label: 'Dodaj',
+            label: AppBarTitleText.add,
           ),
           NavigationDestination(
             selectedIcon: Icon(
@@ -80,7 +82,7 @@ class NavigationBarView extends HookWidget {
               Icons.message_outlined,
               color: colorSepia,
             ),
-            label: 'Wiadomości',
+            label: AppBarTitleText.messages,
           ),
           NavigationDestination(
             selectedIcon: Icon(
@@ -91,7 +93,7 @@ class NavigationBarView extends HookWidget {
               Icons.person_outline_rounded,
               color: colorSepia,
             ),
-            label: 'Profil',
+            label: AppBarTitleText.yoursAccount,
           ),
         ],
       ),

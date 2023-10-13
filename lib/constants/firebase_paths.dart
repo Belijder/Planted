@@ -7,3 +7,4 @@ const privacyPolicyDoc = 'privacyPolicy';
 const termsOfUseDoc = 'termsOfUse';
 const storageProfileImagesRef = 'profileImages';
 const storageImagesRef = 'images';
+const conversationIDField = 'conversationID';

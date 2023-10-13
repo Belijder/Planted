@@ -6,6 +6,7 @@ import 'package:planted/blocs/userProfileScreenBloc/user_profile_screen_state.da
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:planted/constants/enums/admin_announcement_action.dart';
 import 'package:planted/constants/enums/announcement_action.dart';
+import 'package:planted/constants/strings.dart';
 import 'package:planted/managers/conectivity_manager.dart';
 import 'package:planted/managers/firebase_database_manager.dart';
 
@@ -123,7 +124,7 @@ class UserProfileScreenBloc
           UserProfileScreenStateInUsersAnnouncementsView(
             announcementsStream: state.announcementsStream,
             isLoading: false,
-            snackbarMessage: 'Ogłoszenie zostało usunięte!',
+            snackbarMessage: SnackbarMessageContent.announcementRemoved,
           ),
         );
       } on FirebaseException catch (e) {
@@ -162,7 +163,7 @@ class UserProfileScreenBloc
           emit(UserProfileScreenStateInBlockedUsersView(
             blockedUsersStream: state.blockedUsersStream,
             isLoading: false,
-            snackbarMessage: 'Użytkownik został odblokowany!',
+            snackbarMessage: SnackbarMessageContent.userUnblocked,
           ));
         } on FirebaseException catch (e) {
           emit(UserProfileScreenStateInUserProfileView(

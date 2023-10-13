@@ -6,6 +6,7 @@ import 'package:planted/blocs/browseScreenBloc/browse_screen_bloc.dart';
 import 'package:planted/blocs/browseScreenBloc/browse_screen_event.dart';
 import 'package:planted/constants/colors.dart';
 import 'package:planted/constants/images.dart';
+import 'package:planted/constants/strings.dart';
 import 'package:planted/models/announcement.dart';
 import 'package:planted/styles/box_decoration_styles.dart';
 import 'package:planted/styles/buttons_styles.dart';
@@ -39,7 +40,7 @@ class AnnouncementDetailsView extends StatelessWidget {
         title: const Align(
           alignment: Alignment.centerLeft,
           child: Text(
-            'Szczegóły ogłoszenia',
+            AppBarTitleText.announcementDetails,
             style: TextStyle(
                 color: colorSepia, fontSize: 20, fontWeight: FontWeight.bold),
           ),
@@ -135,7 +136,7 @@ class AnnouncementDetailsView extends StatelessWidget {
                   child: Text(
                     announcement.description.isNotEmpty
                         ? announcement.description
-                        : 'Brak dodatkowego opisu.',
+                        : CustomText.noAdditionalDescription,
                     style: const TextStyle(
                       color: colorSepia,
                       fontWeight: FontWeight.w400,
@@ -153,7 +154,7 @@ class AnnouncementDetailsView extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text(
-                        'Liczba sadzonek: ',
+                        CustomText.seedlingsNumber,
                         style: TextStyle(
                             color: colorSepia,
                             fontWeight: FontWeight.bold,
@@ -176,7 +177,7 @@ class AnnouncementDetailsView extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text(
-                        'Odbiór: ',
+                        CustomText.pickupLocation,
                         style: TextStyle(
                             color: colorSepia,
                             fontWeight: FontWeight.bold,
@@ -199,7 +200,7 @@ class AnnouncementDetailsView extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text(
-                        'Dodano przez: ',
+                        CustomText.addedBy,
                         style: TextStyle(
                             color: colorSepia,
                             fontWeight: FontWeight.bold,
@@ -230,8 +231,8 @@ class AnnouncementDetailsView extends StatelessWidget {
                                             Navigator.of(context)
                                                 .pop(ModalPopupAction.report);
                                           },
-                                          child:
-                                              const Text('Zgłoś użytkownika'),
+                                          child: const Text(
+                                              ButtonLabelText.reportUser),
                                         ),
                                       ),
                                       SizedBox(
@@ -247,7 +248,7 @@ class AnnouncementDetailsView extends StatelessWidget {
                                                 .pop(ModalPopupAction.block);
                                           },
                                           child: const Text(
-                                              'Zablokuj użytkownika'),
+                                              ButtonLabelText.blockUser),
                                         ),
                                       ),
                                       SizedBox(
@@ -256,7 +257,8 @@ class AnnouncementDetailsView extends StatelessWidget {
                                           onPressed: () {
                                             Navigator.of(context).pop();
                                           },
-                                          child: const Text('Anuluj'),
+                                          child: const Text(
+                                              ButtonLabelText.cancel),
                                         ),
                                       ),
                                     ],
@@ -294,10 +296,10 @@ class AnnouncementDetailsView extends StatelessWidget {
                                   fadeInDuration: Duration.zero,
                                   fadeOutDuration: Duration.zero,
                                   placeholder: (context, url) =>
-                                      Image.asset(personPlaceholder),
+                                      Image.asset(ImageName.personPlaceholder),
                                   imageUrl: announcement.giverPhotoURL,
                                   errorWidget: (context, _, __) =>
-                                      Image.asset(personPlaceholder),
+                                      Image.asset(ImageName.personPlaceholder),
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -328,7 +330,7 @@ class AnnouncementDetailsView extends StatelessWidget {
                           announcement: announcement,
                         ));
                   },
-                  child: const Text('Wyślij wiadomość'),
+                  child: const Text(ButtonLabelText.sendMessage),
                 ),
               ),
             ],

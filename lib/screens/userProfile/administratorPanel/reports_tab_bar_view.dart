@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:planted/blocs/userProfileScreenBloc/user_profile_screen_bloc.dart';
+import 'package:planted/constants/strings.dart';
 import 'package:planted/models/report.dart';
 import 'package:planted/screens/userProfile/report_item_list_tile.dart';
 import 'package:planted/screens/views/empty_state_view.dart';
@@ -16,10 +17,9 @@ class ReportsTabBarView extends StatelessWidget {
     return StreamBuilder<List<Report>>(
       stream: reportStream,
       builder: (context, snapshot) {
-        if (snapshot.hasError) {
+        if (snapshot.hasError || snapshot.data == null) {
           return const EmptyStateView(
-            message:
-                'Nie udało się pobrać twoich zgłoszeń. Sprawdz połączenie z internetem i spróbuj ponownie za chwilę.',
+            message: StreamMessageText.reportsError,
           );
         }
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -30,7 +30,8 @@ class ReportsTabBarView extends StatelessWidget {
 
         if (reports.isEmpty) {
           return const EmptyStateView(
-              message: 'Nie masz żadnych zgłoszeń do wyświetlenia.');
+            message: StreamMessageText.reportsEmpty,
+          );
         }
 
         return Padding(

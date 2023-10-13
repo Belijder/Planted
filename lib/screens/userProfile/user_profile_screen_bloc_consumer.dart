@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:planted/blocs/userProfileScreenBloc/user_profile_screen_bloc.dart';
 import 'package:planted/blocs/userProfileScreenBloc/user_profile_screen_state.dart';
+import 'package:planted/constants/strings.dart';
 import 'package:planted/screens/userProfile/administratorPanel/administrator_panel_view.dart';
 import 'package:planted/screens/userProfile/blocked_users_view.dart';
 import 'package:planted/screens/userProfile/user_profile_view.dart';
@@ -21,7 +22,10 @@ class UserProfileScreenBlocConsumer extends HookWidget {
     return BlocConsumer<UserProfileScreenBloc, UserProfileScreenState>(
       listener: (context, userProfileScreenState) {
         if (userProfileScreenState.isLoading) {
-          LoadingScreen.instance().show(context: context, text: 'Ładuję...');
+          LoadingScreen.instance().show(
+            context: context,
+            text: LoadingScreenText.loading,
+          );
         } else {
           LoadingScreen.instance().hide();
         }

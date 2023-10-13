@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:planted/blocs/browseScreenBloc/browse_screen_bloc.dart';
 import 'package:planted/blocs/browseScreenBloc/browse_screen_event.dart';
 import 'package:planted/constants/colors.dart';
+import 'package:planted/constants/strings.dart';
 import 'package:planted/models/announcement.dart';
 import 'package:planted/models/user_profile.dart';
 import 'package:planted/screens/browse/announcements_list_tile.dart';
@@ -31,7 +32,7 @@ class AnnouncementListView extends HookWidget {
         title: const Row(
           children: [
             Text(
-              'Przeglądaj',
+              AppBarTitleText.browse,
               style: TextStyle(
                   color: colorSepia,
                   fontSize: 30.0,
@@ -56,11 +57,13 @@ class AnnouncementListView extends HookWidget {
               builder: (context, snapshot) {
                 if (snapshot.hasError || snapshot.data == null) {
                   return const EmptyStateView(
-                      message:
-                          'Nie udało się pobrać ogłoszeń. Sprawdź połączenie z internetem i spróbuj ponownie.');
+                    message: StreamMessageText.announcementsError,
+                  );
                 }
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
                 }
 
                 final announcements = snapshot.data!;
@@ -69,8 +72,8 @@ class AnnouncementListView extends HookWidget {
 
                 if (filteredAnnouncements.isEmpty) {
                   return const EmptyStateView(
-                      message:
-                          'Na tę chwilę nie ma niestety żadnych dostępnych ogłoszeń. Sprawdź ponownie za jakiś czas.');
+                    message: StreamMessageText.announcementsError,
+                  );
                 }
                 return ListView.builder(
                   controller: scrollViewController,

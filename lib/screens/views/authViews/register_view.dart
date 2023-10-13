@@ -7,6 +7,7 @@ import 'package:planted/blocs/authBloc/auth_state.dart';
 import 'package:planted/constants/colors.dart';
 import 'package:planted/constants/firebase_paths.dart';
 import 'package:planted/constants/images.dart';
+import 'package:planted/constants/strings.dart';
 import 'package:planted/styles/create_input_decoration.dart';
 import 'package:planted/styles/buttons_styles.dart';
 import 'package:planted/styles/text_styles.dart';
@@ -31,7 +32,7 @@ class RegisterView extends HookWidget {
           if (appState is AuthStateIsInRegistrationView) {
             final path = appState.path;
             if (path != null) {
-              final Uri legalTermsUrl = Uri(scheme: 'https', path: path);
+              final Uri legalTermsUrl = Uri(scheme: httpsScheme, path: path);
               launchUrl(legalTermsUrl);
             }
             context.read<AuthBloc>().add(const AuthEventGoToRegisterView());
@@ -48,10 +49,10 @@ class RegisterView extends HookWidget {
                   children: [
                     SizedBox(
                       height: 40,
-                      child: Image.asset(plantedLogo),
+                      child: Image.asset(ImageName.plantedLogo),
                     ),
                     const Text(
-                      'share nature',
+                      CustomText.shareNature,
                       style: TextStyle(
                           color: colorSepia,
                           fontWeight: FontWeight.w300,
@@ -64,7 +65,7 @@ class RegisterView extends HookWidget {
                     const Row(
                       children: [
                         Text(
-                          'Zakładanie konta',
+                          CustomText.creatingAccount,
                           style: TextStyle(
                             color: colorSepia,
                             fontWeight: FontWeight.bold,
@@ -76,7 +77,9 @@ class RegisterView extends HookWidget {
                     const SizedBox(height: 20),
                     TextFormField(
                       controller: emailController,
-                      decoration: createInputDecoration(label: 'Email'),
+                      decoration: createInputDecoration(
+                        label: CustomText.emailLabel,
+                      ),
                       style: textStyle15BoldSepia,
                       onFieldSubmitted: (_) => FocusScope.of(context).unfocus(),
                       onTapOutside: (_) => FocusScope.of(context).unfocus(),
@@ -87,7 +90,9 @@ class RegisterView extends HookWidget {
                     const SizedBox(height: 20),
                     TextFormField(
                       controller: passwordController,
-                      decoration: createInputDecoration(label: 'Hasło'),
+                      decoration: createInputDecoration(
+                        label: CustomText.passwordLabel,
+                      ),
                       style: textStyle15BoldSepia,
                       onFieldSubmitted: (_) => FocusScope.of(context).unfocus(),
                       onTapOutside: (_) => FocusScope.of(context).unfocus(),
@@ -95,13 +100,14 @@ class RegisterView extends HookWidget {
                       autocorrect: false,
                       enableSuggestions: false,
                       obscureText: true,
-                      obscuringCharacter: '⦿',
+                      obscuringCharacter: obscuringCharacter,
                     ),
                     const SizedBox(height: 20),
                     TextFormField(
                       controller: confirmPasswordController,
-                      decoration:
-                          createInputDecoration(label: 'Potwierdź hasło'),
+                      decoration: createInputDecoration(
+                        label: CustomText.confirmPasswordLabel,
+                      ),
                       style: textStyle15BoldSepia,
                       onFieldSubmitted: (_) => FocusScope.of(context).unfocus(),
                       onTapOutside: (_) => FocusScope.of(context).unfocus(),
@@ -109,7 +115,7 @@ class RegisterView extends HookWidget {
                       autocorrect: false,
                       enableSuggestions: false,
                       obscureText: true,
-                      obscuringCharacter: '⦿',
+                      obscuringCharacter: obscuringCharacter,
                     ),
                     const SizedBox(height: 20),
                     Row(
@@ -135,7 +141,7 @@ class RegisterView extends HookWidget {
                             child: RichText(
                               maxLines: 2,
                               text: TextSpan(
-                                  text: 'Zapoznałem się i akceptuję ',
+                                  text: LegalStatementText.readAndAccepted,
                                   style: const TextStyle(
                                       fontSize: 12, color: colorSepia),
                                   children: [
@@ -148,7 +154,7 @@ class RegisterView extends HookWidget {
                                               ));
                                         },
                                         child: const Text(
-                                          'regulamin',
+                                          LegalStatementText.termsOfUse,
                                           style: TextStyle(
                                             fontSize: 12,
                                             color: colorSepia,
@@ -159,7 +165,9 @@ class RegisterView extends HookWidget {
                                         ),
                                       ),
                                     ),
-                                    const TextSpan(text: ' oraz '),
+                                    const TextSpan(
+                                      text: LegalStatementText.and,
+                                    ),
                                     WidgetSpan(
                                       child: GestureDetector(
                                         onTap: () {
@@ -169,7 +177,7 @@ class RegisterView extends HookWidget {
                                               ));
                                         },
                                         child: const Text(
-                                          'poliitykę prywatności.',
+                                          LegalStatementText.policyPrivacy,
                                           style: TextStyle(
                                             fontSize: 12,
                                             color: colorSepia,
@@ -205,7 +213,7 @@ class RegisterView extends HookWidget {
                                 ),
                               );
                         },
-                        child: const Text('Zarejestruj się'),
+                        child: const Text(ButtonLabelText.register),
                       ),
                     ),
                     const SizedBox(height: 20),
@@ -219,13 +227,13 @@ class RegisterView extends HookWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            'Masz już konto? ',
+                            CustomText.haveAccountQuestion,
                             style: TextStyle(
                               color: colorDarkMossGreen,
                             ),
                           ),
                           Text(
-                            'Zaloguj się!',
+                            CustomText.logIn,
                             style: TextStyle(
                                 color: colorDarkMossGreen,
                                 fontWeight: FontWeight.bold),

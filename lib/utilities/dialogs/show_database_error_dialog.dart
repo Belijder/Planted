@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:planted/blocs/database_error.dart';
+import 'package:planted/constants/strings.dart';
 import 'package:planted/utilities/dialogs/show_generic_dialog.dart';
 
 Future<void> showDatabaseErrorDialog({
@@ -11,7 +12,7 @@ Future<void> showDatabaseErrorDialog({
     title: databaseError.dialogTitle,
     content: databaseError.dialogText,
     optionBuilder: () => {
-      'OK': true,
+      ButtonLabelText.ok: true,
     },
   );
 }

@@ -8,6 +8,7 @@ import 'package:planted/blocs/messagesScreenBloc/messages_screen_bloc.dart';
 import 'package:planted/blocs/messagesScreenBloc/messages_screen_event.dart';
 import 'package:planted/blocs/messagesScreenBloc/messages_screen_state.dart';
 import 'package:planted/constants/firebase_paths.dart';
+import 'package:planted/constants/strings.dart';
 import 'package:planted/models/user_profile.dart';
 import 'package:planted/screens/messages/conversation_view.dart';
 import 'package:planted/screens/messages/messages_list_view.dart';
@@ -31,7 +32,10 @@ class MessagesScreenBlocConsumer extends HookWidget {
     return BlocConsumer<MessagesScreenBloc, MessagesScreenState>(
       listener: (context, messagesScreenState) {
         if (messagesScreenState.isLoading) {
-          LoadingScreen.instance().show(context: context, text: 'Ładuję...');
+          LoadingScreen.instance().show(
+            context: context,
+            text: LoadingScreenText.loading,
+          );
         } else {
           LoadingScreen.instance().hide();
         }

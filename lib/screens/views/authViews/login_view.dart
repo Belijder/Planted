@@ -5,6 +5,7 @@ import 'package:planted/blocs/authBloc/auth_bloc.dart';
 import 'package:planted/blocs/authBloc/auth_event.dart';
 import 'package:planted/constants/colors.dart';
 import 'package:planted/constants/images.dart';
+import 'package:planted/constants/strings.dart';
 import 'package:planted/styles/create_input_decoration.dart';
 import 'package:planted/styles/buttons_styles.dart';
 import 'package:planted/styles/text_styles.dart';
@@ -32,10 +33,10 @@ class LoginView extends HookWidget {
               children: [
                 SizedBox(
                   height: 40,
-                  child: Image.asset(plantedLogo),
+                  child: Image.asset(ImageName.plantedLogo),
                 ),
                 const Text(
-                  'share nature',
+                  CustomText.shareNature,
                   style: TextStyle(
                       color: colorSepia,
                       fontWeight: FontWeight.w300,
@@ -48,7 +49,7 @@ class LoginView extends HookWidget {
                 const Row(
                   children: [
                     Text(
-                      'Logowanie',
+                      CustomText.loggingIn,
                       style: TextStyle(
                         color: colorSepia,
                         fontWeight: FontWeight.bold,
@@ -60,7 +61,9 @@ class LoginView extends HookWidget {
                 const SizedBox(height: 20),
                 TextFormField(
                   controller: emailController,
-                  decoration: createInputDecoration(label: 'Email'),
+                  decoration: createInputDecoration(
+                    label: CustomText.emailLabel,
+                  ),
                   style: textStyle15BoldSepia,
                   onFieldSubmitted: (_) => FocusScope.of(context).unfocus(),
                   onTapOutside: (_) => FocusScope.of(context).unfocus(),
@@ -71,7 +74,9 @@ class LoginView extends HookWidget {
                 const SizedBox(height: 20),
                 TextFormField(
                   controller: passwordController,
-                  decoration: createInputDecoration(label: 'Hasło'),
+                  decoration: createInputDecoration(
+                    label: CustomText.passwordLabel,
+                  ),
                   style: textStyle15BoldSepia,
                   onFieldSubmitted: (_) => FocusScope.of(context).unfocus(),
                   onTapOutside: (_) => FocusScope.of(context).unfocus(),
@@ -79,7 +84,7 @@ class LoginView extends HookWidget {
                   autocorrect: false,
                   enableSuggestions: false,
                   obscureText: true,
-                  obscuringCharacter: '⦿',
+                  obscuringCharacter: obscuringCharacter,
                 ),
                 const SizedBox(height: 20),
                 SizedBox(
@@ -95,7 +100,7 @@ class LoginView extends HookWidget {
                             ),
                           );
                     },
-                    child: const Text('Zaloguj się'),
+                    child: const Text(ButtonLabelText.logIn),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -109,13 +114,13 @@ class LoginView extends HookWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Nie masz jeszcze konta? ',
+                        CustomText.dontHaveAccountQuestion,
                         style: TextStyle(
                           color: colorDarkMossGreen,
                         ),
                       ),
                       Text(
-                        'Zarejestruj się!',
+                        CustomText.register,
                         style: TextStyle(
                             color: colorDarkMossGreen,
                             fontWeight: FontWeight.bold),
@@ -129,7 +134,7 @@ class LoginView extends HookWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Nie pamiętasz hasła?',
+                  CustomText.dontRememberPasswordQuestion,
                   style: TextStyle(
                     color: colorSepia.withAlpha(100),
                   ),
@@ -142,9 +147,8 @@ class LoginView extends HookWidget {
                     onPressed: () {
                       showDialogWithTextField(
                         context: context,
-                        title: 'Resetowanie hasła',
-                        content:
-                            'Aby zresetować hasło podaj email użyty podczas zakładania konta.',
+                        title: DialogTitleText.passwordReseting,
+                        content: DialogContentText.passwordReseting,
                         dialogType: ConfirmationDialogType.email,
                       ).then((email) {
                         if (email != null) {
@@ -155,7 +159,7 @@ class LoginView extends HookWidget {
                       });
                     },
                     style: outlinedButtonStyle,
-                    child: const Text('Zresetuj hasło'),
+                    child: const Text(ButtonLabelText.resetPassword),
                   ),
                 ),
               ],

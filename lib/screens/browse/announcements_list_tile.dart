@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:planted/constants/colors.dart';
 import 'package:planted/constants/images.dart';
+import 'package:planted/constants/strings.dart';
 import 'package:planted/extensions/time_stamp_extensions.dart';
 import 'package:planted/models/announcement.dart';
 import 'package:planted/styles/box_decoration_styles.dart';
@@ -108,7 +109,7 @@ class AnnouncementListTile extends StatelessWidget {
                               Text(
                                 announcement.description.isNotEmpty
                                     ? announcement.description
-                                    : 'Brak dodatkowego opisu.',
+                                    : CustomText.noAdditionalDescription,
                                 maxLines: 4,
                                 textAlign: TextAlign.left,
                                 overflow: TextOverflow.ellipsis,
@@ -121,7 +122,7 @@ class AnnouncementListTile extends StatelessWidget {
                               Row(
                                 children: [
                                   const Text(
-                                    'Liczba sadzonek: ',
+                                    CustomText.seedlingsNumber,
                                     style: TextStyle(
                                         color: colorSepia,
                                         fontWeight: FontWeight.bold,
@@ -138,7 +139,7 @@ class AnnouncementListTile extends StatelessWidget {
                               Row(
                                 children: [
                                   const Text(
-                                    'Odbiór: ',
+                                    CustomText.pickupLocation,
                                     style: TextStyle(
                                         color: colorSepia,
                                         fontWeight: FontWeight.bold,
@@ -164,11 +165,12 @@ class AnnouncementListTile extends StatelessWidget {
                                   child: CachedNetworkImage(
                                     fadeInDuration: Duration.zero,
                                     fadeOutDuration: Duration.zero,
-                                    placeholder: (context, url) =>
-                                        Image.asset(personPlaceholder),
+                                    placeholder: (context, url) => Image.asset(
+                                        ImageName.personPlaceholder),
                                     imageUrl: announcement.giverPhotoURL,
                                     errorWidget: (context, _, __) =>
-                                        Image.asset(personPlaceholder),
+                                        Image.asset(
+                                            ImageName.personPlaceholder),
                                     fit: BoxFit.cover,
                                   ),
                                 ),

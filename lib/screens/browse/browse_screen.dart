@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:planted/blocs/browseScreenBloc/browse_screen_bloc.dart';
 import 'package:planted/blocs/browseScreenBloc/browse_screen_event.dart';
 import 'package:planted/blocs/browseScreenBloc/browse_screen_state.dart';
+import 'package:planted/constants/strings.dart';
 import 'package:planted/screens/browse/announcement_details_view.dart';
 import 'package:planted/screens/browse/announcements_list_view.dart';
 import 'package:planted/screens/messages/conversation_view.dart';
@@ -20,7 +21,10 @@ class BrowseScreen extends StatelessWidget {
     return BlocConsumer<BrowseScreenBloc, BrowseScreenState>(
       listener: (context, browseScreenState) {
         if (browseScreenState.isLoading) {
-          LoadingScreen.instance().show(context: context, text: 'Ładuję...');
+          LoadingScreen.instance().show(
+            context: context,
+            text: LoadingScreenText.loading,
+          );
         } else {
           LoadingScreen.instance().hide();
         }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:planted/constants/strings.dart';
 import 'package:planted/screens/views/authViews/complete_profile_view.dart';
 import 'package:planted/screens/views/authViews/confirm_email_view.dart';
 import 'package:planted/screens/views/authViews/login_view.dart';
@@ -20,7 +21,10 @@ class AddAnnouncementScreen extends HookWidget {
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, appState) {
         if (appState.isLoading) {
-          LoadingScreen.instance().show(context: context, text: 'Ładuję...');
+          LoadingScreen.instance().show(
+            context: context,
+            text: LoadingScreenText.loading,
+          );
         } else {
           LoadingScreen.instance().hide();
         }

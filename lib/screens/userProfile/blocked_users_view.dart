@@ -6,6 +6,7 @@ import 'package:planted/blocs/userProfileScreenBloc/user_profile_screen_bloc.dar
 import 'package:planted/blocs/userProfileScreenBloc/user_profile_screen_event.dart';
 import 'package:planted/constants/colors.dart';
 import 'package:planted/constants/images.dart';
+import 'package:planted/constants/strings.dart';
 import 'package:planted/models/user_profile.dart';
 import 'package:planted/screens/views/empty_state_view.dart';
 import 'package:planted/styles/box_decoration_styles.dart';
@@ -41,7 +42,7 @@ class BlockedUsersView extends HookWidget {
         title: const Align(
           alignment: Alignment.centerLeft,
           child: Text(
-            'Zablokowani użytkownicy',
+            AppBarTitleText.blockedUsers,
             style: TextStyle(
               color: colorSepia,
               fontSize: 20,
@@ -55,7 +56,7 @@ class BlockedUsersView extends HookWidget {
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               return const EmptyStateView(
-                message: 'Nie udało się.',
+                message: StreamMessageText.blockedUsersError,
               );
             }
 
@@ -67,7 +68,7 @@ class BlockedUsersView extends HookWidget {
 
             if (blockedUsersProfiles.isEmpty) {
               return const EmptyStateView(
-                message: 'Nie masz żadnych zablokowanych użytkowników.',
+                message: StreamMessageText.blocedUsersEmpty,
               );
             } else {
               return Padding(
@@ -97,10 +98,12 @@ class BlockedUsersView extends HookWidget {
                                         fadeInDuration: Duration.zero,
                                         fadeOutDuration: Duration.zero,
                                         placeholder: (context, url) =>
-                                            Image.asset(personPlaceholder),
+                                            Image.asset(
+                                                ImageName.personPlaceholder),
                                         imageUrl: userProfile.photoURL,
                                         errorWidget: (context, _, __) =>
-                                            Image.asset(personPlaceholder),
+                                            Image.asset(
+                                                ImageName.personPlaceholder),
                                         fit: BoxFit.cover,
                                       ),
                                     ),
@@ -137,7 +140,7 @@ class BlockedUsersView extends HookWidget {
                                   padding:
                                       EdgeInsets.symmetric(horizontal: 16.0),
                                   child: Text(
-                                    'Odblokuj',
+                                    ButtonLabelText.unblock,
                                     style: TextStyle(
                                       fontSize: 10,
                                       fontWeight: FontWeight.bold,

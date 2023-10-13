@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:planted/constants/strings.dart';
 import 'package:planted/extensions/time_stamp_extensions.dart';
 import 'package:planted/models/report.dart';
 import 'package:planted/styles/box_decoration_styles.dart';
@@ -25,49 +26,49 @@ class ReportItemListTile extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Zgłoszenie',
+              CustomText.report,
               style: textStyle15BoldSepia,
             ),
             _ReportRow(
-              title: 'ID Zgłoszenia:',
+              title: CustomText.reportID,
               value: report.reportID,
               arrangement: ReportRowArrangement.horizontal,
             ),
             _ReportRow(
-              title: 'Data głoszenia:',
+              title: CustomText.reportDate,
               value: report.reportingDate.toFormattedDateString(),
               arrangement: ReportRowArrangement.horizontal,
             ),
             _ReportRow(
-              title: 'Dotyczy użytkownika:',
+              title: CustomText.appliesToUser,
               value: report.reportedPersonDisplayName,
               arrangement: ReportRowArrangement.horizontal,
             ),
             _ReportRow(
-              title: 'Powód zgłoszenia:',
+              title: CustomText.reportReason,
               value: report.reasonForReporting,
               arrangement: ReportRowArrangement.horizontal,
             ),
             if (report.additionalInformation.isNotEmpty)
               _ReportRow(
-                title: 'Dodatkowe Informacje:',
+                title: CustomText.additionalInfo,
                 value: report.additionalInformation,
                 arrangement: ReportRowArrangement.vertical,
               ),
             _ReportRow(
-              title: 'Status zgłoszenia',
+              title: CustomText.reportStatus,
               value: report.statusDescription,
               arrangement: ReportRowArrangement.horizontal,
             ),
             if (report.status != 0)
               _ReportRow(
-                title: 'Decyzja',
+                title: CustomText.decision,
                 value: report.decision,
                 arrangement: ReportRowArrangement.horizontal,
               ),
             if (report.adminResponse.isNotEmpty)
               _ReportRow(
-                title: 'Uzasadnienie:',
+                title: CustomText.justification,
                 value: report.adminResponse,
                 arrangement: ReportRowArrangement.vertical,
               ),

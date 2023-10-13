@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:planted/blocs/browseScreenBloc/browse_screen_event.dart';
 import 'package:planted/blocs/browseScreenBloc/browse_screen_state.dart';
 import 'package:planted/blocs/database_error.dart';
+import 'package:planted/constants/strings.dart';
 import 'package:planted/managers/conectivity_manager.dart';
 import 'package:planted/managers/firebase_database_manager.dart';
 import 'package:planted/models/announcement.dart';
@@ -274,13 +275,14 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
         );
 
         emit(BrowseScreenStateInAnnouncementsListView(
-            userProfileStream:
-                databaseManager.createUserProfileStremFor(userID: user.uid),
-            announcementsStream:
-                databaseManager.createAnnouncementsStreamWith(status: 1),
-            scrollViewOffset: state.scrollViewOffset,
-            isLoading: false,
-            snackbarMessage: 'Użytkownik został zablokowany!'));
+          userProfileStream:
+              databaseManager.createUserProfileStremFor(userID: user.uid),
+          announcementsStream:
+              databaseManager.createAnnouncementsStreamWith(status: 1),
+          scrollViewOffset: state.scrollViewOffset,
+          isLoading: false,
+          snackbarMessage: SnackbarMessageContent.userBlocked,
+        ));
       },
     );
 
@@ -321,13 +323,14 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
           );
 
           emit(BrowseScreenStateInAnnouncementsListView(
-              userProfileStream:
-                  databaseManager.createUserProfileStremFor(userID: user.uid),
-              announcementsStream:
-                  databaseManager.createAnnouncementsStreamWith(status: 1),
-              scrollViewOffset: state.scrollViewOffset,
-              isLoading: false,
-              snackbarMessage: 'Użytkownik został zablokowany!'));
+            userProfileStream:
+                databaseManager.createUserProfileStremFor(userID: user.uid),
+            announcementsStream:
+                databaseManager.createAnnouncementsStreamWith(status: 1),
+            scrollViewOffset: state.scrollViewOffset,
+            isLoading: false,
+            snackbarMessage: SnackbarMessageContent.userBlocked,
+          ));
         } on FirebaseException catch (e) {
           emit(
             BrowseScreenStateInAnnouncementDetails(
@@ -420,11 +423,10 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
           );
           if (event.conversation == null) {
             emit(BrowseScreenStateInAnnouncementDetails(
-              scrollViewOffset: state.scrollViewOffset,
-              announcement: event.announcement,
-              isLoading: false,
-              snackbarMessage: 'Zgłoszenie zostało wysłane!',
-            ));
+                scrollViewOffset: state.scrollViewOffset,
+                announcement: event.announcement,
+                isLoading: false,
+                snackbarMessage: SnackbarMessageContent.reportSended));
           } else {
             emit(BrowseScreenStateInConversationView(
               conversationDetailsStream:
@@ -435,7 +437,7 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
               userID: event.userID,
               announcement: event.announcement,
               conversation: event.conversation!,
-              snackbarMessage: 'Zgłoszenie zostało wysłane!',
+              snackbarMessage: SnackbarMessageContent.reportSended,
             ));
           }
         } on FirebaseException catch (e) {
