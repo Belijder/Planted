@@ -1,5 +1,5 @@
 class LoadingScreenText {
-  static const loading = 'Loading...';
+  static const loading = 'Ładuję...';
   static const adding = 'Dodaję...';
 }
 

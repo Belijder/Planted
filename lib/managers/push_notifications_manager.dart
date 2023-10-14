@@ -19,19 +19,15 @@ class PushNotificationManager {
       return;
     }
     channel = const AndroidNotificationChannel(
-      'high_importance_channel', // id
-      'High Importance Notifications', // title
-      description:
-          'This channel is used for important notifications.', // description
+      'channel_id_5',
+      'High Importance Notifications',
+      description: 'This channel is used for important notifications.',
       importance: Importance.high,
     );
 
     flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
     /// Create an Android Notification Channel.
-    ///
-    /// We use this channel in the `AndroidManifest.xml` file to override the
-    /// default FCM channel to enable heads up notifications.
     await flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin>()
@@ -61,7 +57,12 @@ class PushNotificationManager {
             channel.id,
             channel.name,
             channelDescription: channel.description,
-            icon: null,
+            icon: '@mipmap/launcher_icon',
+          ),
+          iOS: const DarwinNotificationDetails(
+            presentSound: true,
+            interruptionLevel: InterruptionLevel.critical,
+            sound: 'assets/sounds/notification_sound.wav',
           ),
         ),
       );
@@ -91,6 +92,7 @@ class PushNotificationManager {
           'notification': {
             'title': title,
             'body': body,
+            'sound': 'notification_sound.wav'
           },
         }),
       );
