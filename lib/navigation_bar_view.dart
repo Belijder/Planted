@@ -4,10 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:planted/blocs/messagesScreenBloc/messages_screen_bloc.dart';
 import 'package:planted/blocs/messagesScreenBloc/messages_screen_event.dart';
+import 'package:planted/blocs/notificationBloc/notification_bloc.dart';
+import 'package:planted/blocs/notificationBloc/notification_event.dart';
 import 'package:planted/constants/colors.dart';
 import 'package:planted/constants/firebase_paths.dart';
 import 'package:planted/constants/strings.dart';
-import 'package:planted/managers/push_notifications_manager.dart';
 import 'package:planted/screens/addAnnouncement/add_announcement_screen.dart';
 import 'package:planted/screens/browse/browse_screen.dart';
 import 'package:planted/screens/messages/messages_screen.dart';
@@ -20,6 +21,9 @@ class NavigationBarView extends HookWidget {
   Widget build(BuildContext context) {
     final currentPageIndex = useState(0);
 
+    final notificationCount = context
+        .select<NotificationBloc, int>((bloc) => bloc.state.currentBadgeNumber);
+
     FirebaseMessaging.instance.getInitialMessage().then((message) {
       if (message != null) {
         currentPageIndex.value = 2;
@@ -30,8 +34,9 @@ class NavigationBarView extends HookWidget {
       }
     });
 
-    FirebaseMessaging.onMessage
-        .listen(PushNotificationManager().showFlutterNotification);
+    FirebaseMessaging.onMessage.listen((message) => context
+        .read<NotificationBloc>()
+        .add(NewNotificationArrivedEvent(message: message)));
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       currentPageIndex.value = 2;
@@ -74,13 +79,23 @@ class NavigationBarView extends HookWidget {
             label: AppBarTitleText.add,
           ),
           NavigationDestination(
-            selectedIcon: Icon(
-              Icons.message_outlined,
-              color: Colors.white.withAlpha(200),
+            selectedIcon: Badge(
+              backgroundColor: colorRedKenyanCopper,
+              label: Text('$notificationCount'),
+              isLabelVisible: notificationCount == 0 ? false : true,
+              child: Icon(
+                Icons.message_outlined,
+                color: Colors.white.withAlpha(200),
+              ),
             ),
-            icon: const Icon(
-              Icons.message_outlined,
-              color: colorSepia,
+            icon: Badge(
+              backgroundColor: colorRedKenyanCopper,
+              label: Text('$notificationCount'),
+              isLabelVisible: notificationCount == 0 ? false : true,
+              child: const Icon(
+                Icons.message_outlined,
+                color: colorSepia,
+              ),
             ),
             label: AppBarTitleText.messages,
           ),
@@ -103,6 +118,41 @@ class NavigationBarView extends HookWidget {
         const MessagesScreen(),
         const UserProfileScreen(),
       ][currentPageIndex.value],
+    );
+  }
+}
+
+class BadgeIcon extends StatelessWidget {
+  final Widget icon;
+  final int badgeCount;
+
+  const BadgeIcon({super.key, required this.icon, required this.badgeCount});
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        icon,
+        if (badgeCount > 0)
+          Positioned(
+            right: 0,
+            top: 0,
+            child: Container(
+              padding: const EdgeInsets.all(4),
+              decoration: const BoxDecoration(
+                color: Colors.red,
+                shape: BoxShape.circle,
+              ),
+              child: Text(
+                badgeCount.toString(),
+                style: const TextStyle(
+                  color: listTileBackground,
+                  fontSize: 12,
+                ),
+              ),
+            ),
+          ),
+      ],
     );
   }
 }

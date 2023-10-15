@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -7,7 +6,6 @@ import 'package:planted/blocs/authBloc/auth_event.dart';
 import 'package:planted/blocs/messagesScreenBloc/messages_screen_bloc.dart';
 import 'package:planted/blocs/messagesScreenBloc/messages_screen_event.dart';
 import 'package:planted/blocs/messagesScreenBloc/messages_screen_state.dart';
-import 'package:planted/constants/firebase_paths.dart';
 import 'package:planted/constants/strings.dart';
 import 'package:planted/models/user_profile.dart';
 import 'package:planted/screens/messages/conversation_view.dart';
@@ -22,12 +20,8 @@ class MessagesScreenBlocConsumer extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userProfileStream = useMemoized(() {
-      return FirebaseFirestore.instance
-          .collection(profilesPath)
-          .doc(userID)
-          .snapshots();
-    }, [key]);
+    final userProfileStream =
+        context.watch<MessagesScreenBloc>().state.userProfileStream;
 
     return BlocConsumer<MessagesScreenBloc, MessagesScreenState>(
       listener: (context, messagesScreenState) {
@@ -64,18 +58,18 @@ class MessagesScreenBlocConsumer extends HookWidget {
           return Container();
         } else if (messagesScreenState
             is MessagesScreenStateInConversationsList) {
-          child = StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+          child = StreamBuilder<UserProfile>(
               stream: userProfileStream,
               builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  context.read<AuthBloc>().add(const AuthEventLogOut());
-                }
-
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 }
 
-                final userProfile = UserProfile.fromSnapshot(snapshot.data!);
+                if (snapshot.hasError || snapshot.data == null) {
+                  context.read<AuthBloc>().add(const AuthEventLogOut());
+                }
+
+                final userProfile = snapshot.data!;
                 return MessagesListView(
                   blockedUsers: userProfile.blockedUsers,
                 );

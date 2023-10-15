@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:planted/constants/firebase_paths.dart';
 import 'package:planted/constants/enums/announcement_action.dart';
+import 'package:planted/extensions/time_stamp_extensions.dart';
 import 'package:planted/managers/push_notifications_manager.dart';
 import 'package:planted/models/announcement.dart';
 import 'package:planted/models/conversation.dart';
@@ -473,7 +474,7 @@ class FirebaseDatabaseManager {
 
   Stream<List<Conversation>> createConversationsStreamFor(
       {required String userID}) {
-    return FirebaseFirestore.instance
+    return db
         .collection(conversationsPath)
         .where(
           Filter.or(
@@ -565,6 +566,31 @@ class FirebaseDatabaseManager {
       final profiles =
           await getBlockedUsersProfiles(blockedUsersIDs: blockedUserIds);
       return profiles;
+    });
+  }
+
+  Stream<Iterable<Conversation>> getUnreadConversationsIDsStreamFor(
+      String userID) {
+    return db
+        .collection(conversationsPath)
+        .where(
+          Filter.or(
+            Filter('giver', isEqualTo: userID),
+            Filter('taker', isEqualTo: userID),
+          ),
+        )
+        .orderBy('timeStamp', descending: true)
+        .snapshots()
+        .map((querySnapshot) {
+      return querySnapshot.docs.map((docSnapshot) {
+        return Conversation.fromSnapshot(docSnapshot);
+      }).where((element) {
+        if (element.giver == userID) {
+          return element.giverLastActivity.isEarlierThan(element.timeStamp);
+        } else {
+          return element.takerLastActivity.isEarlierThan(element.timeStamp);
+        }
+      });
     });
   }
 }

@@ -11,6 +11,7 @@ abstract class MessagesScreenState {
   final String? snackbarMessage;
   final Stream<List<Conversation>>? conversationsListStream;
   final Stream<Conversation>? conversationDetailsStream;
+  final Stream<UserProfile>? userProfileStream;
 
   const MessagesScreenState({
     required this.isLoading,
@@ -18,6 +19,7 @@ abstract class MessagesScreenState {
     this.snackbarMessage,
     this.conversationsListStream,
     this.conversationDetailsStream,
+    this.userProfileStream,
   });
 }
 
@@ -36,6 +38,7 @@ class MessagesScreenStateInConversationsList extends MessagesScreenState {
     super.databaseError,
     super.snackbarMessage,
     required super.conversationsListStream,
+    required super.userProfileStream,
   });
 }
 

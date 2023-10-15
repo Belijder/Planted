@@ -16,6 +16,7 @@ class MessagesListView extends HookWidget {
   @override
   Widget build(BuildContext context) {
     requestPermissionForPushNotifications();
+
     final conversationsStream =
         context.read<MessagesScreenBloc>().state.conversationsListStream;
 

@@ -58,11 +58,18 @@ class MessagesScreen extends StatelessWidget {
         Widget child;
 
         if (appState is AuthStateLoggedIn) {
-          child = BlocProvider(
-            create: (context) => MessagesScreenBloc(userID: appState.user.uid)
-              ..add(const MessagesScreenEventInitialize()),
-            child: MessagesScreenBlocConsumer(userID: appState.user.uid),
-          );
+          try {
+            final _ = BlocProvider.of<MessagesScreenBloc>(context);
+            child = MessagesScreenBlocConsumer(userID: appState.user.uid);
+          } catch (_) {
+            child = BlocProvider(
+              create: (context) => MessagesScreenBloc(userID: appState.user.uid)
+                ..add(const MessagesScreenEventInitialize()),
+              child: MessagesScreenBlocConsumer(
+                userID: appState.user.uid,
+              ),
+            );
+          }
         } else if (appState is AuthStateLoggedOut) {
           child = const LoginView();
         } else if (appState is AuthStateIsInRegistrationView) {

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:planted/blocs/addScreenBloc/add_screen_bloc.dart';
@@ -5,6 +6,10 @@ import 'package:planted/blocs/authBloc/auth_bloc.dart';
 import 'package:planted/blocs/authBloc/auth_event.dart';
 import 'package:planted/blocs/browseScreenBloc/browse_screen_bloc.dart';
 import 'package:planted/blocs/browseScreenBloc/browse_screen_event.dart';
+import 'package:planted/blocs/messagesScreenBloc/messages_screen_bloc.dart';
+import 'package:planted/blocs/messagesScreenBloc/messages_screen_event.dart';
+import 'package:planted/blocs/notificationBloc/notification_bloc.dart';
+import 'package:planted/blocs/notificationBloc/notification_event.dart';
 import 'package:planted/constants/colors.dart';
 import 'package:planted/navigation_bar_view.dart';
 
@@ -40,6 +45,20 @@ class App extends StatelessWidget {
                 const AuthEventInitialize(),
               ),
           ),
+          BlocProvider<NotificationBloc>(
+            create: (_) => NotificationBloc()
+              ..add(
+                const NotificationInitializeEvent(),
+              ),
+          ),
+          if (FirebaseAuth.instance.currentUser != null)
+            BlocProvider(
+              create: (context) => MessagesScreenBloc(
+                  userID: FirebaseAuth.instance.currentUser!.uid)
+                ..add(
+                  const MessagesScreenEventInitialize(),
+                ),
+            ),
           BlocProvider<BrowseScreenBloc>(
             create: (_) => BrowseScreenBloc()
               ..add(

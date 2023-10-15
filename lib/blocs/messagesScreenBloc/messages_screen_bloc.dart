@@ -23,16 +23,19 @@ class MessagesScreenBloc
             isLoading: true,
           ),
         ) {
+    final userProfileStream =
+        databaseManager.createUserProfileStremFor(userID: userID);
     final conversationsListStream =
         databaseManager.createConversationsStreamFor(userID: userID);
 
-    late Stream<Conversation> convesationStream;
+    Stream<Conversation>? convesationStream;
 
     on<MessagesScreenEventInitialize>(
       (event, emit) {
         emit(MessagesScreenStateInConversationsList(
           isLoading: false,
           conversationsListStream: conversationsListStream,
+          userProfileStream: userProfileStream,
         ));
       },
     );
@@ -42,6 +45,7 @@ class MessagesScreenBloc
         emit(MessagesScreenStateInConversationsList(
           isLoading: false,
           conversationsListStream: conversationsListStream,
+          userProfileStream: userProfileStream,
         ));
       },
     );
@@ -53,6 +57,7 @@ class MessagesScreenBloc
             isLoading: false,
             databaseError: const DatabaseErrorNetworkRequestFailed(),
             conversationsListStream: conversationsListStream,
+            userProfileStream: userProfileStream,
           ));
           return;
         }
@@ -60,6 +65,7 @@ class MessagesScreenBloc
         emit(MessagesScreenStateInConversationsList(
           isLoading: true,
           conversationsListStream: conversationsListStream,
+          userProfileStream: userProfileStream,
         ));
 
         try {
@@ -91,6 +97,7 @@ class MessagesScreenBloc
               isLoading: false,
               databaseError: DatabaseError.from(e),
               conversationsListStream: conversationsListStream,
+              userProfileStream: userProfileStream,
             ),
           );
         }
@@ -149,6 +156,7 @@ class MessagesScreenBloc
             isLoading: false,
             databaseError: const DatabaseErrorUnknown(),
             conversationsListStream: conversationsListStream,
+            userProfileStream: userProfileStream,
           ));
         }
       },
@@ -176,10 +184,10 @@ class MessagesScreenBloc
           isLoading: false,
           snackbarMessage: SnackbarMessageContent.userBlocked,
           conversationsListStream: conversationsListStream,
+          userProfileStream: userProfileStream,
         ));
       },
     );
-
     on<MessagesScreenEventGoToConversationFromPushMessage>(
       (event, emit) async {
         if (connectivityManager.status == ConnectivityResult.none) {
@@ -187,6 +195,7 @@ class MessagesScreenBloc
             isLoading: false,
             databaseError: const DatabaseErrorNetworkRequestFailed(),
             conversationsListStream: conversationsListStream,
+            userProfileStream: userProfileStream,
           ));
           return;
         }
@@ -194,7 +203,11 @@ class MessagesScreenBloc
         emit(MessagesScreenStateInConversationsList(
           isLoading: true,
           conversationsListStream: conversationsListStream,
+          userProfileStream: userProfileStream,
         ));
+
+        convesationStream = databaseManager.createConverationStreamFor(
+            conversationID: event.conversationID);
 
         try {
           final conversation = await databaseManager.getConversation(
@@ -224,6 +237,7 @@ class MessagesScreenBloc
               isLoading: false,
               databaseError: DatabaseError.from(e),
               conversationsListStream: conversationsListStream,
+              userProfileStream: userProfileStream,
             ),
           );
         }
@@ -293,6 +307,7 @@ class MessagesScreenBloc
               isLoading: false,
               snackbarMessage: SnackbarMessageContent.reportSended,
               conversationsListStream: conversationsListStream,
+              userProfileStream: userProfileStream,
             ));
           }
         } on FirebaseException catch (e) {
