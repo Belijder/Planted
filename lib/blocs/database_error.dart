@@ -63,6 +63,16 @@ class DatabaseErrorUserNotFound extends DatabaseError {
 }
 
 @immutable
+class DatabaseErrorSameUserAsGiver extends DatabaseError {
+  const DatabaseErrorSameUserAsGiver()
+      : super(
+          dialogTitle: 'To ogłoszenie należy do Ciebie 🙂',
+          dialogText:
+              'Nie musisz kontaktować się ze sobą przez aplikację, aby oddać sobie tę roślinę. 😄',
+        );
+}
+
+@immutable
 class DatabaseErrorPermissionDenied extends DatabaseError {
   const DatabaseErrorPermissionDenied()
       : super(

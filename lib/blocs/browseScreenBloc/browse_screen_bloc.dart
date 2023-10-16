@@ -112,6 +112,27 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
 
     on<BrowseScreenEventGoToConversationView>(
       (event, emit) async {
+        final user = FirebaseAuth.instance.currentUser;
+        if (user == null) {
+          emit(BrowseScreenStateInAnnouncementDetails(
+            scrollViewOffset: state.scrollViewOffset,
+            announcement: event.announcement,
+            isLoading: false,
+            databaseError: const DatabaseErrorUserNotFound(),
+          ));
+          return;
+        }
+
+        if (user.uid == event.announcement.giverID) {
+          emit(BrowseScreenStateInAnnouncementDetails(
+            scrollViewOffset: state.scrollViewOffset,
+            announcement: event.announcement,
+            isLoading: false,
+            databaseError: const DatabaseErrorSameUserAsGiver(),
+          ));
+          return;
+        }
+
         if (connectivityManager.status == ConnectivityResult.none) {
           emit(
             BrowseScreenStateInAnnouncementDetails(
@@ -124,22 +145,10 @@ class BrowseScreenBloc extends Bloc<BrowseScreenEvent, BrowseScreenState> {
         }
 
         emit(BrowseScreenStateInAnnouncementDetails(
-            scrollViewOffset: state.scrollViewOffset,
-            announcement: event.announcement,
-            isLoading: true));
-
-        final user = FirebaseAuth.instance.currentUser;
-        if (user == null) {
-          emit(
-            BrowseScreenStateInAnnouncementDetails(
-              scrollViewOffset: state.scrollViewOffset,
-              announcement: event.announcement,
-              isLoading: false,
-              databaseError: const DatabaseErrorUserNotFound(),
-            ),
-          );
-          return;
-        }
+          scrollViewOffset: state.scrollViewOffset,
+          announcement: event.announcement,
+          isLoading: true,
+        ));
 
         final Conversation conversation;
 
