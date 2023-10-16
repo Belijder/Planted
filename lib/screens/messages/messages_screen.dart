@@ -13,6 +13,7 @@ import 'package:planted/screens/messages/messages_screen_bloc_consumer.dart';
 import 'package:planted/utilities/dialogs/show_auth_dialog.dart';
 import 'package:planted/utilities/dialogs/show_database_error_dialog.dart';
 import 'package:planted/utilities/loading/loading_screen.dart';
+import 'package:planted/utilities/widget_utils.dart';
 
 class MessagesScreen extends StatelessWidget {
   const MessagesScreen({super.key});
@@ -82,28 +83,7 @@ class MessagesScreen extends StatelessWidget {
           child = const Center(child: CircularProgressIndicator());
         }
 
-        return AnimatedSwitcher(
-          duration: const Duration(milliseconds: 200),
-          switchInCurve: Curves.easeInOut,
-          switchOutCurve: Curves.fastOutSlowIn,
-          transitionBuilder: (child, animation) {
-            final scaleAnimation = Tween<double>(
-              begin: 0.85,
-              end: 1.0,
-            ).animate(animation);
-            return FadeTransition(
-              opacity: animation,
-              child: ScaleTransition(
-                scale: scaleAnimation,
-                child: child,
-              ),
-            );
-          },
-          layoutBuilder: (currentChild, previousChildren) {
-            return currentChild ?? Container();
-          },
-          child: child,
-        );
+        return createAnimatedSwitcher(child: child);
       },
     );
   }

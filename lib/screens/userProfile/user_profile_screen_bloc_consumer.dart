@@ -11,6 +11,7 @@ import 'package:planted/screens/userProfile/user_reports_view.dart';
 import 'package:planted/screens/userProfile/users_announcements_view.dart';
 import 'package:planted/utilities/dialogs/show_database_error_dialog.dart';
 import 'package:planted/utilities/loading/loading_screen.dart';
+import 'package:planted/utilities/widget_utils.dart';
 
 class UserProfileScreenBlocConsumer extends HookWidget {
   const UserProfileScreenBlocConsumer({required this.userID, super.key});
@@ -74,28 +75,7 @@ class UserProfileScreenBlocConsumer extends HookWidget {
           child = const Center(child: CircularProgressIndicator());
         }
 
-        return AnimatedSwitcher(
-          duration: const Duration(milliseconds: 200),
-          switchInCurve: Curves.easeInOut,
-          switchOutCurve: Curves.fastOutSlowIn,
-          transitionBuilder: (child, animation) {
-            final scaleAnimation = Tween<double>(
-              begin: 0.85,
-              end: 1.0,
-            ).animate(animation);
-            return FadeTransition(
-              opacity: animation,
-              child: ScaleTransition(
-                scale: scaleAnimation,
-                child: child,
-              ),
-            );
-          },
-          layoutBuilder: (currentChild, previousChildren) {
-            return currentChild ?? Container();
-          },
-          child: child,
-        );
+        return createAnimatedSwitcher(child: child);
       },
     );
   }

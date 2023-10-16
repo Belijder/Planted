@@ -8,6 +8,7 @@ import 'package:planted/blocs/messagesScreenBloc/messages_screen_bloc.dart';
 import 'package:planted/blocs/messagesScreenBloc/messages_screen_event.dart';
 import 'package:planted/blocs/messagesScreenBloc/messages_screen_state.dart';
 import 'package:planted/constants/colors.dart';
+import 'package:planted/constants/enums.dart';
 import 'package:planted/constants/strings.dart';
 import 'package:planted/models/announcement.dart';
 import 'package:planted/models/conversation.dart';
@@ -18,14 +19,12 @@ import 'package:planted/styles/text_styles.dart';
 
 enum MessagesPopUpMenuItem { blocUser, reportUser }
 
-enum ConversationParentScreen { browseScreen, messagesScreen }
-
 class ConversationView extends HookWidget {
   final String currentUserID;
   final Announcement announcement;
   final Conversation conversation;
   final Stream<Conversation>? conversationStream;
-  final ConversationParentScreen parentScreen;
+  final ParentScreen parentScreen;
   const ConversationView({
     required this.currentUserID,
     required this.announcement,
@@ -95,17 +94,11 @@ class ConversationView extends HookWidget {
 
                   blockUser(
                     context: context,
-                    currentUserID: currentUserID,
                     userIDtoBlock: userIDtoBlock,
-                    conversation: conversation,
-                    announcement: announcement,
                   );
                 case MessagesPopUpMenuItem.reportUser:
                   goToReportView(
                     context: context,
-                    currentUserID: currentUserID,
-                    announcement: announcement,
-                    conversation: conversation,
                   );
               }
             },
@@ -130,7 +123,7 @@ class ConversationView extends HookWidget {
       ),
       body: MultiBlocListener(
         listeners: [
-          if (parentScreen == ConversationParentScreen.browseScreen)
+          if (parentScreen == ParentScreen.browseScreen)
             BlocListener<BrowseScreenBloc, BrowseScreenState>(
               listener: (context, browseScreenState) {
                 if (browseScreenState is BrowseScreenStateInConversationView) {
@@ -142,7 +135,7 @@ class ConversationView extends HookWidget {
                 }
               },
             ),
-          if (parentScreen == ConversationParentScreen.messagesScreen)
+          if (parentScreen == ParentScreen.messagesScreen)
             BlocListener<MessagesScreenBloc, MessagesScreenState>(
               listener: (context, messageScreenState) {
                 if (messageScreenState is MessagesScreenStateInConversation) {
@@ -235,8 +228,6 @@ class ConversationView extends HookWidget {
                         if (messageController.text != '') {
                           sendMessage(
                             context: context,
-                            announcement: announcement,
-                            conversation: conversation,
                             message: messageController.text,
                           );
                         }
@@ -255,7 +246,7 @@ class ConversationView extends HookWidget {
     required int messagesCount,
   }) {
     switch (parentScreen) {
-      case ConversationParentScreen.browseScreen:
+      case ParentScreen.browseScreen:
         if (messagesCount == 0) {
           context
               .read<BrowseScreenBloc>()
@@ -268,7 +259,7 @@ class ConversationView extends HookWidget {
               .read<BrowseScreenBloc>()
               .add(BrowseScreenEventGoToDetailView(announcement: announcement));
         }
-      case ConversationParentScreen.messagesScreen:
+      case ParentScreen.messagesScreen:
         context
             .read<MessagesScreenBloc>()
             .add(MessagesScreenEventGoToListOfConvesations(
@@ -279,13 +270,10 @@ class ConversationView extends HookWidget {
 
   void blockUser({
     required BuildContext context,
-    required String currentUserID,
     required String userIDtoBlock,
-    required Conversation conversation,
-    required Announcement announcement,
   }) {
     switch (parentScreen) {
-      case ConversationParentScreen.browseScreen:
+      case ParentScreen.browseScreen:
         context
             .read<BrowseScreenBloc>()
             .add(BrowseScreenEventBlockUserFromConvesationView(
@@ -294,7 +282,7 @@ class ConversationView extends HookWidget {
               announcement: announcement,
               conversation: conversation,
             ));
-      case ConversationParentScreen.messagesScreen:
+      case ParentScreen.messagesScreen:
         context.read<MessagesScreenBloc>().add(MessagesScreenEventBlockUser(
               currentUserID: currentUserID,
               userToBlockID: userIDtoBlock,
@@ -304,19 +292,16 @@ class ConversationView extends HookWidget {
 
   void goToReportView({
     required BuildContext context,
-    required String currentUserID,
-    required Announcement announcement,
-    required Conversation conversation,
   }) {
     switch (parentScreen) {
-      case ConversationParentScreen.browseScreen:
+      case ParentScreen.browseScreen:
         context
             .read<BrowseScreenBloc>()
             .add(BrowseScreenEventGoToReportViewFromConversation(
               announcement: announcement,
               conversation: conversation,
             ));
-      case ConversationParentScreen.messagesScreen:
+      case ParentScreen.messagesScreen:
         context
             .read<MessagesScreenBloc>()
             .add(MessagesScreenEventGoToReportView(
@@ -329,18 +314,16 @@ class ConversationView extends HookWidget {
 
   void sendMessage({
     required BuildContext context,
-    required Announcement announcement,
-    required Conversation conversation,
     required String message,
   }) {
     switch (parentScreen) {
-      case ConversationParentScreen.browseScreen:
+      case ParentScreen.browseScreen:
         context.read<BrowseScreenBloc>().add(BrowseScreenEventSendMessage(
               announcement: announcement,
               conversation: conversation,
               message: message,
             ));
-      case ConversationParentScreen.messagesScreen:
+      case ParentScreen.messagesScreen:
         context.read<MessagesScreenBloc>().add(MessagesScreenEventSendMessage(
               announcement: announcement,
               conversationID: conversation.conversationID,

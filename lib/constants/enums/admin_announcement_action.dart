@@ -1,1 +1,0 @@
-enum AdminAnnouncementAction { accept, reject }

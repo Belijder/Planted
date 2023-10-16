@@ -4,8 +4,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:planted/blocs/authBloc/auth_bloc.dart';
 import 'package:planted/blocs/authBloc/auth_event.dart';
 import 'package:planted/blocs/messagesScreenBloc/messages_screen_bloc.dart';
-import 'package:planted/blocs/messagesScreenBloc/messages_screen_event.dart';
 import 'package:planted/blocs/messagesScreenBloc/messages_screen_state.dart';
+import 'package:planted/constants/enums.dart';
 import 'package:planted/constants/strings.dart';
 import 'package:planted/models/user_profile.dart';
 import 'package:planted/screens/messages/conversation_view.dart';
@@ -13,6 +13,7 @@ import 'package:planted/screens/messages/messages_list_view.dart';
 import 'package:planted/screens/views/report_view.dart';
 import 'package:planted/utilities/dialogs/show_database_error_dialog.dart';
 import 'package:planted/utilities/loading/loading_screen.dart';
+import 'package:planted/utilities/widget_utils.dart';
 
 class MessagesScreenBlocConsumer extends HookWidget {
   const MessagesScreenBlocConsumer({required this.userID, super.key});
@@ -80,7 +81,7 @@ class MessagesScreenBlocConsumer extends HookWidget {
               .state
               .conversationDetailsStream;
           child = ConversationView(
-            parentScreen: ConversationParentScreen.messagesScreen,
+            parentScreen: ParentScreen.messagesScreen,
             currentUserID: messagesScreenState.userProfile.userID,
             announcement: messagesScreenState.announcement,
             conversation: messagesScreenState.conversation,
@@ -91,68 +92,13 @@ class MessagesScreenBlocConsumer extends HookWidget {
             announcement: messagesScreenState.announcement,
             conversation: messagesScreenState.conversation,
             userID: userID,
-            returnAction: ({
-              required announcement,
-              required conversation,
-              required userID,
-            }) {
-              if (conversation != null) {
-                context
-                    .read<MessagesScreenBloc>()
-                    .add(MessagesScreenEventBackToConversationFromReportView(
-                      conversation: conversation,
-                      announcement: announcement,
-                    ));
-              } else {
-                context.read<MessagesScreenBloc>().add(
-                    MessagesScreenEventGoToListOfConvesations(
-                        announcement: announcement));
-              }
-            },
-            reportAction: ({
-              required additionalInformation,
-              required announcement,
-              required conversation,
-              required reasonForReporting,
-              required userID,
-            }) {
-              context
-                  .read<MessagesScreenBloc>()
-                  .add(MessagesScreenEventSendReport(
-                    announcement: announcement,
-                    conversation: conversation,
-                    userID: userID,
-                    reasonForReporting: reasonForReporting,
-                    additionalInformation: additionalInformation,
-                  ));
-            },
+            parentScreen: ParentScreen.messagesScreen,
           );
         } else {
           child = const Center(child: CircularProgressIndicator());
         }
 
-        return AnimatedSwitcher(
-          duration: const Duration(milliseconds: 200),
-          switchInCurve: Curves.easeInOut,
-          switchOutCurve: Curves.fastOutSlowIn,
-          transitionBuilder: (child, animation) {
-            final scaleAnimation = Tween<double>(
-              begin: 0.85,
-              end: 1.0,
-            ).animate(animation);
-            return FadeTransition(
-              opacity: animation,
-              child: ScaleTransition(
-                scale: scaleAnimation,
-                child: child,
-              ),
-            );
-          },
-          layoutBuilder: (currentChild, previousChildren) {
-            return currentChild ?? Container();
-          },
-          child: child,
-        );
+        return createAnimatedSwitcher(child: child);
       },
     );
   }

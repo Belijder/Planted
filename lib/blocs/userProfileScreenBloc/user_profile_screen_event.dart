@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart' show immutable;
-import 'package:planted/constants/enums/admin_announcement_action.dart';
+import 'package:planted/constants/enums.dart';
 import 'package:planted/models/user_profile.dart';
 
 @immutable

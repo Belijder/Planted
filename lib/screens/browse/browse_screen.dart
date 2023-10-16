@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:planted/blocs/browseScreenBloc/browse_screen_bloc.dart';
-import 'package:planted/blocs/browseScreenBloc/browse_screen_event.dart';
 import 'package:planted/blocs/browseScreenBloc/browse_screen_state.dart';
+import 'package:planted/constants/enums.dart';
 import 'package:planted/constants/strings.dart';
 import 'package:planted/screens/browse/announcement_details_view.dart';
 import 'package:planted/screens/browse/announcements_list_view.dart';
@@ -10,6 +10,7 @@ import 'package:planted/screens/messages/conversation_view.dart';
 import 'package:planted/screens/views/report_view.dart';
 import 'package:planted/utilities/dialogs/show_database_error_dialog.dart';
 import 'package:planted/utilities/loading/loading_screen.dart';
+import 'package:planted/utilities/widget_utils.dart';
 
 class BrowseScreen extends StatelessWidget {
   const BrowseScreen({
@@ -63,7 +64,7 @@ class BrowseScreen extends StatelessWidget {
           final conversationStream =
               context.read<BrowseScreenBloc>().state.conversationDetailsStream;
           child = ConversationView(
-            parentScreen: ConversationParentScreen.browseScreen,
+            parentScreen: ParentScreen.browseScreen,
             currentUserID: browseScreenState.userID,
             announcement: browseScreenState.announcement,
             conversation: browseScreenState.conversation,
@@ -74,63 +75,13 @@ class BrowseScreen extends StatelessWidget {
             announcement: browseScreenState.announcement,
             conversation: browseScreenState.conversation,
             userID: browseScreenState.userID,
-            returnAction: ({
-              required announcement,
-              required conversation,
-              required userID,
-            }) {
-              if (conversation != null) {
-                context.read<BrowseScreenBloc>().add(
-                    BrowseScreenEventGoToConversationView(
-                        announcement: announcement));
-              } else {
-                context.read<BrowseScreenBloc>().add(
-                    BrowseScreenEventGoToDetailView(
-                        announcement: announcement));
-              }
-            },
-            reportAction: ({
-              required additionalInformation,
-              required announcement,
-              required conversation,
-              required reasonForReporting,
-              required userID,
-            }) {
-              context.read<BrowseScreenBloc>().add(BrowseScreenEventSendReport(
-                    announcement: announcement,
-                    conversation: conversation,
-                    userID: userID,
-                    reasonForReporting: reasonForReporting,
-                    additionalInformation: additionalInformation,
-                  ));
-            },
+            parentScreen: ParentScreen.browseScreen,
           );
         } else {
           child = const Center(child: CircularProgressIndicator());
         }
 
-        return AnimatedSwitcher(
-          duration: const Duration(milliseconds: 200),
-          switchInCurve: Curves.easeInOut,
-          switchOutCurve: Curves.fastOutSlowIn,
-          transitionBuilder: (child, animation) {
-            final scaleAnimation = Tween<double>(
-              begin: 0.85,
-              end: 1.0,
-            ).animate(animation);
-            return FadeTransition(
-              opacity: animation,
-              child: ScaleTransition(
-                scale: scaleAnimation,
-                child: child,
-              ),
-            );
-          },
-          layoutBuilder: (currentChild, previousChildren) {
-            return currentChild ?? Container();
-          },
-          child: child,
-        );
+        return createAnimatedSwitcher(child: child);
       },
     );
   }

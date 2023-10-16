@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:planted/blocs/browseScreenBloc/browse_screen_bloc.dart';
+import 'package:planted/blocs/browseScreenBloc/browse_screen_event.dart';
+import 'package:planted/blocs/messagesScreenBloc/messages_screen_bloc.dart';
+import 'package:planted/blocs/messagesScreenBloc/messages_screen_event.dart';
 import 'package:planted/constants/colors.dart';
+import 'package:planted/constants/enums.dart';
 import 'package:planted/constants/strings.dart';
 import 'package:planted/styles/create_input_decoration.dart';
 import 'package:planted/models/announcement.dart';
@@ -8,20 +14,6 @@ import 'package:planted/models/conversation.dart';
 import 'package:planted/styles/buttons_styles.dart';
 import 'package:planted/styles/text_styles.dart';
 import 'package:planted/utilities/dialogs/show_information_dialog.dart';
-
-typedef ReturnAction = void Function({
-  required Announcement announcement,
-  required Conversation? conversation,
-  required String userID,
-});
-
-typedef ReportAction = void Function({
-  required Announcement announcement,
-  required Conversation? conversation,
-  required String userID,
-  required String reasonForReporting,
-  required String additionalInformation,
-});
 
 final listOfReportReasons = [
   ReportReason.inappropriateContent,
@@ -36,14 +28,12 @@ class ReportView extends HookWidget {
     required this.announcement,
     required this.conversation,
     required this.userID,
-    required this.returnAction,
-    required this.reportAction,
+    required this.parentScreen,
   });
   final Announcement announcement;
   final Conversation? conversation;
   final String userID;
-  final ReturnAction returnAction;
-  final ReportAction reportAction;
+  final ParentScreen parentScreen;
 
   String get personDisplayName {
     if (conversation == null) {
@@ -68,11 +58,7 @@ class ReportView extends HookWidget {
         backgroundColor: colorEggsheel,
         leading: IconButton(
           onPressed: () {
-            returnAction(
-              announcement: announcement,
-              conversation: conversation,
-              userID: userID,
-            );
+            returnAction(context);
           },
           icon: const Icon(Icons.arrow_back),
           style: IconButton.styleFrom(
@@ -197,9 +183,7 @@ class ReportView extends HookWidget {
                       return;
                     }
                     reportAction(
-                        announcement: announcement,
-                        conversation: conversation,
-                        userID: userID,
+                        context: context,
                         reasonForReporting: dropdownValueState.value ?? '',
                         additionalInformation:
                             additionalInformationTextController.text);
@@ -212,5 +196,62 @@ class ReportView extends HookWidget {
         ),
       ),
     );
+  }
+
+  void returnAction(BuildContext context) {
+    switch (parentScreen) {
+      case ParentScreen.browseScreen:
+        if (conversation != null) {
+          context
+              .read<BrowseScreenBloc>()
+              .add(BrowseScreenEventGoToConversationView(
+                announcement: announcement,
+              ));
+        } else {
+          context.read<BrowseScreenBloc>().add(BrowseScreenEventGoToDetailView(
+                announcement: announcement,
+              ));
+        }
+      case ParentScreen.messagesScreen:
+        if (conversation != null) {
+          context
+              .read<MessagesScreenBloc>()
+              .add(MessagesScreenEventBackToConversationFromReportView(
+                conversation: conversation!,
+                announcement: announcement,
+              ));
+        } else {
+          context
+              .read<MessagesScreenBloc>()
+              .add(MessagesScreenEventGoToListOfConvesations(
+                announcement: announcement,
+              ));
+        }
+    }
+  }
+
+  void reportAction({
+    required BuildContext context,
+    required String reasonForReporting,
+    required String additionalInformation,
+  }) {
+    switch (parentScreen) {
+      case ParentScreen.browseScreen:
+        context.read<BrowseScreenBloc>().add(BrowseScreenEventSendReport(
+              announcement: announcement,
+              conversation: conversation,
+              userID: userID,
+              reasonForReporting: reasonForReporting,
+              additionalInformation: additionalInformation,
+            ));
+      case ParentScreen.messagesScreen:
+        context.read<MessagesScreenBloc>().add(MessagesScreenEventSendReport(
+              announcement: announcement,
+              conversation: conversation,
+              userID: userID,
+              reasonForReporting: reasonForReporting,
+              additionalInformation: additionalInformation,
+            ));
+    }
   }
 }

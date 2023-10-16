@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:planted/constants/strings.dart';
+import 'package:planted/utilities/widget_utils.dart';
 import 'package:planted/screens/views/authViews/complete_profile_view.dart';
 import 'package:planted/screens/views/authViews/confirm_email_view.dart';
 import 'package:planted/screens/views/authViews/login_view.dart';
@@ -72,28 +73,7 @@ class AddAnnouncementScreen extends HookWidget {
           child = const Center(child: CircularProgressIndicator());
         }
 
-        return AnimatedSwitcher(
-          duration: const Duration(milliseconds: 200),
-          switchInCurve: Curves.easeInOut,
-          switchOutCurve: Curves.fastOutSlowIn,
-          transitionBuilder: (child, animation) {
-            final scaleAnimation = Tween<double>(
-              begin: 0.85,
-              end: 1.0,
-            ).animate(animation);
-            return FadeTransition(
-              opacity: animation,
-              child: ScaleTransition(
-                scale: scaleAnimation,
-                child: child,
-              ),
-            );
-          },
-          layoutBuilder: (currentChild, previousChildren) {
-            return currentChild ?? Container();
-          },
-          child: child,
-        );
+        return createAnimatedSwitcher(child: child);
       },
     );
   }
