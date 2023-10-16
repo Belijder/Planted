@@ -10,6 +10,7 @@ import 'package:planted/models/announcement.dart';
 import 'package:planted/screens/browse/announcements_list_tile.dart';
 import 'package:planted/screens/views/empty_state_view.dart';
 import 'package:planted/styles/box_decoration_styles.dart';
+import 'package:planted/styles/text_styles.dart';
 import 'package:planted/utilities/dialogs/show_confirmation_dialog.dart';
 
 class UsersAnnouncementsView extends HookWidget {
@@ -37,15 +38,11 @@ class UsersAnnouncementsView extends HookWidget {
           ),
           color: colorSepia,
         ),
-        title: const Align(
+        title: Align(
           alignment: Alignment.centerLeft,
           child: Text(
             AppBarTitleText.yoursAnnouncements,
-            style: TextStyle(
-              color: colorSepia,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyles.titleTextStyle(weight: FontWeight.bold),
           ),
         ),
       ),
@@ -64,7 +61,7 @@ class UsersAnnouncementsView extends HookWidget {
 
           if (announcements.isEmpty) {
             return const EmptyStateView(
-                message: StreamMessageText.announcemensEmpty);
+                message: StreamMessageText.userAnouncemensEmpty);
           } else {
             return ListOfUsersAnnoucements(
                 announcements: announcements, userID: userID);
@@ -149,13 +146,13 @@ class ListOfUsersAnnoucements extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(20),
                               ),
                             ),
-                            child: const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 16.0),
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16.0),
                               child: Text(
                                 ButtonLabelText.delete,
-                                style: TextStyle(
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.bold,
+                                style: TextStyles.captionTextStyle(
+                                  weight: FontWeight.bold,
                                   color: listTileBackground,
                                 ),
                               ),

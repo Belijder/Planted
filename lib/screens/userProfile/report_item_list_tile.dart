@@ -25,9 +25,9 @@ class ReportItemListTile extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               CustomText.report,
-              style: textStyle15BoldSepia,
+              style: TextStyles.bodyTextStyle(weight: FontWeight.bold),
             ),
             _ReportRow(
               title: CustomText.reportID,
@@ -100,11 +100,11 @@ class _ReportRow extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: textStyle10Sepia,
+                style: TextStyles.captionTextStyle(),
               ),
               Text(
                 value,
-                style: textStyle10BoldSepia,
+                style: TextStyles.calloutTextStyle(weight: FontWeight.bold),
               ),
             ],
           ),
@@ -117,12 +117,12 @@ class _ReportRow extends StatelessWidget {
           const SizedBox(height: 5),
           Text(
             title,
-            style: textStyle10Sepia,
+            style: TextStyles.captionTextStyle(),
           ),
           const SizedBox(height: 3),
           Text(
             value,
-            style: textStyle10BoldSepia,
+            style: TextStyles.calloutTextStyle(weight: FontWeight.bold),
           ),
         ],
       );

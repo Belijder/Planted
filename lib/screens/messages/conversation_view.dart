@@ -62,20 +62,13 @@ class ConversationView extends HookWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                currentUserID == conversation.giver
-                    ? conversation.takerDisplayName
-                    : conversation.giverDisplayName,
-                style: const TextStyle(
-                    color: colorSepia,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold),
-              ),
+                  currentUserID == conversation.giver
+                      ? conversation.takerDisplayName
+                      : conversation.giverDisplayName,
+                  style: TextStyles.titleTextStyle(weight: FontWeight.bold)),
               Text(
                 'Roślina: ${announcement.name}, odbór: ${announcement.city}',
-                style: const TextStyle(
-                    color: colorSepia,
-                    fontSize: 10,
-                    fontWeight: FontWeight.w300),
+                style: TextStyles.captionTextStyle(weight: FontWeight.w300),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -103,18 +96,18 @@ class ConversationView extends HookWidget {
               }
             },
             itemBuilder: (context) => [
-              const PopupMenuItem<MessagesPopUpMenuItem>(
+              PopupMenuItem<MessagesPopUpMenuItem>(
                 value: MessagesPopUpMenuItem.blocUser,
                 child: Text(
                   ButtonLabelText.blockUser,
-                  style: TextStyle(color: colorRedKenyanCopper),
+                  style: TextStyles.bodyTextStyle(color: colorRedKenyanCopper),
                 ),
               ),
-              const PopupMenuItem<MessagesPopUpMenuItem>(
+              PopupMenuItem<MessagesPopUpMenuItem>(
                 value: MessagesPopUpMenuItem.reportUser,
                 child: Text(
                   ButtonLabelText.reportUser,
-                  style: TextStyle(color: colorRedKenyanCopper),
+                  style: TextStyles.bodyTextStyle(color: colorRedKenyanCopper),
                 ),
               ),
             ],
@@ -196,7 +189,7 @@ class ConversationView extends HookWidget {
                         controller: messageController,
                         decoration: InputDecoration(
                           hintText: CustomText.writeMessage,
-                          hintStyle: formLabelTextStyle,
+                          hintStyle: TextStyles.bodyTextStyle(opacity: 0.5),
                           contentPadding: const EdgeInsets.symmetric(
                               vertical: 8, horizontal: 16),
                           focusedBorder: OutlineInputBorder(

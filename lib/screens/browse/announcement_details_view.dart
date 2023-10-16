@@ -10,6 +10,7 @@ import 'package:planted/constants/strings.dart';
 import 'package:planted/models/announcement.dart';
 import 'package:planted/styles/box_decoration_styles.dart';
 import 'package:planted/styles/buttons_styles.dart';
+import 'package:planted/styles/text_styles.dart';
 
 enum ModalPopupAction { report, block }
 
@@ -22,27 +23,20 @@ class AnnouncementDetailsView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: colorEggsheel,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 0.0),
-          child: IconButton(
-            onPressed: () {
-              context
-                  .read<BrowseScreenBloc>()
-                  .add(const BrowseScreenEventGoToListView());
-            },
-            icon: const Icon(Icons.arrow_back),
-            style: IconButton.styleFrom(
-              shadowColor: colorSepia.withAlpha(50),
-            ),
-            color: colorSepia,
-          ),
+        leading: IconButton(
+          onPressed: () {
+            context
+                .read<BrowseScreenBloc>()
+                .add(const BrowseScreenEventGoToListView());
+          },
+          icon: const Icon(Icons.arrow_back),
+          color: colorSepia,
         ),
-        title: const Align(
+        title: Align(
           alignment: Alignment.centerLeft,
           child: Text(
             AppBarTitleText.announcementDetails,
-            style: TextStyle(
-                color: colorSepia, fontSize: 20, fontWeight: FontWeight.bold),
+            style: TextStyles.titleTextStyle(weight: FontWeight.bold),
           ),
         ),
         actions: [
@@ -73,25 +67,22 @@ class AnnouncementDetailsView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Hero(
-                tag: announcement.imageURL,
-                child: Container(
-                  decoration: backgroundBoxDecoration,
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.width - 40,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child: CachedNetworkImage(
-                        imageUrl: announcement.imageURL,
-                        placeholder: (context, url) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        },
-                        fit: BoxFit.cover,
-                      ),
+              Container(
+                decoration: backgroundBoxDecoration,
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.width - 32,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: CachedNetworkImage(
+                      imageUrl: announcement.imageURL,
+                      placeholder: (context, url) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      },
+                      fit: BoxFit.cover,
                     ),
                   ),
                 ),
@@ -107,20 +98,14 @@ class AnnouncementDetailsView extends StatelessWidget {
                     children: [
                       Text(
                         announcement.name,
-                        style: const TextStyle(
-                          color: colorSepia,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 30,
-                        ),
+                        style: TextStyles.largeTitleTextStyle(
+                            weight: FontWeight.bold),
                       ),
                       announcement.latinName.isNotEmpty
                           ? Text(
                               announcement.latinName,
-                              style: const TextStyle(
-                                color: colorSepia,
-                                fontWeight: FontWeight.w200,
-                                fontSize: 19,
-                              ),
+                              style: TextStyles.titleTextStyle(
+                                  weight: FontWeight.w200),
                             )
                           : const SizedBox(),
                     ],
@@ -137,11 +122,7 @@ class AnnouncementDetailsView extends StatelessWidget {
                     announcement.description.isNotEmpty
                         ? announcement.description
                         : CustomText.noAdditionalDescription,
-                    style: const TextStyle(
-                      color: colorSepia,
-                      fontWeight: FontWeight.w400,
-                      fontSize: 14,
-                    ),
+                    style: TextStyles.bodyTextStyle(),
                   ),
                 ),
               ),
@@ -153,16 +134,14 @@ class AnnouncementDetailsView extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
+                      Text(
                         CustomText.seedlingsNumber,
-                        style: TextStyle(
-                            color: colorSepia,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 17),
+                        style: TextStyles.headlineTextStyle(
+                            weight: FontWeight.bold),
                       ),
                       Text(
                         '${announcement.seedCount}',
-                        style: const TextStyle(color: colorSepia, fontSize: 17),
+                        style: TextStyles.headlineTextStyle(),
                       ),
                     ],
                   ),
@@ -176,16 +155,14 @@ class AnnouncementDetailsView extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
+                      Text(
                         CustomText.pickupLocation,
-                        style: TextStyle(
-                            color: colorSepia,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 17),
+                        style: TextStyles.headlineTextStyle(
+                            weight: FontWeight.bold),
                       ),
                       Text(
                         announcement.city,
-                        style: const TextStyle(color: colorSepia, fontSize: 17),
+                        style: TextStyles.headlineTextStyle(),
                       ),
                     ],
                   ),
@@ -199,12 +176,10 @@ class AnnouncementDetailsView extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
+                      Text(
                         CustomText.addedBy,
-                        style: TextStyle(
-                            color: colorSepia,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 17),
+                        style: TextStyles.headlineTextStyle(
+                            weight: FontWeight.bold),
                       ),
                       GestureDetector(
                         onTap: () {
@@ -307,8 +282,7 @@ class AnnouncementDetailsView extends StatelessWidget {
                             const SizedBox(width: 5),
                             Text(
                               announcement.giverDisplayName,
-                              style: const TextStyle(
-                                  color: colorSepia, fontSize: 17),
+                              style: TextStyles.headlineTextStyle(),
                             ),
                           ],
                         ),

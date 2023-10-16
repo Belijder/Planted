@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:planted/constants/colors.dart';
+import 'package:planted/styles/text_styles.dart';
 
 final filledButtonStyle = ElevatedButton.styleFrom(
   shadowColor: colorSepia,
@@ -9,10 +10,7 @@ final filledButtonStyle = ElevatedButton.styleFrom(
   shape: RoundedRectangleBorder(
     borderRadius: BorderRadius.circular(12),
   ),
-  textStyle: const TextStyle(
-    fontSize: 15,
-    fontWeight: FontWeight.bold,
-  ),
+  textStyle: TextStyles.bodyTextStyle(weight: FontWeight.bold),
 );
 
 ButtonStyle createFilledButtonStyle({
@@ -28,10 +26,7 @@ ButtonStyle createFilledButtonStyle({
       shape: RoundedRectangleBorder(
         borderRadius: borderRadius,
       ),
-      textStyle: const TextStyle(
-        fontSize: 15,
-        fontWeight: FontWeight.bold,
-      ),
+      textStyle: TextStyles.bodyTextStyle(weight: FontWeight.bold),
     );
 
 ButtonStyle createOutlinedButtonStyle({
@@ -43,10 +38,7 @@ ButtonStyle createOutlinedButtonStyle({
         borderRadius: BorderRadius.circular(12),
       ),
       side: BorderSide(color: borderColor),
-      textStyle: const TextStyle(
-        fontSize: 15,
-        fontWeight: FontWeight.bold,
-      ),
+      textStyle: TextStyles.bodyTextStyle(weight: FontWeight.bold),
       foregroundColor: foregroundColor,
     );
 
@@ -55,9 +47,6 @@ final outlinedButtonStyle = OutlinedButton.styleFrom(
     borderRadius: BorderRadius.circular(12),
   ),
   side: const BorderSide(color: colorDarkMossGreen),
-  textStyle: const TextStyle(
-    fontSize: 15,
-    fontWeight: FontWeight.bold,
-  ),
+  textStyle: TextStyles.bodyTextStyle(weight: FontWeight.bold),
   foregroundColor: colorDarkMossGreen,
 );

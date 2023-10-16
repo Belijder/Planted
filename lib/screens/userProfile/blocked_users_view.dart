@@ -10,6 +10,7 @@ import 'package:planted/constants/strings.dart';
 import 'package:planted/models/user_profile.dart';
 import 'package:planted/screens/views/empty_state_view.dart';
 import 'package:planted/styles/box_decoration_styles.dart';
+import 'package:planted/styles/text_styles.dart';
 
 class BlockedUsersView extends HookWidget {
   const BlockedUsersView({
@@ -39,15 +40,11 @@ class BlockedUsersView extends HookWidget {
           ),
           color: colorSepia,
         ),
-        title: const Align(
+        title: Align(
           alignment: Alignment.centerLeft,
           child: Text(
             AppBarTitleText.blockedUsers,
-            style: TextStyle(
-              color: colorSepia,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyles.titleTextStyle(weight: FontWeight.bold),
           ),
         ),
       ),
@@ -112,10 +109,7 @@ class BlockedUsersView extends HookWidget {
                                   Text(
                                     userProfile.displayName,
                                     overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                      color: colorSepia,
-                                      fontSize: 17,
-                                    ),
+                                    style: TextStyles.headlineTextStyle(),
                                   ),
                                 ],
                               ),
@@ -136,14 +130,13 @@ class BlockedUsersView extends HookWidget {
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                 ),
-                                child: const Padding(
-                                  padding:
-                                      EdgeInsets.symmetric(horizontal: 16.0),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16.0),
                                   child: Text(
                                     ButtonLabelText.unblock,
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.bold,
+                                    style: TextStyles.captionTextStyle(
+                                      weight: FontWeight.bold,
                                       color: listTileBackground,
                                     ),
                                   ),

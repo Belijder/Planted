@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:planted/constants/colors.dart';
+import 'package:planted/styles/text_styles.dart';
 
 RichText getStatusTextFrom(int status) {
   String statusText = '';
@@ -23,19 +24,14 @@ RichText getStatusTextFrom(int status) {
   return RichText(
     text: TextSpan(
       children: [
-        const TextSpan(
+        TextSpan(
           text: 'Status ogłoszenia:  ',
-          style: TextStyle(
-            fontSize: 10,
-            fontWeight: FontWeight.normal,
-            color: colorSepia,
-          ),
+          style: TextStyles.calloutTextStyle(),
         ),
         TextSpan(
           text: statusText,
-          style: TextStyle(
-            fontSize: 10,
-            fontWeight: FontWeight.bold,
+          style: TextStyles.bodyTextStyle(
+            weight: FontWeight.bold,
             color: textColor,
           ),
         ),

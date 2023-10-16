@@ -51,36 +51,31 @@ class RegisterView extends HookWidget {
                       height: 40,
                       child: Image.asset(ImageName.plantedLogo),
                     ),
-                    const Text(
+                    Text(
                       CustomText.shareNature,
-                      style: TextStyle(
-                          color: colorSepia,
-                          fontWeight: FontWeight.w300,
-                          fontSize: 18),
+                      style: TextStyles.titleTextStyle(weight: FontWeight.w300),
                     )
                   ],
                 ),
+                const SizedBox(height: 10),
                 Column(
                   children: [
-                    const Row(
+                    Row(
                       children: [
                         Text(
                           CustomText.creatingAccount,
-                          style: TextStyle(
-                            color: colorSepia,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15,
-                          ),
+                          style: TextStyles.headlineTextStyle(
+                              weight: FontWeight.bold),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 10),
                     TextFormField(
                       controller: emailController,
                       decoration: createInputDecoration(
                         label: CustomText.emailLabel,
                       ),
-                      style: textStyle15BoldSepia,
+                      style: TextStyles.bodyTextStyle(weight: FontWeight.bold),
                       onFieldSubmitted: (_) => FocusScope.of(context).unfocus(),
                       onTapOutside: (_) => FocusScope.of(context).unfocus(),
                       keyboardType: TextInputType.emailAddress,
@@ -93,7 +88,7 @@ class RegisterView extends HookWidget {
                       decoration: createInputDecoration(
                         label: CustomText.passwordLabel,
                       ),
-                      style: textStyle15BoldSepia,
+                      style: TextStyles.bodyTextStyle(weight: FontWeight.bold),
                       onFieldSubmitted: (_) => FocusScope.of(context).unfocus(),
                       onTapOutside: (_) => FocusScope.of(context).unfocus(),
                       keyboardType: TextInputType.emailAddress,
@@ -108,7 +103,7 @@ class RegisterView extends HookWidget {
                       decoration: createInputDecoration(
                         label: CustomText.confirmPasswordLabel,
                       ),
-                      style: textStyle15BoldSepia,
+                      style: TextStyles.bodyTextStyle(weight: FontWeight.bold),
                       onFieldSubmitted: (_) => FocusScope.of(context).unfocus(),
                       onTapOutside: (_) => FocusScope.of(context).unfocus(),
                       keyboardType: TextInputType.emailAddress,
@@ -142,8 +137,7 @@ class RegisterView extends HookWidget {
                               maxLines: 2,
                               text: TextSpan(
                                   text: LegalStatementText.readAndAccepted,
-                                  style: const TextStyle(
-                                      fontSize: 12, color: colorSepia),
+                                  style: TextStyles.calloutTextStyle(),
                                   children: [
                                     WidgetSpan(
                                       child: GestureDetector(
@@ -153,12 +147,10 @@ class RegisterView extends HookWidget {
                                                 documentID: termsOfUseDoc,
                                               ));
                                         },
-                                        child: const Text(
+                                        child: Text(
                                           LegalStatementText.termsOfUse,
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            color: colorSepia,
-                                            fontWeight: FontWeight.bold,
+                                          style: TextStyles.calloutTextStyle(
+                                            weight: FontWeight.bold,
                                             decoration:
                                                 TextDecoration.underline,
                                           ),
@@ -176,12 +168,10 @@ class RegisterView extends HookWidget {
                                                 documentID: privacyPolicyDoc,
                                               ));
                                         },
-                                        child: const Text(
+                                        child: Text(
                                           LegalStatementText.policyPrivacy,
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            color: colorSepia,
-                                            fontWeight: FontWeight.bold,
+                                          style: TextStyles.calloutTextStyle(
+                                            weight: FontWeight.bold,
                                             decoration:
                                                 TextDecoration.underline,
                                           ),
@@ -223,20 +213,19 @@ class RegisterView extends HookWidget {
                               const AuthEventGoToLoginView(),
                             );
                       },
-                      child: const Row(
+                      child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
                             CustomText.haveAccountQuestion,
-                            style: TextStyle(
-                              color: colorDarkMossGreen,
-                            ),
+                            style: TextStyles.bodyTextStyle(
+                                color: colorDarkMossGreen),
                           ),
                           Text(
                             CustomText.logIn,
-                            style: TextStyle(
+                            style: TextStyles.bodyTextStyle(
                                 color: colorDarkMossGreen,
-                                fontWeight: FontWeight.bold),
+                                weight: FontWeight.bold),
                           )
                         ],
                       ),

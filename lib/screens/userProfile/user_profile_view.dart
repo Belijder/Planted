@@ -32,14 +32,11 @@ class UserProfileView extends HookWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Row(
+        title: Row(
           children: [
             Text(
               AppBarTitleText.yoursAccount,
-              style: TextStyle(
-                  color: colorSepia,
-                  fontSize: 30.0,
-                  fontWeight: FontWeight.w800),
+              style: TextStyles.largeTitleTextStyle(weight: FontWeight.w800),
             ),
           ],
         ),
@@ -101,16 +98,16 @@ class UserProfileView extends HookWidget {
                               overflow: TextOverflow.ellipsis,
                               text: TextSpan(
                                 text: CustomText.hello,
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.w300,
-                                    color: colorDarkMossGreen,
-                                    fontSize: 30),
+                                style: TextStyles.largeTitleTextStyle(
+                                    weight: FontWeight.w300,
+                                    color: colorDarkMossGreen),
                                 children: [
                                   TextSpan(
-                                      text: userProfile.displayName,
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: colorSepia)),
+                                    text: userProfile.displayName,
+                                    style: TextStyles.largeTitleTextStyle(
+                                      weight: FontWeight.bold,
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
@@ -226,9 +223,8 @@ class UserProfileView extends HookWidget {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12),
                                 ),
-                                textStyle: const TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold,
+                                textStyle: TextStyles.bodyTextStyle(
+                                  weight: FontWeight.bold,
                                 ),
                               ),
                               onPressed: () {
@@ -287,7 +283,7 @@ class UserProfileActionButton extends StatelessWidget {
           children: [
             Text(
               title,
-              style: textStyle15BoldSepia,
+              style: TextStyles.bodyTextStyle(weight: FontWeight.bold),
             ),
             const Icon(
               Icons.chevron_right_rounded,

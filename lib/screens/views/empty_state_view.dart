@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:planted/constants/colors.dart';
+import 'package:planted/styles/text_styles.dart';
 
 class EmptyStateView extends StatelessWidget {
   const EmptyStateView({
@@ -17,10 +17,7 @@ class EmptyStateView extends StatelessWidget {
         child: Text(
           message,
           textAlign: TextAlign.center,
-          style: TextStyle(
-            color: colorSepia.withAlpha(150),
-            fontSize: 15,
-          ),
+          style: TextStyles.bodyTextStyle(opacity: 0.5),
         ),
       ),
     );

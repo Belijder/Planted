@@ -8,6 +8,7 @@ import 'package:planted/constants/strings.dart';
 import 'package:planted/helpers/request_permission_for_push.dart';
 import 'package:planted/screens/messages/conversation_tile.dart';
 import 'package:planted/screens/views/empty_state_view.dart';
+import 'package:planted/styles/text_styles.dart';
 
 class MessagesListView extends HookWidget {
   const MessagesListView({required this.blockedUsers, super.key});
@@ -22,14 +23,11 @@ class MessagesListView extends HookWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Row(
+        title: Row(
           children: [
             Text(
               AppBarTitleText.messages,
-              style: TextStyle(
-                  color: colorSepia,
-                  fontSize: 30.0,
-                  fontWeight: FontWeight.w800),
+              style: TextStyles.largeTitleTextStyle(weight: FontWeight.w800),
             ),
           ],
         ),

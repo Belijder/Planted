@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:planted/constants/colors.dart';
 import 'package:planted/constants/strings.dart';
 import 'package:planted/styles/buttons_styles.dart';
+import 'package:planted/styles/text_styles.dart';
 
 Future<bool?> showConfirmationDialog({
   required BuildContext context,
@@ -13,15 +13,8 @@ Future<bool?> showConfirmationDialog({
     builder: (context) {
       return AlertDialog(
         actionsAlignment: MainAxisAlignment.center,
-        titleTextStyle: const TextStyle(
-          color: colorSepia,
-          fontWeight: FontWeight.bold,
-          fontSize: 20,
-        ),
-        contentTextStyle: const TextStyle(
-          color: colorSepia,
-          fontSize: 14,
-        ),
+        titleTextStyle: TextStyles.titleTextStyle(weight: FontWeight.bold),
+        contentTextStyle: TextStyles.bodyTextStyle(),
         title: Text(
           title,
           textAlign: TextAlign.center,

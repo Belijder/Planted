@@ -121,38 +121,3 @@ class NavigationBarView extends HookWidget {
     );
   }
 }
-
-class BadgeIcon extends StatelessWidget {
-  final Widget icon;
-  final int badgeCount;
-
-  const BadgeIcon({super.key, required this.icon, required this.badgeCount});
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        icon,
-        if (badgeCount > 0)
-          Positioned(
-            right: 0,
-            top: 0,
-            child: Container(
-              padding: const EdgeInsets.all(4),
-              decoration: const BoxDecoration(
-                color: Colors.red,
-                shape: BoxShape.circle,
-              ),
-              child: Text(
-                badgeCount.toString(),
-                style: const TextStyle(
-                  color: listTileBackground,
-                  fontSize: 12,
-                ),
-              ),
-            ),
-          ),
-      ],
-    );
-  }
-}

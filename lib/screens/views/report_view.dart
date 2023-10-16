@@ -66,12 +66,11 @@ class ReportView extends HookWidget {
           ),
           color: colorSepia,
         ),
-        title: const Align(
+        title: Align(
           alignment: Alignment.centerLeft,
           child: Text(
             CustomText.reportUser,
-            style: TextStyle(
-                color: colorSepia, fontSize: 20, fontWeight: FontWeight.bold),
+            style: TextStyles.titleTextStyle(weight: FontWeight.bold),
           ),
         ),
       ),
@@ -81,27 +80,23 @@ class ReportView extends HookWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+              Text(
                 CustomText.appliesToUser,
-                style: textStyle15BoldSepia,
+                style: TextStyles.bodyTextStyle(weight: FontWeight.bold),
               ),
               const SizedBox(height: 5),
               Text(
                 personDisplayName,
-                style: const TextStyle(
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
-                  color: colorRedKenyanCopper,
-                ),
+                style: TextStyles.largeTitleTextStyle(weight: FontWeight.bold),
               ),
               const SizedBox(height: 50),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
+                  Text(
                     CustomText.reportReason,
-                    style: textStyle15BoldSepia,
+                    style: TextStyles.bodyTextStyle(weight: FontWeight.bold),
                   ),
                   DropdownButton<String>(
                     value: dropdownValueState.value,
@@ -112,10 +107,9 @@ class ReportView extends HookWidget {
                     borderRadius: BorderRadius.circular(8),
                     dropdownColor: listTileBackground,
                     elevation: 16,
-                    style: const TextStyle(
+                    style: TextStyles.bodyTextStyle(
                       color: colorRedKenyanCopper,
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
+                      weight: FontWeight.bold,
                     ),
                     underline: Container(height: 2, color: colorSepia),
                     onChanged: (String? value) {
@@ -139,7 +133,7 @@ class ReportView extends HookWidget {
                       controller: otherReasonTextController,
                       decoration:
                           createInputDecoration(label: CustomText.giveReason),
-                      style: textStyle15BoldSepia,
+                      style: TextStyles.bodyTextStyle(weight: FontWeight.bold),
                       onSubmitted: (_) => FocusScope.of(context).unfocus(),
                       onTapOutside: (_) => FocusScope.of(context).unfocus(),
                       textCapitalization: TextCapitalization.sentences,
@@ -154,7 +148,7 @@ class ReportView extends HookWidget {
                   controller: additionalInformationTextController,
                   decoration:
                       createInputDecoration(label: CustomText.additionalInfo),
-                  style: textStyle15BoldSepia,
+                  style: TextStyles.bodyTextStyle(weight: FontWeight.bold),
                   onSubmitted: (_) => FocusScope.of(context).unfocus(),
                   onTapOutside: (_) => FocusScope.of(context).unfocus(),
                   minLines: null,

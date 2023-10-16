@@ -8,6 +8,7 @@ import 'package:planted/extensions/time_stamp_extensions.dart';
 import 'package:planted/helpers/format_timestamp.dart';
 import 'package:planted/models/conversation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:planted/styles/text_styles.dart';
 
 class ConversationTile extends StatelessWidget {
   const ConversationTile({
@@ -72,11 +73,8 @@ class ConversationTile extends StatelessWidget {
                           currentUserID == conversation.giver
                               ? conversation.takerDisplayName
                               : conversation.giverDisplayName,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15,
-                            color: colorSepia,
-                          ),
+                          style:
+                              TextStyles.bodyTextStyle(weight: FontWeight.bold),
                         ),
                         const SizedBox(width: 5),
                         Expanded(
@@ -84,21 +82,15 @@ class ConversationTile extends StatelessWidget {
                             ('(${conversation.announcementName})'),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w300,
-                              fontSize: 10,
-                              color: colorSepia,
-                            ),
+                            style: TextStyles.captionTextStyle(
+                                weight: FontWeight.w300),
                           ),
                         ),
                         const SizedBox(width: 10),
                         Text(
                           formatTimestamp(conversation.timeStamp),
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 10,
-                            color: colorSepia,
-                          ),
+                          style: TextStyles.captionTextStyle(
+                              weight: FontWeight.bold),
                         ),
                       ],
                     ),
@@ -107,13 +99,11 @@ class ConversationTile extends StatelessWidget {
                           ? conversation.messages.last.message
                           : '',
                       maxLines: 2,
-                      style: TextStyle(
-                        fontWeight: hasUnreadMessages
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyles.captionTextStyle(
+                        weight: hasUnreadMessages
                             ? FontWeight.bold
                             : FontWeight.w300,
-                        fontSize: 10,
-                        overflow: TextOverflow.ellipsis,
-                        color: colorSepia,
                       ),
                     )
                   ],

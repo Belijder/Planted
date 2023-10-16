@@ -35,36 +35,30 @@ class LoginView extends HookWidget {
                   height: 40,
                   child: Image.asset(ImageName.plantedLogo),
                 ),
-                const Text(
+                Text(
                   CustomText.shareNature,
-                  style: TextStyle(
-                      color: colorSepia,
-                      fontWeight: FontWeight.w300,
-                      fontSize: 18),
+                  style: TextStyles.titleTextStyle(weight: FontWeight.w300),
                 )
               ],
             ),
             Column(
               children: [
-                const Row(
+                Row(
                   children: [
                     Text(
                       CustomText.loggingIn,
-                      style: TextStyle(
-                        color: colorSepia,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                      ),
+                      style:
+                          TextStyles.headlineTextStyle(weight: FontWeight.bold),
                     ),
                   ],
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
                 TextFormField(
                   controller: emailController,
                   decoration: createInputDecoration(
                     label: CustomText.emailLabel,
                   ),
-                  style: textStyle15BoldSepia,
+                  style: TextStyles.bodyTextStyle(weight: FontWeight.bold),
                   onFieldSubmitted: (_) => FocusScope.of(context).unfocus(),
                   onTapOutside: (_) => FocusScope.of(context).unfocus(),
                   keyboardType: TextInputType.emailAddress,
@@ -77,7 +71,7 @@ class LoginView extends HookWidget {
                   decoration: createInputDecoration(
                     label: CustomText.passwordLabel,
                   ),
-                  style: textStyle15BoldSepia,
+                  style: TextStyles.bodyTextStyle(weight: FontWeight.bold),
                   onFieldSubmitted: (_) => FocusScope.of(context).unfocus(),
                   onTapOutside: (_) => FocusScope.of(context).unfocus(),
                   keyboardType: TextInputType.emailAddress,
@@ -110,20 +104,20 @@ class LoginView extends HookWidget {
                           const AuthEventGoToRegisterView(),
                         );
                   },
-                  child: const Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
                         CustomText.dontHaveAccountQuestion,
-                        style: TextStyle(
-                          color: colorDarkMossGreen,
-                        ),
+                        style:
+                            TextStyles.bodyTextStyle(color: colorDarkMossGreen),
                       ),
                       Text(
                         CustomText.register,
-                        style: TextStyle(
-                            color: colorDarkMossGreen,
-                            fontWeight: FontWeight.bold),
+                        style: TextStyles.bodyTextStyle(
+                          color: colorDarkMossGreen,
+                          weight: FontWeight.bold,
+                        ),
                       )
                     ],
                   ),
@@ -135,9 +129,7 @@ class LoginView extends HookWidget {
               children: [
                 Text(
                   CustomText.dontRememberPasswordQuestion,
-                  style: TextStyle(
-                    color: colorSepia.withAlpha(100),
-                  ),
+                  style: TextStyles.calloutTextStyle(opacity: 0.5),
                 ),
                 const SizedBox(height: 5),
                 SizedBox(

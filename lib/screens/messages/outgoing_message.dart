@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:planted/styles/box_decoration_styles.dart';
+import 'package:planted/styles/text_styles.dart';
 
 class OutgoingMessage extends StatelessWidget {
   const OutgoingMessage({
@@ -30,7 +31,7 @@ class OutgoingMessage extends StatelessWidget {
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   child: Text(
                     message,
-                    style: const TextStyle(color: Colors.white),
+                    style: TextStyles.bodyTextStyle(color: Colors.white),
                   ),
                 ),
               ),

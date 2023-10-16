@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:planted/constants/colors.dart';
+import 'package:planted/styles/text_styles.dart';
 import 'package:planted/utilities/loading/loading_screen_controller.dart';
 
 class LoadingScreen {
@@ -70,9 +71,7 @@ class LoadingScreen {
                             return Text(
                               snapshot.data!,
                               textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: colorEggsheel.withOpacity(0.7),
-                              ),
+                              style: TextStyles.calloutTextStyle(opacity: 0.7),
                             );
                           } else {
                             return Container();

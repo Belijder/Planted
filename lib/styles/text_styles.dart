@@ -1,36 +1,67 @@
 import 'package:flutter/material.dart';
 import 'package:planted/constants/colors.dart';
 
-final formLabelTextStyle = TextStyle(
-  color: colorSepia.withAlpha(150),
-  fontSize: 14.0,
-);
+class TextStyles {
+  static TextStyle largeTitleTextStyle({
+    FontWeight weight = FontWeight.normal,
+    Color color = colorSepia,
+  }) =>
+      TextStyle(
+        color: color,
+        fontWeight: weight,
+        fontSize: 30,
+      );
 
-const textStyle10Sepia = TextStyle(
-  color: colorSepia,
-  fontSize: 10.0,
-);
+  static TextStyle titleTextStyle({
+    FontWeight weight = FontWeight.normal,
+    Color color = colorSepia,
+  }) =>
+      TextStyle(
+        color: color,
+        fontWeight: weight,
+        fontSize: 18,
+      );
 
-const textStyle10BoldSepia = TextStyle(
-  color: colorSepia,
-  fontWeight: FontWeight.bold,
-  fontSize: 10.0,
-);
+  static TextStyle headlineTextStyle({
+    FontWeight weight = FontWeight.normal,
+    Color color = colorSepia,
+  }) =>
+      TextStyle(
+        color: color,
+        fontWeight: weight,
+        fontSize: 16,
+      );
 
-const textStyle15BoldSepia = TextStyle(
-  color: colorSepia,
-  fontWeight: FontWeight.bold,
-  fontSize: 15.0,
-);
+  static TextStyle bodyTextStyle({
+    FontWeight weight = FontWeight.normal,
+    Color color = colorSepia,
+    double opacity = 1.0,
+  }) =>
+      TextStyle(
+        color: color.withOpacity(opacity),
+        fontWeight: weight,
+        fontSize: 14,
+      );
 
-const formFloatingLabelTextStyle = TextStyle(
-  color: colorDarkMossGreen,
-  fontWeight: FontWeight.bold,
-  fontSize: 12.0,
-);
+  static TextStyle calloutTextStyle(
+          {FontWeight weight = FontWeight.normal,
+          Color color = colorSepia,
+          double opacity = 1.0,
+          TextDecoration? decoration}) =>
+      TextStyle(
+        fontWeight: weight,
+        color: color.withOpacity(opacity),
+        fontSize: 12,
+        decoration: decoration,
+      );
 
-const titleTextStyle = TextStyle(
-  color: colorSepia,
-  fontWeight: FontWeight.bold,
-  fontSize: 18,
-);
+  static TextStyle captionTextStyle({
+    FontWeight weight = FontWeight.normal,
+    Color color = colorSepia,
+  }) =>
+      TextStyle(
+        color: color,
+        fontWeight: weight,
+        fontSize: 10,
+      );
+}

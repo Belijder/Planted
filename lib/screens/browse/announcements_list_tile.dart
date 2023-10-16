@@ -6,6 +6,7 @@ import 'package:planted/constants/strings.dart';
 import 'package:planted/extensions/time_stamp_extensions.dart';
 import 'package:planted/models/announcement.dart';
 import 'package:planted/styles/box_decoration_styles.dart';
+import 'package:planted/styles/text_styles.dart';
 
 class AnnouncementListTile extends StatelessWidget {
   const AnnouncementListTile({
@@ -37,19 +38,15 @@ class AnnouncementListTile extends StatelessWidget {
                           announcement.name,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                              color: colorSepia,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18),
+                          style: TextStyles.titleTextStyle(
+                              weight: FontWeight.bold),
                         ),
                         Text(
                           announcement.latinName,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                              color: colorSepia,
-                              fontWeight: FontWeight.w300,
-                              fontSize: 10),
+                          style: TextStyles.captionTextStyle(
+                              weight: FontWeight.w300),
                         ),
                       ],
                     ),
@@ -57,10 +54,7 @@ class AnnouncementListTile extends StatelessWidget {
                   const SizedBox(width: 15),
                   Text(
                     announcement.timeStamp.toFormattedDateString(),
-                    style: const TextStyle(
-                        color: colorSepia,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 10),
+                    style: TextStyles.captionTextStyle(weight: FontWeight.bold),
                   ),
                 ],
               ),
@@ -113,42 +107,33 @@ class AnnouncementListTile extends StatelessWidget {
                                 maxLines: 4,
                                 textAlign: TextAlign.left,
                                 overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
-                                  color: colorSepia,
-                                  fontSize: 10,
-                                ),
+                                style: TextStyles.captionTextStyle(),
                               ),
                               const SizedBox(height: 5),
                               Row(
                                 children: [
-                                  const Text(
+                                  Text(
                                     CustomText.seedlingsNumber,
-                                    style: TextStyle(
-                                        color: colorSepia,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 10),
+                                    style: TextStyles.captionTextStyle(
+                                        weight: FontWeight.bold),
                                   ),
                                   Text(
                                     '${announcement.seedCount}',
-                                    style: const TextStyle(
-                                        color: colorSepia, fontSize: 10),
+                                    style: TextStyles.captionTextStyle(),
                                   ),
                                 ],
                               ),
                               const SizedBox(height: 5),
                               Row(
                                 children: [
-                                  const Text(
+                                  Text(
                                     CustomText.pickupLocation,
-                                    style: TextStyle(
-                                        color: colorSepia,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 10),
+                                    style: TextStyles.captionTextStyle(
+                                        weight: FontWeight.bold),
                                   ),
                                   Text(
                                     announcement.city,
-                                    style: const TextStyle(
-                                        color: colorSepia, fontSize: 10),
+                                    style: TextStyles.captionTextStyle(),
                                   ),
                                 ],
                               ),
@@ -178,10 +163,8 @@ class AnnouncementListTile extends StatelessWidget {
                               const SizedBox(width: 5),
                               Text(
                                 announcement.giverDisplayName,
-                                style: const TextStyle(
-                                    color: colorSepia,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 10),
+                                style: TextStyles.captionTextStyle(
+                                    weight: FontWeight.bold),
                               ),
                             ],
                           ),

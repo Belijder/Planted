@@ -32,35 +32,27 @@ class ConfrimEmailView extends StatelessWidget {
                       height: 40,
                       child: Image.asset(ImageName.plantedLogo),
                     ),
-                    const Text(
+                    Text(
                       CustomText.shareNature,
-                      style: TextStyle(
-                          color: colorSepia,
-                          fontWeight: FontWeight.w300,
-                          fontSize: 18),
+                      style: TextStyles.titleTextStyle(weight: FontWeight.w300),
                     )
                   ],
                 ),
                 const SizedBox(height: 30),
-                const Text(CustomText.confirmEmail, style: titleTextStyle),
+                Text(
+                  CustomText.confirmEmail,
+                  style: TextStyles.titleTextStyle(weight: FontWeight.bold),
+                ),
                 const SizedBox(height: 20),
-                const Text(
+                Text(
                   CustomText.confirmEmailSentence1,
-                  style: TextStyle(
-                    color: colorSepia,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w300,
-                  ),
+                  style: TextStyles.bodyTextStyle(weight: FontWeight.w300),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 20),
-                const Text(
+                Text(
                   CustomText.confirmEmailSentence2,
-                  style: TextStyle(
-                    color: colorSepia,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w300,
-                  ),
+                  style: TextStyles.titleTextStyle(weight: FontWeight.w300),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 30),
@@ -69,9 +61,7 @@ class ConfrimEmailView extends StatelessWidget {
                   children: [
                     Text(
                       CustomText.isConfirmed,
-                      style: TextStyle(
-                        color: colorSepia.withAlpha(100),
-                      ),
+                      style: TextStyles.bodyTextStyle(opacity: 0.5),
                     ),
                     const SizedBox(height: 5),
                     SizedBox(
@@ -95,9 +85,7 @@ class ConfrimEmailView extends StatelessWidget {
               children: [
                 Text(
                   CustomText.linkDidntRecivedQuestion,
-                  style: TextStyle(
-                    color: colorSepia.withAlpha(100),
-                  ),
+                  style: TextStyles.bodyTextStyle(opacity: 0.5),
                 ),
                 const SizedBox(height: 5),
                 SizedBox(

@@ -101,7 +101,7 @@ class AddAnnouncementView extends HookWidget {
                     decoration: createInputDecoration(
                       label: CustomText.nameLabel,
                     ),
-                    style: textStyle15BoldSepia,
+                    style: TextStyles.bodyTextStyle(weight: FontWeight.bold),
                     onSubmitted: (_) => FocusScope.of(context).unfocus(),
                     onTapOutside: (_) => FocusScope.of(context).unfocus(),
                     textCapitalization: TextCapitalization.sentences,
@@ -113,7 +113,7 @@ class AddAnnouncementView extends HookWidget {
                     decoration: createInputDecoration(
                       label: CustomText.latinNameLabel,
                     ),
-                    style: textStyle15BoldSepia,
+                    style: TextStyles.bodyTextStyle(weight: FontWeight.bold),
                     onSubmitted: (_) => FocusScope.of(context).unfocus(),
                     onTapOutside: (_) => FocusScope.of(context).unfocus(),
                     textCapitalization: TextCapitalization.sentences,
@@ -135,7 +135,8 @@ class AddAnnouncementView extends HookWidget {
                               controller: cityNameController,
                               decoration: createInputDecoration(
                                   label: CustomText.cityLabel),
-                              style: textStyle15BoldSepia,
+                              style: TextStyles.bodyTextStyle(
+                                  weight: FontWeight.bold),
                               onSubmitted: (_) =>
                                   FocusScope.of(context).unfocus(),
                               onTapOutside: (_) =>
@@ -156,7 +157,7 @@ class AddAnnouncementView extends HookWidget {
                       decoration: createInputDecoration(
                         label: CustomText.descriptionLabel,
                       ),
-                      style: textStyle15BoldSepia,
+                      style: TextStyles.bodyTextStyle(weight: FontWeight.bold),
                       onSubmitted: (_) => FocusScope.of(context).unfocus(),
                       onTapOutside: (_) => FocusScope.of(context).unfocus(),
                       minLines: null,
@@ -369,8 +370,7 @@ class SeedStepper extends StatelessWidget {
         ),
         Text(
           '${seedCount.value}',
-          style: const TextStyle(
-              fontSize: 28, color: colorSepia, fontWeight: FontWeight.bold),
+          style: TextStyles.largeTitleTextStyle(weight: FontWeight.bold),
         ),
         IconButton.filledTonal(
           style: ElevatedButton.styleFrom(

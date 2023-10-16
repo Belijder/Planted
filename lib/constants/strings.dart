@@ -120,6 +120,7 @@ class StreamMessageText {
       'Nie udało się pobrać ogłoszeń. Sprawdź połączenie z internetem i spróbuj ponownie.';
   static const announcemensEmpty =
       'Na tę chwilę nie ma niestety żadnych dostępnych ogłoszeń. Sprawdź ponownie za jakiś czas.';
+  static const userAnouncemensEmpty = 'Nie dodałeś jeszcze żadnych ogłoszeń.';
   static const messagesError =
       'Nie udało się pobrać Wiadomości. Sprawdz połączenie z internetem i spróbuj ponownie za chwilę.';
   static const messagesEmpty = 'Nie masz żadnych wiadomości w skrzynce.';

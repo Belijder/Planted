@@ -41,19 +41,16 @@ class CompleteProfileView extends HookWidget {
                       height: 40,
                       child: Image.asset(ImageName.plantedLogo),
                     ),
-                    const Text(
+                    Text(
                       CustomText.shareNature,
-                      style: TextStyle(
-                          color: colorSepia,
-                          fontWeight: FontWeight.w300,
-                          fontSize: 18),
+                      style: TextStyles.titleTextStyle(weight: FontWeight.w300),
                     )
                   ],
                 ),
                 const SizedBox(height: 30),
-                const Text(
+                Text(
                   CustomText.completeProfile,
-                  style: titleTextStyle,
+                  style: TextStyles.titleTextStyle(weight: FontWeight.bold),
                 ),
                 const SizedBox(height: 20),
 
@@ -68,7 +65,7 @@ class CompleteProfileView extends HookWidget {
                   controller: nameController,
                   decoration:
                       createInputDecoration(label: CustomText.userNameLabel),
-                  style: textStyle15BoldSepia,
+                  style: TextStyles.bodyTextStyle(weight: FontWeight.bold),
                   onFieldSubmitted: (_) => FocusScope.of(context).unfocus(),
                   onTapOutside: (_) => FocusScope.of(context).unfocus(),
                   keyboardType: TextInputType.emailAddress,

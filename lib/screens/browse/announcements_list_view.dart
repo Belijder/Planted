@@ -9,6 +9,7 @@ import 'package:planted/models/announcement.dart';
 import 'package:planted/models/user_profile.dart';
 import 'package:planted/screens/browse/announcements_list_tile.dart';
 import 'package:planted/screens/views/empty_state_view.dart';
+import 'package:planted/styles/text_styles.dart';
 
 class AnnouncementListView extends HookWidget {
   const AnnouncementListView({
@@ -29,14 +30,11 @@ class AnnouncementListView extends HookWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Row(
+        title: Row(
           children: [
             Text(
               AppBarTitleText.browse,
-              style: TextStyle(
-                  color: colorSepia,
-                  fontSize: 30.0,
-                  fontWeight: FontWeight.w800),
+              style: TextStyles.largeTitleTextStyle(weight: FontWeight.w800),
             ),
           ],
         ),

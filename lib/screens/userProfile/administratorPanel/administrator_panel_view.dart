@@ -6,6 +6,7 @@ import 'package:planted/constants/colors.dart';
 import 'package:planted/constants/strings.dart';
 import 'package:planted/screens/userProfile/administratorPanel/announcements_tab_bar_view.dart';
 import 'package:planted/screens/userProfile/administratorPanel/reports_tab_bar_view.dart';
+import 'package:planted/styles/text_styles.dart';
 
 class AdministatorPanelView extends StatelessWidget {
   const AdministatorPanelView({required this.initialIndex, super.key});
@@ -28,15 +29,11 @@ class AdministatorPanelView extends StatelessWidget {
             icon: const Icon(Icons.arrow_back),
             color: colorSepia,
           ),
-          title: const Align(
+          title: Align(
             alignment: Alignment.centerLeft,
             child: Text(
               AppBarTitleText.adminPanel,
-              style: TextStyle(
-                color: colorSepia,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyles.titleTextStyle(weight: FontWeight.bold),
             ),
           ),
           bottom: const TabBar(tabs: [

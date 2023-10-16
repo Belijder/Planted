@@ -7,6 +7,7 @@ import 'package:planted/constants/strings.dart';
 import 'package:planted/models/report.dart';
 import 'package:planted/screens/userProfile/report_item_list_tile.dart';
 import 'package:planted/screens/views/empty_state_view.dart';
+import 'package:planted/styles/text_styles.dart';
 
 class UserReportsView extends StatelessWidget {
   const UserReportsView({super.key});
@@ -31,15 +32,11 @@ class UserReportsView extends StatelessWidget {
           ),
           color: colorSepia,
         ),
-        title: const Align(
+        title: Align(
           alignment: Alignment.centerLeft,
           child: Text(
             AppBarTitleText.yoursAccount,
-            style: TextStyle(
-              color: colorSepia,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyles.titleTextStyle(weight: FontWeight.bold),
           ),
         ),
       ),

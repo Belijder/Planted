@@ -19,15 +19,8 @@ Future<String?> showDialogWithTextField({
     builder: (context) {
       return AlertDialog(
         actionsAlignment: MainAxisAlignment.center,
-        titleTextStyle: const TextStyle(
-          color: colorSepia,
-          fontWeight: FontWeight.bold,
-          fontSize: 20,
-        ),
-        contentTextStyle: const TextStyle(
-          color: colorSepia,
-          fontSize: 14,
-        ),
+        titleTextStyle: TextStyles.titleTextStyle(weight: FontWeight.bold),
+        contentTextStyle: TextStyles.bodyTextStyle(),
         title: Text(
           title,
           textAlign: TextAlign.center,
@@ -47,7 +40,7 @@ Future<String?> showDialogWithTextField({
                     ? CustomText.emailLabel
                     : CustomText.passwordLabel,
               ),
-              style: textStyle15BoldSepia,
+              style: TextStyles.bodyTextStyle(weight: FontWeight.bold),
               onFieldSubmitted: (_) => FocusScope.of(context).unfocus(),
               onTapOutside: (_) => FocusScope.of(context).unfocus(),
               keyboardType: dialogType == ConfirmationDialogType.email
